@@ -129,7 +129,7 @@
 
     <main class="pt-32 pb-24 px-6 flex-col justify-center items-center text-center flex-1 flex animate-slide-up z-10 w-full max-w-5xl mx-auto">
       <div class="inline-flex items-center gap-2 px-3 py-1 bg-slate-100 text-slate-600 rounded-full text-[11px] font-bold uppercase tracking-wider mb-8 border border-slate-200">
-        <span class="w-2 h-2 rounded-full bg-accent-500"></span> Vercel Ready
+        <span class="w-2 h-2 rounded-full bg-accent-500"></span> SaaS Gateway Ready
       </div>
       
       <h1 class="text-4xl md:text-6xl lg:text-7xl font-extrabold tracking-tight text-slate-900 leading-[1.1]">
@@ -142,7 +142,7 @@
       </p>
       
       <div class="mt-10 flex flex-col sm:flex-row justify-center items-center gap-4 w-full">
-        <button onclick="switchView('auth', 'register')" class="w-full sm:w-auto bg-slate-900 text-white px-8 py-3.5 rounded-xl font-bold text-base hover:bg-slate-800 transition-colors flex items-center justify-center gap-2 group">
+        <button onclick="switchView('auth', 'login')" class="w-full sm:w-auto bg-slate-900 text-white px-8 py-3.5 rounded-xl font-bold text-base hover:bg-slate-800 transition-colors flex items-center justify-center gap-2 group">
           Buka Dashboard <i data-lucide="arrow-right" class="w-4 h-4 shrink-0 group-hover:translate-x-1 transition-transform"></i>
         </button>
       </div>
@@ -175,6 +175,7 @@
         <div class="w-12 h-12 bg-slate-900 text-white rounded-xl flex items-center justify-center mx-auto mb-4 shrink-0"><i data-lucide="zap" class="w-6 h-6"></i></div>
         <h2 id="auth-title" class="text-2xl font-bold text-slate-900 tracking-tight">Masuk</h2>
         <p id="auth-sub" class="text-sm text-slate-500 mt-1">Akses portal manajemen Anda.</p>
+        <p class="text-[10px] text-slate-400 mt-2">Demo Admin: admin@kirimaja.com / admin123</p>
       </div>
 
       <form onsubmit="handleAuthSubmit(event)" class="space-y-4">
@@ -190,7 +191,13 @@
             <label class="block text-xs font-semibold text-slate-600">Password</label>
             <button type="button" onclick="changeAuthState('forgot')" class="text-xs font-semibold text-accent-500 hover:text-accent-600">Lupa Sandi?</button>
           </div>
-          <input type="password" id="password" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm font-medium text-slate-900 placeholder:text-slate-400" placeholder="••••••••">
+          <div class="relative w-full">
+            <input type="password" id="password" class="w-full pl-4 pr-11 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm font-medium text-slate-900 placeholder:text-slate-400" placeholder="••••••••">
+            <button type="button" onclick="toggleVisibility('password')" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 p-1 outline-none">
+              <i data-lucide="eye" id="eye-password" class="w-4 h-4 shrink-0 block"></i>
+              <i data-lucide="eye-off" id="eye-off-password" class="w-4 h-4 shrink-0 hidden"></i>
+            </button>
+          </div>
         </div>
 
         <div id="group-referral" class="hidden">
@@ -412,13 +419,21 @@
                 </div>
               </div>
 
-              <div class="clean-card rounded-2xl p-6 bg-slate-50 border-dashed">
-                <div class="text-center py-4">
-                   <div class="w-12 h-12 bg-white rounded-full flex items-center justify-center mx-auto mb-4 border border-slate-200"><i data-lucide="settings" class="w-6 h-6 text-slate-500 shrink-0"></i></div>
-                   <h3 class="text-sm font-bold text-slate-900 mb-2">Developer API</h3>
-                   <p class="text-xs text-slate-500 mb-4 font-medium">API Key telah dipindahkan ke menu Pengaturan Akun.</p>
-                   <button onclick="showPanel('panel-settings')" class="text-xs font-bold text-slate-900 underline underline-offset-4 hover:text-accent-600 transition-colors">Buka Pengaturan</button>
+              <div class="clean-card rounded-2xl p-6">
+                <div class="flex justify-between items-center mb-4 border-b border-slate-100 pb-3">
+                  <h3 class="text-xs font-bold text-slate-500 uppercase tracking-wider">Test Kirim Pesan</h3>
+                  <i data-lucide="message-square" class="w-4 h-4 text-slate-400 shrink-0"></i>
                 </div>
+                <form onsubmit="handleQuickSend(event)" class="space-y-3">
+                  <select id="qs-device" required class="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium text-slate-900 outline-none">
+                    <option value="">- Pilih Device -</option>
+                  </select>
+                  <input type="number" id="qs-target" required placeholder="No WA (628...)" class="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs outline-none font-mono">
+                  <textarea id="qs-message" required rows="2" placeholder="Tulis pesan test..." class="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs outline-none resize-none"></textarea>
+                  <button type="submit" id="btn-qs" class="w-full py-2.5 bg-slate-900 hover:bg-slate-800 text-white font-bold rounded-xl transition-colors text-xs flex items-center justify-center gap-2 mt-1">
+                    <i data-lucide="send" class="w-3.5 h-3.5 shrink-0"></i> Kirim Test
+                  </button>
+                </form>
               </div>
             </div>
           </div>
@@ -680,7 +695,13 @@
 
                 <div>
                   <label class="block text-xs font-bold text-slate-600 mb-2">API Key Gemini (Opsional)</label>
-                  <input type="password" id="ai-api-key" class="w-full px-5 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-900 outline-none focus:bg-white font-mono">
+                  <div class="relative w-full">
+                    <input type="password" id="ai-api-key" class="w-full pl-5 pr-11 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-900 outline-none focus:bg-white font-mono">
+                    <button type="button" onclick="toggleVisibility('ai-api-key')" class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 p-1 outline-none">
+                      <i data-lucide="eye" id="eye-ai-api-key" class="w-4 h-4 shrink-0 block"></i>
+                      <i data-lucide="eye-off" id="eye-off-ai-api-key" class="w-4 h-4 shrink-0 hidden"></i>
+                    </button>
+                  </div>
                 </div>
 
                 <div>
@@ -779,11 +800,23 @@
                   <div class="grid sm:grid-cols-2 gap-5">
                     <div>
                       <label class="block text-xs font-bold text-slate-600 mb-2">Sandi Saat Ini</label>
-                      <input type="password" required class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm outline-none focus:bg-white font-mono" placeholder="••••••••">
+                      <div class="relative w-full">
+                        <input type="password" id="current-password" required class="w-full pl-4 pr-11 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm outline-none focus:bg-white font-mono" placeholder="••••••••">
+                        <button type="button" onclick="toggleVisibility('current-password')" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 p-1 outline-none">
+                          <i data-lucide="eye" id="eye-current-password" class="w-4 h-4 shrink-0 block"></i>
+                          <i data-lucide="eye-off" id="eye-off-current-password" class="w-4 h-4 shrink-0 hidden"></i>
+                        </button>
+                      </div>
                     </div>
                     <div>
                       <label class="block text-xs font-bold text-slate-600 mb-2">Sandi Baru</label>
-                      <input type="password" required class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm outline-none focus:bg-white font-mono" placeholder="••••••••">
+                      <div class="relative w-full">
+                        <input type="password" id="new-password" required class="w-full pl-4 pr-11 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm outline-none focus:bg-white font-mono" placeholder="••••••••">
+                        <button type="button" onclick="toggleVisibility('new-password')" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 p-1 outline-none">
+                          <i data-lucide="eye" id="eye-new-password" class="w-4 h-4 shrink-0 block"></i>
+                          <i data-lucide="eye-off" id="eye-off-new-password" class="w-4 h-4 shrink-0 hidden"></i>
+                        </button>
+                      </div>
                     </div>
                   </div>
                   <div class="pt-2">
@@ -805,8 +838,9 @@
                      <input type="password" id="set-api-key" readonly class="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-900 font-mono font-bold outline-none cursor-not-allowed tracking-wider" value="LOADING...">
                   </div>
                   <div class="flex gap-2 w-full sm:w-auto shrink-0">
-                     <button type="button" onclick="const i = document.getElementById('set-api-key'); i.type = i.type === 'password' ? 'text' : 'password';" class="px-4 py-3 bg-white border border-slate-200 text-slate-600 font-bold rounded-xl hover:bg-slate-50 transition-colors text-sm flex items-center justify-center gap-2 w-full sm:w-auto shrink-0" title="Tampilkan">
-                       <i data-lucide="eye" class="w-4 h-4 shrink-0"></i>
+                     <button type="button" onclick="toggleVisibility('set-api-key')" class="px-4 py-3 bg-white border border-slate-200 text-slate-600 font-bold rounded-xl hover:bg-slate-50 transition-colors text-sm flex items-center justify-center gap-2 w-full sm:w-auto shrink-0" title="Tampilkan/Sembunyikan">
+                       <i data-lucide="eye" id="eye-set-api-key" class="w-4 h-4 shrink-0 block"></i>
+                       <i data-lucide="eye-off" id="eye-off-set-api-key" class="w-4 h-4 shrink-0 hidden"></i>
                      </button>
                      <button type="button" onclick="const v=document.getElementById('set-api-key').value; navigator.clipboard.writeText(v); showToast('API Key Disalin!');" class="px-6 py-3 bg-slate-900 border border-slate-900 text-white font-bold rounded-xl hover:bg-slate-800 transition-colors text-sm flex items-center justify-center gap-2 w-full sm:w-auto shrink-0">
                        <i data-lucide="copy" class="w-4 h-4 shrink-0"></i> Salin
@@ -861,28 +895,180 @@
   </section>
 
   <!-- ======================================================== -->
-  <!-- JAVASCRIPT LOGIC                                         -->
+  <!-- JAVASCRIPT LOGIC (MOCK BACKEND + FRONTEND CONTROLLER)    -->
   <!-- ======================================================== -->
   <script>
     const CONFIG = {
       ENGINE_BASE_URL: "https://wronged-liking-scalping.ngrok-free.dev", 
-      GAS_WEB_APP_URL: "https://script.google.com/macros/s/AKfycbyihEcmZC3AC6Z06MojlMdkWfP4rG3aFWQnTAwQulAmWyzFEQTVJPocj1LO-mE0gmiIBw/exec"
+      GAS_WEB_APP_URL: "https://script.google.com/macros/s/AKfycbyihEcmZC3AC6Z06MojlMdkWfP4rG3aFWQnTAwQulAmWyzFEQTVJPocj1LO-mE0gmiIBw/exec" 
     };
 
     if (typeof lucide !== 'undefined') lucide.createIcons();
 
+    // ==========================================
+    // MOCK DATABASE & BACKEND LOGIC (In-Memory)
+    // ==========================================
+    const mockDB = {
+      users: [
+        { id: 'U-1', email: 'admin@kirimaja.com', password: 'hash_admin123', role: 'admin', token: 'admin-token', status: 'Active', otp: '', apiKey: 'KA-ADMIN-XYZ', referral: '' },
+        { id: 'U-2', email: 'user@kirimaja.com', password: 'hash_user123', role: 'user', token: 'user-token', status: 'Active', otp: '', apiKey: 'KA-USER-123', referral: '' }
+      ],
+      devices: [
+        { deviceId: 'DEV-1', email: 'admin@kirimaja.com', deviceName: 'iPhone 13 Pro', sessionId: 'sess_1', status: 'CONNECTED' }
+      ],
+      contacts: [
+        { id: 'CT-1', email: 'admin@kirimaja.com', name: 'John Doe', phone: '628123456789', label: 'VIP', address: 'Jakarta', group: 'Customer' },
+        { id: 'CT-2', email: 'admin@kirimaja.com', name: 'Jane Smith', phone: '628987654321', label: '-', address: 'Bandung', group: 'Leads' }
+      ],
+      broadcasts: [],
+      autoreplies: [
+        { id: 'AR-1', email: 'admin@kirimaja.com', keyword: 'halo', matchType: 'exact', message: 'Halo! Ada yang bisa kami bantu?', status: 'Active' }
+      ],
+      aiConfigs: [
+        { email: 'admin@kirimaja.com', deviceId: 'DEV-1', isActive: true, apiKey: 'sk-12345', prompt: 'Kamu adalah CS KirimAja.' }
+      ],
+      promos: [
+        { code: 'WELCOME20', discount: 20, max: 100, current: 0, status: 'Active' }
+      ]
+    };
+
+    // Fungsi utilitas mock
+    const generateId = (prefix) => prefix + Math.random().toString(36).substr(2, 9).toUpperCase();
+    const mockHash = (str) => 'hash_' + str;
+
+    // --- Mock API Router ---
     async function fetchGAS(funcName, args = []) {
+      // 1. Jika URL GAS ada, gunakan fetch asli ke server
+      if (CONFIG.GAS_WEB_APP_URL && CONFIG.GAS_WEB_APP_URL.startsWith("http")) {
+        try {
+          const response = await fetch(CONFIG.GAS_WEB_APP_URL, {
+            method: "POST", headers: { "Content-Type": "text/plain;charset=utf-8" },
+            body: JSON.stringify({ action: "frontend_api", funcName: funcName, args: args })
+          });
+          return await response.json();
+        } catch (error) {
+          return { status: false, message: "Koneksi ke Server Google terputus." };
+        }
+      }
+
+      // 2. Jika kosong, gunakan Mock Backend lokal (Simulasi Delay)
+      console.log(`[MOCK API] Executing: ${funcName}`, args);
+      await new Promise(r => setTimeout(r, 600)); // Simulasi network latency
+      
       try {
-        const response = await fetch(CONFIG.GAS_WEB_APP_URL, {
-          method: "POST", headers: { "Content-Type": "text/plain;charset=utf-8" },
-          body: JSON.stringify({ action: "frontend_api", funcName: funcName, args: args })
-        });
-        return await response.json();
-      } catch (error) {
-        return { status: false, message: "Koneksi ke Server Google terputus." };
+        if (funcName === 'loginUser') {
+          const [email, pass, rem] = args;
+          const user = mockDB.users.find(u => u.email === email && u.password === mockHash(pass));
+          if (!user) return { status: false, message: "Email atau Password salah!" };
+          if (user.status !== "Active") return { status: false, message: "Akun belum diverifikasi!" };
+          if (rem) user.token = generateId("TOK-");
+          return { status: true, data: { email: user.email, role: user.role, token: user.token, apiKey: user.apiKey } };
+        }
+        
+        if (funcName === 'autoLogin') {
+          const [token] = args;
+          const user = mockDB.users.find(u => u.token === token && u.status === "Active");
+          if (!user) return { status: false, message: "Sesi kedaluwarsa" };
+          return { status: true, data: { email: user.email, role: user.role, token: user.token, apiKey: user.apiKey } };
+        }
+
+        if (funcName === 'registerUser') {
+          const [email, pass] = args;
+          if (mockDB.users.find(u => u.email === email)) return { status: false, message: "Email sudah terdaftar!" };
+          mockDB.users.push({ id: generateId('U-'), email, password: mockHash(pass), role: 'user', token: '', status: 'Pending', otp: '123456', apiKey: generateId('KA-') });
+          return { status: true, message: "Pendaftaran berhasil! Cek Email (Untuk Demo: OTP adalah 123456)." };
+        }
+
+        if (funcName === 'verifyOTP') {
+          const [email, otp] = args;
+          const user = mockDB.users.find(u => u.email === email && u.otp === otp);
+          if (!user) return { status: false, message: "OTP salah!" };
+          user.status = "Active"; user.otp = "";
+          return { status: true, message: "Akun diverifikasi! Silakan Login." };
+        }
+
+        if (funcName === 'forgotPassword') return { status: true, message: "Token dikirim (Simulasi)" };
+
+        // Devices
+        if (funcName === 'getDevices') return { status: true, data: mockDB.devices.filter(d => d.email === args[0]) };
+        if (funcName === 'addDevice') {
+          const newDev = { deviceId: generateId('DEV-'), email: args[0], deviceName: args[2], sessionId: generateId('sess_'), status: 'Disconnected' };
+          mockDB.devices.push(newDev);
+          return { status: true, message: "Device ditambahkan", data: newDev };
+        }
+        if (funcName === 'deleteDevice') {
+          mockDB.devices = mockDB.devices.filter(d => d.deviceId !== args[2]);
+          return { status: true, message: "Device dihapus" };
+        }
+        if (funcName === 'updateDeviceStatus') {
+          const dev = mockDB.devices.find(d => d.sessionId === args[2]);
+          if(dev) dev.status = args[3];
+          return { status: true };
+        }
+
+        // Contacts
+        if (funcName === 'getContacts') return { status: true, data: mockDB.contacts.filter(c => c.email === args[0]) };
+        if (funcName === 'addContact') {
+          mockDB.contacts.push({ id: generateId('CT-'), email: args[0], name: args[2], phone: args[3], label: args[4], address: args[5], group: args[6] });
+          return { status: true, message: "Kontak ditambahkan!" };
+        }
+        if (funcName === 'deleteContact') {
+          mockDB.contacts = mockDB.contacts.filter(c => c.id !== args[2]);
+          return { status: true, message: "Kontak dihapus" };
+        }
+
+        // AutoReplies
+        if (funcName === 'getAutoReplies') return { status: true, data: mockDB.autoreplies.filter(a => a.email === args[0]) };
+        if (funcName === 'addAutoReply') {
+          mockDB.autoreplies.push({ id: generateId('AR-'), email: args[0], keyword: args[2], matchType: args[3], message: args[6], status: 'Active' });
+          return { status: true, message: "Auto Reply disimpan" };
+        }
+        if (funcName === 'deleteAutoReply') {
+          mockDB.autoreplies = mockDB.autoreplies.filter(a => a.id !== args[2]);
+          return { status: true, message: "Aturan dihapus" };
+        }
+        if (funcName === 'toggleAutoReplyStatus') {
+          const ar = mockDB.autoreplies.find(a => a.keyword === args[2] && a.email === args[0]);
+          if(ar) ar.status = args[3] ? "Active" : "Inactive";
+          return { status: true, message: "Status diubah" };
+        }
+
+        // Broadcasts
+        if (funcName === 'getBroadcastHistory') return { status: true, data: mockDB.broadcasts.filter(b => b.email === args[0]).reverse() };
+        if (funcName === 'createBroadcast') {
+          mockDB.broadcasts.push({ id: generateId('BR-'), email: args[0], deviceId: args[2], target: args[3], message: args[4], delaySec: args[5], status: 'Success' }); // Simulasi langsung success
+          return { status: true, message: "Broadcast masuk antrean" };
+        }
+
+        // AI
+        if (funcName === 'getAiConfig') return { status: true, data: mockDB.aiConfigs.find(a => a.deviceId === args[2]) || null };
+        if (funcName === 'saveAiConfigDevice') {
+          let ai = mockDB.aiConfigs.find(a => a.deviceId === args[2]);
+          if(ai) { ai.isActive = args[3]; ai.apiKey = args[4]; ai.prompt = args[5]; }
+          else { mockDB.aiConfigs.push({ email: args[0], deviceId: args[2], isActive: args[3], apiKey: args[4], prompt: args[5] }); }
+          return { status: true, message: "AI Disimpan" };
+        }
+
+        // Admin & Others
+        if (funcName === 'getAllUsers') return mockDB.users.map(u => ({ email: u.email, role: u.role, status: u.status }));
+        if (funcName === 'validatePromoCode') {
+          const promo = mockDB.promos.find(p => p.code === args[0]);
+          return promo ? { status: true, discount: promo.discount } : { status: false, message: "Promo tidak valid" };
+        }
+        if (funcName === 'sendPurchaseNotification') return { status: true };
+        if (funcName === 'adminEmailBlast') return { status: true, message: "Email blast dikirim ke semua user aktif" };
+
+        return { status: false, message: "Fungsi Mock tidak ditemukan" };
+      } catch (err) {
+        console.error(err);
+        return { status: false, message: "Error in Mock DB" };
       }
     }
 
+
+    // ==========================================
+    // FRONTEND UI LOGIC & CONTROLLER
+    // ==========================================
     let currentUser = null, globalDevices = [], globalContacts = [], globalAutoReplies = [], globalBroadcasts = [];
     let currentPlan = "Starter", activePromo = "None", statTotals = { sent: 12450, success: 12102, failed: 348 }, statInterval, qrInterval;
 
@@ -909,7 +1095,22 @@
       lucide.createIcons();
     }
 
-    function copyText(elementId) { navigator.clipboard.writeText(document.getElementById(elementId).innerText); showToast("Disalin!"); }
+    function toggleVisibility(inputId) {
+      const input = document.getElementById(inputId);
+      const eye = document.getElementById('eye-' + inputId);
+      const eyeOff = document.getElementById('eye-off-' + inputId);
+      if (input) {
+        if (input.type === 'password') {
+          input.type = 'text';
+          if(eye) { eye.classList.remove('block'); eye.classList.add('hidden'); }
+          if(eyeOff) { eyeOff.classList.remove('hidden'); eyeOff.classList.add('block'); }
+        } else {
+          input.type = 'password';
+          if(eyeOff) { eyeOff.classList.remove('block'); eyeOff.classList.add('hidden'); }
+          if(eye) { eye.classList.remove('hidden'); eye.classList.add('block'); }
+        }
+      }
+    }
 
     let confirmAction = null;
     function showModal(title, desc, type, onConfirm) {
@@ -947,7 +1148,7 @@
       } else if(mode === 'register') {
         els.m.value = 'register'; els.t.innerText = "Daftar"; els.s.innerText = "Buat akun baru gratis."; els.b.innerHTML = 'Daftar Sekarang <i data-lucide="user-plus" class="w-4 h-4 shrink-0"></i>'; els.ft.innerText = "Sudah punya akun?"; els.fb.innerText = "Masuk"; els.otp.classList.add('hidden'); els.rem.classList.add('hidden');
       } else if(mode === 'verify') {
-        els.m.value = 'verify'; els.t.innerText = "Verifikasi"; els.s.innerText = "Cek email untuk OTP."; els.b.innerHTML = 'Verifikasi <i data-lucide="check" class="w-4 h-4 shrink-0"></i>'; els.pass.classList.add('hidden'); els.rem.classList.add('hidden'); els.ref.classList.add('hidden');
+        els.m.value = 'verify'; els.t.innerText = "Verifikasi"; els.s.innerText = "Cek email untuk OTP (Demo: 123456)."; els.b.innerHTML = 'Verifikasi <i data-lucide="check" class="w-4 h-4 shrink-0"></i>'; els.pass.classList.add('hidden'); els.rem.classList.add('hidden'); els.ref.classList.add('hidden');
       } else if(mode === 'forgot') {
         els.m.value = 'forgot'; els.t.innerText = "Reset Sandi"; els.s.innerText = "Token akan dikirim ke email."; els.b.innerHTML = 'Kirim Token <i data-lucide="send" class="w-4 h-4 shrink-0"></i>'; els.pass.classList.add('hidden'); els.rem.classList.add('hidden'); els.ref.classList.add('hidden'); els.otp.classList.add('hidden');
       }
@@ -1066,13 +1267,15 @@
     function renderDeviceTable() { const tbody = document.getElementById('device-table-body'); if(globalDevices.length === 0) { tbody.innerHTML = `<tr><td colspan="3" class="py-10 text-center text-slate-400 text-sm">Kosong. Tambah Device.</td></tr>`; return; } tbody.innerHTML = globalDevices.map(d => `<tr class="hover:bg-slate-50 border-b border-slate-50 last:border-0"><td class="px-6 py-4 font-bold text-sm">${d.deviceName}</td><td class="px-6 py-4 text-center"><span class="px-3 py-1.5 rounded-lg text-[10px] uppercase font-bold tracking-wider ${d.status==='CONNECTED'?'bg-green-50 border border-green-100 text-green-700':'bg-yellow-50 border border-yellow-100 text-yellow-700'}">${d.status||'PENDING'}</span></td><td class="px-6 py-4 text-right"><div class="flex justify-end gap-2"><button onclick="requestQR('${d.sessionId}', '${d.deviceName}')" class="text-xs bg-slate-100 hover:bg-slate-200 text-slate-800 px-4 py-2 rounded-lg font-bold flex items-center gap-1.5 shrink-0"><i data-lucide="qr-code" class="w-3.5 h-3.5 shrink-0"></i> Konek</button><button onclick="promptDeleteDevice('${d.deviceId}', '${d.deviceName}')" class="text-red-500 hover:text-red-700 p-2 shrink-0"><i data-lucide="trash-2" class="w-4 h-4 shrink-0"></i></button></div></td></tr>`).join(''); lucide.createIcons(); }
     function promptAddDevice() { if(currentPlan === "Starter" && globalDevices.length >= 1) { showToast("Limit Starter! Upgrade Pro.", "error"); return; } showModal('Device Baru', `<input type="text" id="n-d-n" class="w-full px-4 py-3 mt-4 bg-slate-50 border border-slate-200 rounded-xl outline-none text-sm font-medium" placeholder="Nama Device">`, 'info', async () => { const n = document.getElementById('n-d-n').value; if(!n) return showToast("Wajib diisi!", "error"); setBtnLoading('modal-confirm-btn', true); const res = await fetchGAS("addDevice", [currentUser.email, currentUser.token, n]); closeModal(); showToast(res.message); if(res.status) { loadDevicesData(); requestQR(res.data.sessionId, res.data.deviceName); } }); }
     function promptDeleteDevice(id, name) { showModal('Hapus', `Hapus device ${name}?`, 'danger', async () => { setBtnLoading('modal-confirm-btn', true); const res = await fetchGAS("deleteDevice", [currentUser.email, currentUser.token, id]); closeModal(); showToast(res.message, res.status?'success':'error'); if(res.status) loadDevicesData(); }); }
+    
     async function requestQR(sessionId, name) { document.getElementById('qr-section').classList.remove('hidden'); document.getElementById('qr-device-name').innerText = name; const l = document.getElementById('qr-loading'), q = document.getElementById('qr-image'); l.classList.remove('hidden'); q.classList.add('hidden'); clearInterval(qrInterval); const fQR = async () => { try { const res = await fetch(`${CONFIG.ENGINE_BASE_URL}/get-qr/${sessionId}`, { headers: { 'ngrok-skip-browser-warning': 'true' } }); const data = await res.json(); if(data.qr) { l.classList.add('hidden'); q.classList.remove('hidden'); q.innerHTML = `<img src="https://api.qrserver.com/v1/create-qr-code/?size=250x250&margin=10&data=${encodeURIComponent(data.qr)}" class="w-full h-full rounded-lg border border-slate-200" />`; } else if (data.status === 'CONNECTED') { l.classList.add('hidden'); q.classList.remove('hidden'); q.innerHTML = '<div class="text-center pt-8"><i data-lucide="check-circle" class="w-12 h-12 text-green-500 mx-auto shrink-0"></i><p class="text-xs font-bold text-green-600 mt-3 uppercase tracking-wider">Terhubung</p></div>'; lucide.createIcons(); clearInterval(qrInterval); fetchGAS("updateDeviceStatus", [currentUser.email, currentUser.token, sessionId, "CONNECTED"]).then(()=>loadDevicesData()); } } catch (e) { clearInterval(qrInterval); } }; fQR(); qrInterval = setInterval(fQR, 5000); }
 
     function updateCharCount() { document.getElementById('char-count').innerText = `${document.getElementById('bc-message').value.length} Karakter`; }
     function insertVar(v) { const t = document.getElementById('bc-message'), s = t.selectionStart, e = t.selectionEnd, tx = t.value; t.value = tx.substring(0, s) + v + tx.substring(e); t.focus(); t.selectionEnd = s + v.length; updateCharCount(); }
-    function populateBroadcastDropdown() { const s = document.getElementById('bc-device'); s.innerHTML = globalDevices.length ? globalDevices.map(d => `<option value="${d.deviceId}">${d.deviceName} (${d.status||'Off'})</option>`).join('') : '<option value="">-- Device Kosong --</option>'; }
+    function populateBroadcastDropdown() { const opts = globalDevices.length ? globalDevices.map(d => `<option value="${d.deviceId}">${d.deviceName} (${d.status||'Off'})</option>`).join('') : '<option value="">-- Device Kosong --</option>'; document.getElementById('bc-device').innerHTML = opts; const qs = document.getElementById('qs-device'); if(qs) qs.innerHTML = opts; }
     function importFromContacts() { if(!globalContacts.length) return showToast("Buku kosong", "error"); document.getElementById('bc-targets').value = globalContacts.map(c=>c.phone).join(", "); showToast("Import Sukses!"); }
     function handleBroadcastSubmit(e) { e.preventDefault(); const d = document.getElementById('bc-device').value; if(!d) return showToast("Pilih Device!", "error"); showModal('Kirim Broadcast', 'Pesan masuk antrean sistem.', 'info', async () => { setBtnLoading('modal-confirm-btn', true); const res = await fetchGAS("createBroadcast", [currentUser.email, currentUser.token, d, document.getElementById('bc-targets').value, document.getElementById('bc-message').value, document.getElementById('bc-delay').value]); closeModal(); showToast(res.message, res.status?'success':'error'); if(res.status) { document.getElementById('bc-targets').value=""; document.getElementById('bc-message').value=""; updateCharCount(); loadBroadcastHistory(); } }); }
+    function handleQuickSend(e) { e.preventDefault(); const d = document.getElementById('qs-device').value; if(!d) return showToast("Pilih Device!", "error"); setBtnLoading('btn-qs', true, 'Mengirim...'); fetchGAS("createBroadcast", [currentUser.email, currentUser.token, d, document.getElementById('qs-target').value, document.getElementById('qs-message').value, 0]).then(res => { setBtnLoading('btn-qs', false); showToast(res.message, res.status ? 'success' : 'error'); if(res.status) { document.getElementById('qs-target').value = ''; document.getElementById('qs-message').value = ''; loadBroadcastHistory(); } }); }
     async function loadBroadcastHistory() { if(!currentUser) return; document.getElementById('broadcast-history-body').innerHTML = `<tr><td colspan="4" class="py-6 text-center"><i data-lucide="loader-2" class="w-4 h-4 animate-spin mx-auto text-slate-400 shrink-0"></i></td></tr>`; lucide.createIcons(); const res = await fetchGAS("getBroadcastHistory", [currentUser.email, currentUser.token]); if(res.status) { globalBroadcasts = res.data; renderBroadcastHistory(); } }
     function renderBroadcastHistory() { const b = document.getElementById('broadcast-history-body'); if(!globalBroadcasts.length) { b.innerHTML = `<tr><td colspan="4" class="py-6 text-center text-slate-400 text-sm">Kosong.</td></tr>`; return; } b.innerHTML = globalBroadcasts.map(i => { let bg='bg-slate-100 text-slate-600', st=i.status||'Pending'; if(st.toLowerCase()==='success') bg='bg-green-50 border border-green-100 text-green-700'; else if(st.toLowerCase()==='failed') bg='bg-red-50 border border-red-100 text-red-700'; return `<tr class="border-b border-slate-50 last:border-0"><td class="px-5 py-4"><span class="font-bold text-[10px] block text-slate-800 tracking-wider">${i.id}</span></td><td class="px-5 py-4 font-mono truncate max-w-[80px]">${i.target}</td><td class="px-5 py-4 truncate max-w-[200px] font-medium">${i.message}</td><td class="px-5 py-4 text-center"><span class="px-2.5 py-1 rounded-md text-[9px] uppercase font-bold tracking-wider ${bg}">${st}</span></td></tr>`; }).join(''); }
 
