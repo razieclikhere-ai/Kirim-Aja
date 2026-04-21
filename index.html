@@ -721,39 +721,14 @@
             </div>
           </div>
 
-          <!-- TAB 3: RIWAYAT CHAT -->
+          <!-- TAB 3: RIWAYAT CHAT (Dihilangkan untuk versi real-time sementara, agar fokus ke Core DB) -->
           <div id="ar-section-history" class="hidden animate-slide-up">
             <div class="clean-card rounded-2xl flex flex-col md:flex-row h-[600px] overflow-hidden">
-              
-              <!-- Sidebar Chat List -->
-              <div class="w-full md:w-1/3 border-b md:border-b-0 md:border-r border-slate-200 flex flex-col bg-white overflow-hidden shrink-0">
-                <div class="p-4 border-b border-slate-100 bg-slate-50 shrink-0 flex justify-between items-center">
-                  <h3 class="font-bold text-slate-900 text-sm">Log Percakapan</h3>
-                  <button onclick="loadChatHistoryUI()" class="text-slate-400 hover:text-slate-800 p-1 rounded-md hover:bg-slate-200 transition-colors" title="Refresh">
-                    <i data-lucide="refresh-cw" class="w-4 h-4"></i>
-                  </button>
-                </div>
-                <div class="flex-1 overflow-y-auto hide-scrollbar" id="chat-list">
-                  <!-- Daftar chat dirender via JS -->
-                </div>
+              <div class="w-full border-b md:border-b-0 border-slate-200 flex flex-col bg-white overflow-hidden shrink-0 items-center justify-center text-center p-10">
+                 <i data-lucide="message-square-dashed" class="w-16 h-16 text-slate-300 mb-4"></i>
+                 <h3 class="font-bold text-slate-900 mb-1">Riwayat Chat Realtime</h3>
+                 <p class="text-sm text-slate-500">Fitur ini membutuhkan sinkronisasi socket tambahan dan akan tersedia di update berikutnya.</p>
               </div>
-              
-              <!-- Chat View Area -->
-              <div class="w-full md:w-2/3 flex flex-col bg-[#f8fafc] h-full relative">
-                <div class="p-4 border-b border-slate-200 bg-white flex items-center gap-3 shrink-0">
-                  <div class="w-10 h-10 rounded-full bg-slate-100 border border-slate-200 flex items-center justify-center text-slate-500 font-bold shrink-0">
-                    <i data-lucide="message-square" class="w-5 h-5"></i>
-                  </div>
-                  <div class="overflow-hidden">
-                    <h4 class="font-bold text-slate-900 text-sm truncate" id="chat-active-name">Pilih Percakapan</h4>
-                    <p class="text-xs text-slate-500 truncate" id="chat-active-number">Menunggu interaksi...</p>
-                  </div>
-                </div>
-                <div class="flex-1 overflow-y-auto p-5 space-y-4 hide-scrollbar flex flex-col" id="chat-bubbles">
-                  <div class="flex items-center justify-center flex-1 text-slate-400 text-sm font-medium">Belum ada percakapan yang dipilih.</div>
-                </div>
-              </div>
-              
             </div>
           </div>
         </div>
@@ -881,7 +856,7 @@
                        <i data-lucide="eye" id="eye-set-api-key" class="w-4 h-4 shrink-0 block"></i>
                        <i data-lucide="eye-off" id="eye-off-set-api-key" class="w-4 h-4 shrink-0 hidden"></i>
                      </button>
-                     <button type="button" onclick="const v=document.getElementById('set-api-key').value; navigator.clipboard.writeText(v); showToast('API Key Disalin!');" class="px-6 py-3 bg-slate-900 border border-slate-900 text-white font-bold rounded-xl hover:bg-slate-800 transition-colors text-sm flex items-center justify-center gap-2 w-full sm:w-auto shrink-0">
+                     <button type="button" onclick="const v=document.getElementById('set-api-key').value; navigator.clipboard.writeText(v).then(()=>showToast('API Key Disalin!'));" class="px-6 py-3 bg-slate-900 border border-slate-900 text-white font-bold rounded-xl hover:bg-slate-800 transition-colors text-sm flex items-center justify-center gap-2 w-full sm:w-auto shrink-0">
                        <i data-lucide="copy" class="w-4 h-4 shrink-0"></i> Salin
                      </button>
                   </div>
@@ -906,13 +881,16 @@
                 <h3 class="text-sm font-bold text-slate-900 mb-5 uppercase tracking-wider border-b border-slate-100 pb-3">Email Newsletter Blast</h3>
                 <form onsubmit="handleEmailBlast(event)" class="space-y-5">
                   <input type="text" id="blast-subject" required class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm outline-none focus:bg-white font-semibold" placeholder="Subjek Email">
-                  <textarea id="blast-content" required rows="5" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm resize-none outline-none focus:bg-white font-medium" placeholder="Konten..."></textarea>
+                  <textarea id="blast-content" required rows="5" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm resize-none outline-none focus:bg-white font-medium" placeholder="Konten (HTML Supported)..."></textarea>
                   <button type="submit" id="btn-blast" class="w-full py-3.5 bg-slate-900 text-white font-bold rounded-xl text-sm hover:bg-slate-800">Kirim ke Semua User</button>
                 </form>
               </div>
               <!-- Users Table -->
               <div class="clean-card rounded-2xl flex flex-col h-[450px] overflow-hidden">
-                 <div class="p-5 border-b border-slate-200"><h3 class="font-bold text-slate-900 text-sm uppercase tracking-wider">Database Klien</h3></div>
+                 <div class="p-5 border-b border-slate-200 flex justify-between items-center">
+                    <h3 class="font-bold text-slate-900 text-sm uppercase tracking-wider">Database Klien</h3>
+                    <button onclick="fetchAdminUsers()" class="text-slate-400 hover:text-slate-900"><i data-lucide="refresh-cw" class="w-4 h-4 shrink-0"></i></button>
+                 </div>
                  <div class="overflow-auto flex-1 hide-scrollbar">
                     <table class="w-full text-left whitespace-nowrap">
                        <thead class="bg-slate-50 sticky top-0 z-10 border-b border-slate-100">
@@ -934,193 +912,48 @@
   </section>
 
   <!-- ======================================================== -->
-  <!-- JAVASCRIPT LOGIC (MOCK BACKEND + FRONTEND CONTROLLER)    -->
+  <!-- JAVASCRIPT LOGIC (REAL-TIME INTEGRATION WITH GAS & NODE.JS) -->
   <!-- ======================================================== -->
   <script>
+    // ⚠️ M A S U K K A N   U R L   A S L I   M I L I K M U   D I   S I N I ⚠️
     const CONFIG = {
+      // 1. Masukkan URL Ngrok atau URL Vercel/VPS dari Node.js kamu di sini:
       ENGINE_BASE_URL: "https://wronged-liking-scalping.ngrok-free.dev", 
+      
+      // 2. Masukkan URL Web App Google Apps Script kamu di sini (yang berakhiran /exec):
       GAS_WEB_APP_URL: "https://script.google.com/macros/s/AKfycbyihEcmZC3AC6Z06MojlMdkWfP4rG3aFWQnTAwQulAmWyzFEQTVJPocj1LO-mE0gmiIBw/exec" 
     };
 
     if (typeof lucide !== 'undefined') lucide.createIcons();
 
     // ==========================================
-    // MOCK DATABASE & BACKEND LOGIC (In-Memory)
+    // CORE API INTEGRATION (Menghubungi GAS)
     // ==========================================
-    const mockDB = {
-      users: [
-        { id: 'U-1', email: 'admin@kirimaja.com', password: 'hash_admin123', role: 'admin', token: 'admin-token', status: 'Active', otp: '', apiKey: 'KA-ADMIN-XYZ', referral: '' },
-        { id: 'U-2', email: 'user@kirimaja.com', password: 'hash_user123', role: 'user', token: 'user-token', status: 'Active', otp: '', apiKey: 'KA-USER-123', referral: '' }
-      ],
-      devices: [
-        { deviceId: 'DEV-1', email: 'admin@kirimaja.com', deviceName: 'iPhone 13 Pro', sessionId: 'sess_1', status: 'CONNECTED' }
-      ],
-      contacts: [
-        { id: 'CT-1', email: 'admin@kirimaja.com', name: 'John Doe', phone: '628123456789', label: 'VIP', address: 'Jakarta', group: 'Customer' },
-        { id: 'CT-2', email: 'admin@kirimaja.com', name: 'Jane Smith', phone: '628987654321', label: '-', address: 'Bandung', group: 'Leads' }
-      ],
-      broadcasts: [],
-      autoreplies: [
-        { id: 'AR-1', email: 'admin@kirimaja.com', keyword: 'halo', matchType: 'exact', message: 'Halo! Ada yang bisa kami bantu?', status: 'Active' }
-      ],
-      aiConfigs: [
-        { email: 'admin@kirimaja.com', deviceId: 'DEV-1', isActive: true, apiKey: 'sk-12345', prompt: 'Kamu adalah CS KirimAja.' }
-      ],
-      promos: [
-        { code: 'WELCOME20', discount: 20, max: 100, current: 0, status: 'Active' }
-      ],
-      chats: [
-        { id: 'chat_1', name: 'John Doe', number: '6281234567890', lastMsg: 'Halo min, mau tanya harga.', time: '10:30', messages: [
-          { text: 'Halo min, mau tanya harga paket business.', fromMe: false, time: '10:28' },
-          { text: 'Halo John! Harga paket business adalah Rp 249k/bulan. Ingin dibantu upgrade?', fromMe: true, time: '10:30', isAI: true }
-        ]},
-        { id: 'chat_2', name: '089876543210', number: '089876543210', lastMsg: 'Terima kasih informasinya.', time: '09:15', messages: [
-          { text: 'Cara pakai spintax gimana?', fromMe: false, time: '09:10' },
-          { text: 'Gunakan format {kata1|kata2}. Contoh: {Halo|Hai} bro.', fromMe: true, time: '09:12', isAI: false },
-          { text: 'Terima kasih informasinya.', fromMe: false, time: '09:15' }
-        ]}
-      ]
-    };
-
-    // Fungsi utilitas mock
-    const generateId = (prefix) => prefix + Math.random().toString(36).substr(2, 9).toUpperCase();
-    const mockHash = (str) => 'hash_' + str;
-
-    // --- Mock API Router ---
     async function fetchGAS(funcName, args = []) {
-      // 1. Jika URL GAS ada, gunakan fetch asli ke server
-      if (CONFIG.GAS_WEB_APP_URL && CONFIG.GAS_WEB_APP_URL.startsWith("http")) {
-        try {
-          const response = await fetch(CONFIG.GAS_WEB_APP_URL, {
-            method: "POST", headers: { "Content-Type": "text/plain;charset=utf-8" },
-            body: JSON.stringify({ action: "frontend_api", funcName: funcName, args: args })
-          });
-          return await response.json();
-        } catch (error) {
-          return { status: false, message: "Koneksi ke Server Google terputus." };
-        }
+      if (!CONFIG.GAS_WEB_APP_URL || !CONFIG.GAS_WEB_APP_URL.startsWith("http")) {
+        console.error("URL GAS Belum Diisi!");
+        return { status: false, message: "Sistem belum dikonfigurasi (URL GAS kosong)." };
       }
 
-      // 2. Jika kosong, gunakan Mock Backend lokal (Simulasi Delay)
-      console.log(`[MOCK API] Executing: ${funcName}`, args);
-      await new Promise(r => setTimeout(r, 600)); // Simulasi network latency
-      
       try {
-        if (funcName === 'loginUser') {
-          const [email, pass, rem] = args;
-          const user = mockDB.users.find(u => u.email === email && u.password === mockHash(pass));
-          if (!user) return { status: false, message: "Email atau Password salah!" };
-          if (user.status !== "Active") return { status: false, message: "Akun belum diverifikasi!" };
-          if (rem) user.token = generateId("TOK-");
-          return { status: true, data: { email: user.email, role: user.role, token: user.token, apiKey: user.apiKey } };
-        }
-        
-        if (funcName === 'autoLogin') {
-          const [token] = args;
-          const user = mockDB.users.find(u => u.token === token && u.status === "Active");
-          if (!user) return { status: false, message: "Sesi kedaluwarsa" };
-          return { status: true, data: { email: user.email, role: user.role, token: user.token, apiKey: user.apiKey } };
-        }
-
-        if (funcName === 'registerUser') {
-          const [email, pass] = args;
-          if (mockDB.users.find(u => u.email === email)) return { status: false, message: "Email sudah terdaftar!" };
-          mockDB.users.push({ id: generateId('U-'), email, password: mockHash(pass), role: 'user', token: '', status: 'Pending', otp: '123456', apiKey: generateId('KA-') });
-          return { status: true, message: "Pendaftaran berhasil! Cek Email (Untuk Demo: OTP adalah 123456)." };
-        }
-
-        if (funcName === 'verifyOTP') {
-          const [email, otp] = args;
-          const user = mockDB.users.find(u => u.email === email && u.otp === otp);
-          if (!user) return { status: false, message: "OTP salah!" };
-          user.status = "Active"; user.otp = "";
-          return { status: true, message: "Akun diverifikasi! Silakan Login." };
-        }
-
-        if (funcName === 'forgotPassword') return { status: true, message: "Token dikirim (Simulasi)" };
-
-        // Devices
-        if (funcName === 'getDevices') return { status: true, data: mockDB.devices.filter(d => d.email === args[0]) };
-        if (funcName === 'addDevice') {
-          const newDev = { deviceId: generateId('DEV-'), email: args[0], deviceName: args[2], sessionId: generateId('sess_'), status: 'Disconnected' };
-          mockDB.devices.push(newDev);
-          return { status: true, message: "Device ditambahkan", data: newDev };
-        }
-        if (funcName === 'deleteDevice') {
-          mockDB.devices = mockDB.devices.filter(d => d.deviceId !== args[2]);
-          return { status: true, message: "Device dihapus" };
-        }
-        if (funcName === 'updateDeviceStatus') {
-          const dev = mockDB.devices.find(d => d.sessionId === args[2]);
-          if(dev) dev.status = args[3];
-          return { status: true };
-        }
-
-        // Contacts
-        if (funcName === 'getContacts') return { status: true, data: mockDB.contacts.filter(c => c.email === args[0]) };
-        if (funcName === 'addContact') {
-          mockDB.contacts.push({ id: generateId('CT-'), email: args[0], name: args[2], phone: args[3], label: args[4], address: args[5], group: args[6] });
-          return { status: true, message: "Kontak ditambahkan!" };
-        }
-        if (funcName === 'deleteContact') {
-          mockDB.contacts = mockDB.contacts.filter(c => c.id !== args[2]);
-          return { status: true, message: "Kontak dihapus" };
-        }
-
-        // AutoReplies
-        if (funcName === 'getAutoReplies') return { status: true, data: mockDB.autoreplies.filter(a => a.email === args[0]) };
-        if (funcName === 'addAutoReply') {
-          mockDB.autoreplies.push({ id: generateId('AR-'), email: args[0], keyword: args[2], matchType: args[3], message: args[6], status: 'Active' });
-          return { status: true, message: "Auto Reply disimpan" };
-        }
-        if (funcName === 'deleteAutoReply') {
-          mockDB.autoreplies = mockDB.autoreplies.filter(a => a.id !== args[2]);
-          return { status: true, message: "Aturan dihapus" };
-        }
-        if (funcName === 'toggleAutoReplyStatus') {
-          const ar = mockDB.autoreplies.find(a => a.keyword === args[2] && a.email === args[0]);
-          if(ar) ar.status = args[3] ? "Active" : "Inactive";
-          return { status: true, message: "Status diubah" };
-        }
-
-        // Broadcasts
-        if (funcName === 'getBroadcastHistory') return { status: true, data: mockDB.broadcasts.filter(b => b.email === args[0]).reverse() };
-        if (funcName === 'createBroadcast') {
-          mockDB.broadcasts.push({ id: generateId('BR-'), email: args[0], deviceId: args[2], target: args[3], message: args[4], delaySec: args[5], status: 'Success' }); // Simulasi langsung success
-          return { status: true, message: "Broadcast masuk antrean" };
-        }
-
-        // AI
-        if (funcName === 'getAiConfig') return { status: true, data: mockDB.aiConfigs.find(a => a.deviceId === args[2]) || null };
-        if (funcName === 'saveAiConfigDevice') {
-          let ai = mockDB.aiConfigs.find(a => a.deviceId === args[2]);
-          if(ai) { ai.isActive = args[3]; ai.apiKey = args[4]; ai.prompt = args[5]; }
-          else { mockDB.aiConfigs.push({ email: args[0], deviceId: args[2], isActive: args[3], apiKey: args[4], prompt: args[5] }); }
-          return { status: true, message: "AI Disimpan" };
-        }
-
-        // Admin & Others
-        if (funcName === 'getAllUsers') return mockDB.users.map(u => ({ email: u.email, role: u.role, status: u.status }));
-        if (funcName === 'validatePromoCode') {
-          const promo = mockDB.promos.find(p => p.code === args[0]);
-          return promo ? { status: true, discount: promo.discount } : { status: false, message: "Promo tidak valid" };
-        }
-        if (funcName === 'sendPurchaseNotification') return { status: true };
-        if (funcName === 'adminEmailBlast') return { status: true, message: "Email blast dikirim ke semua user aktif" };
-
-        return { status: false, message: "Fungsi Mock tidak ditemukan" };
-      } catch (err) {
-        console.error(err);
-        return { status: false, message: "Error in Mock DB" };
+        const response = await fetch(CONFIG.GAS_WEB_APP_URL, {
+          method: "POST", 
+          headers: { "Content-Type": "text/plain;charset=utf-8" },
+          body: JSON.stringify({ action: "frontend_api", funcName: funcName, args: args })
+        });
+        const result = await response.json();
+        return result;
+      } catch (error) {
+        console.error("API Error:", error);
+        return { status: false, message: "Koneksi ke Server Database gagal. Cek koneksi internet." };
       }
     }
-
 
     // ==========================================
     // FRONTEND UI LOGIC & CONTROLLER
     // ==========================================
     let currentUser = null, globalDevices = [], globalContacts = [], globalAutoReplies = [], globalBroadcasts = [];
-    let currentPlan = "Starter", activePromo = "None", statTotals = { sent: 12450, success: 12102, failed: 348 }, statInterval, qrInterval;
+    let currentPlan = "Starter", activePromo = "None", statTotals = { sent: 0, success: 0, failed: 0 }, statInterval, qrInterval;
 
     function showToast(msg, type = 'success') {
       const t = document.getElementById('toast'), icon = document.getElementById('toast-icon');
@@ -1198,7 +1031,7 @@
       } else if(mode === 'register') {
         els.m.value = 'register'; els.t.innerText = "Daftar"; els.s.innerText = "Buat akun baru gratis."; els.b.innerHTML = 'Daftar Sekarang <i data-lucide="user-plus" class="w-4 h-4 shrink-0"></i>'; els.ft.innerText = "Sudah punya akun?"; els.fb.innerText = "Masuk"; els.otp.classList.add('hidden'); els.rem.classList.add('hidden');
       } else if(mode === 'verify') {
-        els.m.value = 'verify'; els.t.innerText = "Verifikasi"; els.s.innerText = "Cek email untuk OTP (Demo: 123456)."; els.b.innerHTML = 'Verifikasi <i data-lucide="check" class="w-4 h-4 shrink-0"></i>'; els.pass.classList.add('hidden'); els.rem.classList.add('hidden'); els.ref.classList.add('hidden');
+        els.m.value = 'verify'; els.t.innerText = "Verifikasi"; els.s.innerText = "Cek email untuk kode OTP."; els.b.innerHTML = 'Verifikasi <i data-lucide="check" class="w-4 h-4 shrink-0"></i>'; els.pass.classList.add('hidden'); els.rem.classList.add('hidden'); els.ref.classList.add('hidden');
       } else if(mode === 'forgot') {
         els.m.value = 'forgot'; els.t.innerText = "Reset Sandi"; els.s.innerText = "Token akan dikirim ke email."; els.b.innerHTML = 'Kirim Token <i data-lucide="send" class="w-4 h-4 shrink-0"></i>'; els.pass.classList.add('hidden'); els.rem.classList.add('hidden'); els.ref.classList.add('hidden'); els.otp.classList.add('hidden');
       }
@@ -1207,15 +1040,36 @@
     function toggleAuthMode() { changeAuthState(document.getElementById('auth-mode').value === 'login' ? 'register' : 'login'); }
 
     async function handleAuthSubmit(e) {
-      e.preventDefault(); const mode = document.getElementById('auth-mode').value, em = document.getElementById('email').value, pw = document.getElementById('password').value, ot = document.getElementById('otp').value, rf = document.getElementById('referral') ? document.getElementById('referral').value : "", rm = document.getElementById('remember').checked;
+      e.preventDefault(); 
+      const mode = document.getElementById('auth-mode').value, 
+            em = document.getElementById('email').value, 
+            pw = document.getElementById('password').value, 
+            ot = document.getElementById('otp').value, 
+            rf = document.getElementById('referral') ? document.getElementById('referral').value : "", 
+            rm = document.getElementById('remember').checked;
+            
       setBtnLoading('btn-auth', true);
+      
       if(mode === 'login') {
-        const res = await fetchGAS("loginUser", [em, pw, rm]); setBtnLoading('btn-auth', false);
-        if(res.status) { if(rm) localStorage.setItem('wag_token', res.data.token); initDashboard(res.data); } else { showToast(res.message, 'error'); if(res.message?.includes("belum diverifikasi")) changeAuthState('verify'); }
+        const res = await fetchGAS("loginUser", [em, pw, rm]); 
+        setBtnLoading('btn-auth', false);
+        if(res.status) { 
+            if(rm) localStorage.setItem('wag_token', res.data.token); 
+            initDashboard(res.data); 
+        } else { 
+            showToast(res.message, 'error'); 
+            if(res.message?.includes("belum diverifikasi")) changeAuthState('verify'); 
+        }
       } else if(mode === 'register') {
-        const res = await fetchGAS("registerUser", [em, pw, rf]); setBtnLoading('btn-auth', false); showToast(res.message, res.status ? 'success' : 'error'); if(res.status) changeAuthState('verify');
+        const res = await fetchGAS("registerUser", [em, pw, rf]); 
+        setBtnLoading('btn-auth', false); 
+        showToast(res.message, res.status ? 'success' : 'error'); 
+        if(res.status) changeAuthState('verify');
       } else if(mode === 'verify') {
-        const res = await fetchGAS("verifyOTP", [em, ot]); setBtnLoading('btn-auth', false); showToast(res.message, res.status ? 'success' : 'error'); if(res.status) changeAuthState('login');
+        const res = await fetchGAS("verifyOTP", [em, ot]); 
+        setBtnLoading('btn-auth', false); 
+        showToast(res.message, res.status ? 'success' : 'error'); 
+        if(res.status) changeAuthState('login');
       }
     }
 
@@ -1235,7 +1089,13 @@
       document.getElementById('set-api-key').value = user.apiKey || "NO_API_KEY";
 
       if(user.role === 'admin') { document.getElementById('nav-admin').classList.remove('hidden'); currentPlan = "Business"; updatePlanUI(); }
-      loadDevicesData(); loadContactsData(); loadAutoRepliesData(); startRealtimeStats();
+      
+      // Load all data from GAS
+      loadDevicesData(); 
+      loadContactsData(); 
+      loadAutoRepliesData(); 
+      loadBroadcastHistory();
+      calculateStats();
     }
 
     function showPanel(id) {
@@ -1268,21 +1128,48 @@
       if(id === 'panel-autoreply') loadAutoRepliesData(); 
       if(id === 'panel-broadcast') { loadDevicesData(); loadBroadcastHistory(); } 
       if(id === 'panel-admin' && currentUser.role === 'admin') fetchAdminUsers(); 
-      if(id === 'panel-home' && !dashboardChart) setTimeout(renderOverviewChart, 300);
+      if(id === 'panel-home') {
+          calculateStats();
+          if(!dashboardChart) setTimeout(renderOverviewChart, 300);
+      }
     }
 
     function promptLogout() { showModal('Sign Out', 'Anda yakin ingin keluar dari sesi ini?', 'info', () => { localStorage.removeItem('wag_token'); currentUser = null; clearInterval(statInterval); clearInterval(qrInterval); closeModal(); switchView('marketing'); showToast("Berhasil Sign Out."); }); }
-    function startRealtimeStats() { statInterval = setInterval(() => { statTotals.sent += Math.floor(Math.random() * 3); statTotals.success += Math.floor(Math.random() * 3); document.getElementById('stat-total-bc').innerText = statTotals.sent.toLocaleString('id-ID'); document.getElementById('stat-success-bc').innerHTML = `${statTotals.success.toLocaleString('id-ID')}`; }, 15000); }
+    
+    // Hitung statistik berdasarkan data asli
+    async function calculateStats() {
+        if(!currentUser) return;
+        
+        // Ambil data terbaru jika belum ada
+        if (globalBroadcasts.length === 0) {
+            const res = await fetchGAS("getBroadcastHistory", [currentUser.email, currentUser.token]);
+            if(res.status) globalBroadcasts = res.data;
+        }
 
+        let sent = globalBroadcasts.length;
+        let success = globalBroadcasts.filter(b => (b.status||'').toLowerCase() === 'success').length;
+        let failed = globalBroadcasts.filter(b => (b.status||'').toLowerCase() === 'failed').length;
+        
+        document.getElementById('stat-total-bc').innerText = sent.toLocaleString('id-ID'); 
+        document.getElementById('stat-success-bc').innerHTML = `${success.toLocaleString('id-ID')}`; 
+        document.getElementById('stat-failed-bc').innerHTML = `${failed.toLocaleString('id-ID')}`; 
+    }
+
+    // --- CONTACTS ---
     async function loadContactsData() {
       if(!currentUser) return; document.getElementById('contact-table-body').innerHTML = `<tr><td colspan="5" class="py-10 text-center"><i data-lucide="loader-2" class="w-5 h-5 animate-spin mx-auto text-slate-400 shrink-0"></i></td></tr>`; lucide.createIcons();
       const res = await fetchGAS("getContacts", [currentUser.email, currentUser.token]);
-      if(res.status) { globalContacts = res.data.map(c => ({ id: c.id, name: c.name, phone: c.phone, label: c.label || '', address: c.address || c.label?.split('-')[1] || '-', group: c.group || c.label?.split('-')[0] || '-' })); renderContactTable(globalContacts); }
+      if(res.status) { 
+          globalContacts = res.data.map(c => ({ id: c.id, name: c.name, phone: c.phone, label: c.label || '', address: c.address || c.label?.split('-')[1] || '-', group: c.group || c.label?.split('-')[0] || '-' })); 
+          renderContactTable(globalContacts); 
+      } else {
+          document.getElementById('contact-table-body').innerHTML = `<tr><td colspan="5" class="py-10 text-center text-red-400 text-sm">Gagal memuat data kontak.</td></tr>`;
+      }
     }
 
     function renderContactTable(data) {
       const tbody = document.getElementById('contact-table-body'); document.getElementById('contact-count').innerText = data.length;
-      if(data.length === 0) { tbody.innerHTML = `<tr><td colspan="5" class="py-10 text-center text-slate-400 text-sm">Kosong.</td></tr>`; return; }
+      if(data.length === 0) { tbody.innerHTML = `<tr><td colspan="5" class="py-10 text-center text-slate-400 text-sm">Kosong. Tambahkan kontak baru.</td></tr>`; return; }
       tbody.innerHTML = data.map(c => `<tr class="hover:bg-slate-50 border-b border-slate-50 last:border-0"><td class="px-6 py-4">${c.name}</td><td class="px-6 py-4 font-mono text-sm">${c.phone}</td><td class="px-6 py-4 truncate max-w-[200px]">${c.address}</td><td class="px-6 py-4 text-center"><span class="px-2.5 py-1 bg-slate-100 rounded-md text-[10px] uppercase font-bold text-slate-600">${c.group !== '-' ? c.group : (c.label !== '-' ? c.label : '-')}</span></td><td class="px-6 py-4 text-right"><button onclick="promptDeleteContact('${c.id}', '${c.name}')" class="text-red-500 hover:text-red-700 p-1"><i data-lucide="trash-2" class="w-4 h-4 shrink-0"></i></button></td></tr>`).join(''); lucide.createIcons();
     }
     
@@ -1290,23 +1177,31 @@
 
     function promptAddContact() {
        const h = `<div class="space-y-4 mt-5 text-left"><input type="text" id="m-n" class="w-full px-4 py-2.5 bg-slate-50 rounded-xl border border-slate-200 text-sm outline-none font-medium" placeholder="Nama"><input type="number" id="m-p" class="w-full px-4 py-2.5 bg-slate-50 rounded-xl border border-slate-200 text-sm outline-none font-medium" placeholder="No WA (628...)"><input type="text" id="m-a" class="w-full px-4 py-2.5 bg-slate-50 rounded-xl border border-slate-200 text-sm outline-none font-medium" placeholder="Alamat"><div class="flex gap-3"><input type="text" id="m-g" class="w-1/2 px-4 py-2.5 bg-slate-50 rounded-xl border border-slate-200 text-sm outline-none font-medium" placeholder="Grup"><input type="text" id="m-l" class="w-1/2 px-4 py-2.5 bg-slate-50 rounded-xl border border-slate-200 text-sm outline-none font-medium" placeholder="Label"></div></div>`;
-       showModal('Kontak Baru', h, 'info', async () => { const n = document.getElementById('m-n').value, p = document.getElementById('m-p').value; if(!n || !p) return showToast("Nama & No WA wajib!", "error"); setBtnLoading('modal-confirm-btn', true); const res = await fetchGAS("addContact", [currentUser.email, currentUser.token, n, p, document.getElementById('m-l').value||'-', document.getElementById('m-a').value||'-', document.getElementById('m-g').value||'-']); closeModal(); showToast(res.message, res.status ? "success" : "error"); if(res.status) loadContactsData(); });
+       showModal('Kontak Baru', h, 'info', async () => { 
+           const n = document.getElementById('m-n').value, p = document.getElementById('m-p').value; 
+           if(!n || !p) return showToast("Nama & No WA wajib!", "error"); 
+           setBtnLoading('modal-confirm-btn', true); 
+           const res = await fetchGAS("addContact", [currentUser.email, currentUser.token, n, p, document.getElementById('m-l').value||'-', document.getElementById('m-a').value||'-', document.getElementById('m-g').value||'-']); 
+           closeModal(); 
+           showToast(res.message, res.status ? "success" : "error"); 
+           if(res.status) loadContactsData(); 
+       });
     }
     async function promptDeleteContact(id, name) { showModal('Hapus', `Hapus kontak ${name}?`, 'danger', async () => { setBtnLoading('modal-confirm-btn', true); const res = await fetchGAS("deleteContact", [currentUser.email, currentUser.token, id]); closeModal(); showToast(res.message, res.status ? 'success':'error'); if(res.status) loadContactsData(); }); }
 
+    // --- AUTO REPLY & AI ---
     async function loadAutoRepliesData() {
       if(!currentUser) return; document.getElementById('autoreply-table-body').innerHTML = `<tr><td colspan="3" class="py-10 text-center"><i data-lucide="loader-2" class="w-5 h-5 animate-spin mx-auto text-slate-400 shrink-0"></i></td></tr>`; lucide.createIcons();
       const res = await fetchGAS("getAutoReplies", [currentUser.email, currentUser.token]); if (res.status) { globalAutoReplies = res.data; renderAutoReplyTable(); }
     }
     function renderAutoReplyTable() {
-      const tbody = document.getElementById('autoreply-table-body'); if(globalAutoReplies.length === 0) { tbody.innerHTML = `<tr><td colspan="3" class="py-10 text-center text-slate-400 text-sm">Kosong.</td></tr>`; return; }
+      const tbody = document.getElementById('autoreply-table-body'); if(globalAutoReplies.length === 0) { tbody.innerHTML = `<tr><td colspan="3" class="py-10 text-center text-slate-400 text-sm">Kosong. Belum ada aturan dibuat.</td></tr>`; return; }
       tbody.innerHTML = globalAutoReplies.map(ar => `<tr class="hover:bg-slate-50 border-b border-slate-50 last:border-0"><td class="px-6 py-4 font-bold">${ar.keyword}</td><td class="px-6 py-4 truncate max-w-[200px]">${ar.message}</td><td class="px-6 py-4 flex justify-end gap-4 items-center"><label class="relative inline-flex items-center cursor-pointer scale-90 shrink-0"><input type="checkbox" ${ar.status === 'Active'?'checked':''} onchange="toggleRuleStatus(this, '${ar.keyword}')" class="sr-only peer"><div class="w-11 h-6 bg-slate-300 rounded-full peer peer-checked:after:translate-x-full after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-green-500"></div></label><button onclick="promptDeleteAutoReply('${ar.id}', '${ar.keyword}')" class="text-red-500 hover:text-red-700 p-1"><i data-lucide="trash-2" class="w-4 h-4 shrink-0"></i></button></td></tr>`).join(''); lucide.createIcons();
     }
     async function toggleRuleStatus(cb, kw) { const res = await fetchGAS("toggleAutoReplyStatus", [currentUser.email, currentUser.token, kw, cb.checked]); showToast(res.message, res.status?"success":"error"); }
     function promptDeleteAutoReply(id, kw) { showModal('Hapus', `Hapus keyword ${kw}?`, 'danger', async () => { setBtnLoading('modal-confirm-btn', true); const res = await fetchGAS("deleteAutoReply", [currentUser.email, currentUser.token, id]); closeModal(); showToast(res.message, res.status?'success':'error'); if(res.status) loadAutoRepliesData(); }); }
     async function handleAutoReplySubmit(e) { e.preventDefault(); setBtnLoading('btn-ar', true); const res = await fetchGAS("addAutoReply", [currentUser.email, currentUser.token, document.getElementById('ar-keyword').value, document.getElementById('ar-match-type').value, "none", "", document.getElementById('ar-message').value]); setBtnLoading('btn-ar', false); showToast(res.message, res.status ? "success":"error"); if(res.status) { e.target.reset(); loadAutoRepliesData(); } }
     
-    // TAB MANAGEMENT & CHAT HISTORY
     function switchArTab(id) {
       const bk = document.getElementById('tab-ar-keyword'), ba = document.getElementById('tab-ar-ai'), bh = document.getElementById('tab-ar-history');
       const sk = document.getElementById('ar-section-keyword'), sa = document.getElementById('ar-section-ai'), sh = document.getElementById('ar-section-history');
@@ -1324,107 +1219,201 @@
       } else if(id === 'history') {
         if(bh) bh.className="px-6 py-3 border-b-2 border-slate-900 text-slate-900 font-bold text-sm transition-colors shrink-0"; 
         if(sh) sh.classList.remove('hidden'); 
-        loadChatHistoryUI();
       }
-    }
-
-    function loadChatHistoryUI() {
-      const list = document.getElementById('chat-list');
-      if (!mockDB.chats || mockDB.chats.length === 0) {
-        list.innerHTML = `<div class="p-5 text-center text-xs text-slate-400 font-medium mt-10">Belum ada pesan masuk</div>`;
-        return;
-      }
-      
-      list.innerHTML = mockDB.chats.map(c => `
-         <div onclick="viewChat('${c.id}')" class="p-4 border-b border-slate-100 hover:bg-slate-50 cursor-pointer transition-colors flex gap-3 items-center group">
-             <div class="w-10 h-10 rounded-full bg-slate-900 text-white flex items-center justify-center font-bold shrink-0 text-sm shadow-sm">${c.name.charAt(0).toUpperCase()}</div>
-             <div class="flex-1 overflow-hidden">
-                 <div class="flex justify-between items-center mb-1">
-                   <h4 class="font-bold text-slate-900 text-sm truncate group-hover:text-accent-600 transition-colors">${c.name}</h4>
-                   <span class="text-[10px] text-slate-400 shrink-0 font-medium">${c.time}</span>
-                 </div>
-                 <p class="text-xs text-slate-500 truncate">${c.lastMsg}</p>
-             </div>
-         </div>
-      `).join('');
-    }
-
-    function viewChat(id) {
-       const chat = mockDB.chats.find(c => c.id === id);
-       if(!chat) return;
-       document.getElementById('chat-active-name').innerText = chat.name;
-       document.getElementById('chat-active-number').innerText = chat.number;
-
-       const bubbles = document.getElementById('chat-bubbles');
-       bubbles.innerHTML = chat.messages.map(m => {
-           if(m.fromMe) {
-               return `
-                <div class="flex justify-end animate-slide-up" style="animation-duration: 0.2s">
-                   <div class="bg-slate-900 text-white p-3.5 rounded-2xl rounded-tr-none max-w-[85%] sm:max-w-[70%] shadow-sm relative">
-                       ${m.isAI ? '<div class="absolute -top-2 -left-2 bg-accent-500 text-white text-[9px] font-bold px-2 py-0.5 rounded-full border-2 border-[#f8fafc] shadow-sm flex items-center gap-1"><i data-lucide="sparkles" class="w-2.5 h-2.5"></i> AI Bot</div>' : '<div class="absolute -top-2 -left-2 bg-slate-500 text-white text-[9px] font-bold px-2 py-0.5 rounded-full border-2 border-[#f8fafc] shadow-sm flex items-center gap-1"><i data-lucide="bot" class="w-2.5 h-2.5"></i> Auto Reply</div>'}
-                       <p class="text-[13px] leading-relaxed text-left font-medium pt-1">${m.text}</p>
-                       <div class="flex justify-end items-center gap-1 mt-1.5 opacity-70">
-                         <span class="text-[9px] font-medium tracking-wider">${m.time}</span>
-                         <i data-lucide="check-check" class="w-3 h-3"></i>
-                       </div>
-                   </div>
-                </div>`;
-           } else {
-               return `
-                <div class="flex justify-start animate-slide-up" style="animation-duration: 0.2s">
-                   <div class="bg-white border border-slate-200 text-slate-800 p-3.5 rounded-2xl rounded-tl-none max-w-[85%] sm:max-w-[70%] shadow-sm">
-                       <p class="text-[13px] leading-relaxed font-medium">${m.text}</p>
-                       <p class="text-[9px] text-slate-400 text-right mt-1.5 font-medium tracking-wider">${m.time}</p>
-                   </div>
-                </div>`;
-           }
-       }).join('');
-       
-       lucide.createIcons();
-       bubbles.scrollTop = bubbles.scrollHeight; // Auto scroll ke bawah
     }
 
     function populateAiDeviceDropdown() { const s = document.getElementById('ai-device'); if(globalDevices.length === 0) { s.innerHTML = '<option value="">-- Device Kosong --</option>'; return; } const c = s.value; s.innerHTML = '<option value="">-- Pilih Target Device --</option>' + globalDevices.map(d => `<option value="${d.deviceId}">${d.deviceName} (${d.status||'Offline'})</option>`).join(''); if(c && globalDevices.find(d => d.deviceId === c)) s.value = c; }
     async function fetchAiConfig(id) { if(!id) { document.getElementById('ai-status').checked=false; document.getElementById('ai-api-key').value=''; document.getElementById('ai-prompt').value=''; return; } const res = await fetchGAS("getAiConfig", [currentUser.email, currentUser.token, id]); if(res.status && res.data) { document.getElementById('ai-status').checked=res.data.isActive; document.getElementById('ai-api-key').value=res.data.apiKey||''; document.getElementById('ai-prompt').value=res.data.prompt||''; } else { document.getElementById('ai-status').checked=false; document.getElementById('ai-api-key').value=''; document.getElementById('ai-prompt').value=''; } }
     async function handleAiSubmit(e) { e.preventDefault(); const id = document.getElementById('ai-device').value; if(!id) return showToast("Pilih Device!", "error"); setBtnLoading('btn-ai', true); const res = await fetchGAS("saveAiConfigDevice", [currentUser.email, currentUser.token, id, document.getElementById('ai-status').checked, document.getElementById('ai-api-key').value, document.getElementById('ai-prompt').value]); setBtnLoading('btn-ai', false); showToast(res.message, res.status?"success":"error"); }
 
-    async function loadDevicesData() { if(!currentUser) return; const res = await fetchGAS("getDevices", [currentUser.email, currentUser.token]); if(res.status) { globalDevices = res.data; document.getElementById('stat-active-devices').innerHTML = `${globalDevices.filter(d => d.status === 'CONNECTED').length}`; renderDeviceTable(); populateBroadcastDropdown(); populateAiDeviceDropdown(); } }
+    // --- DEVICES ---
+    async function loadDevicesData() { 
+      if(!currentUser) return; 
+      const res = await fetchGAS("getDevices", [currentUser.email, currentUser.token]); 
+      if(res.status) { 
+        globalDevices = res.data; 
+        document.getElementById('stat-active-devices').innerHTML = `${globalDevices.filter(d => d.status === 'CONNECTED').length}`; 
+        renderDeviceTable(); 
+        populateBroadcastDropdown(); 
+        populateAiDeviceDropdown(); 
+      } 
+    }
+    
     function renderDeviceTable() { const tbody = document.getElementById('device-table-body'); if(globalDevices.length === 0) { tbody.innerHTML = `<tr><td colspan="3" class="py-10 text-center text-slate-400 text-sm">Kosong. Tambah Device.</td></tr>`; return; } tbody.innerHTML = globalDevices.map(d => `<tr class="hover:bg-slate-50 border-b border-slate-50 last:border-0"><td class="px-6 py-4 font-bold text-sm">${d.deviceName}</td><td class="px-6 py-4 text-center"><span class="px-3 py-1.5 rounded-lg text-[10px] uppercase font-bold tracking-wider ${d.status==='CONNECTED'?'bg-green-50 border border-green-100 text-green-700':'bg-yellow-50 border border-yellow-100 text-yellow-700'}">${d.status||'PENDING'}</span></td><td class="px-6 py-4 text-right"><div class="flex justify-end gap-2"><button onclick="requestQR('${d.sessionId}', '${d.deviceName}')" class="text-xs bg-slate-100 hover:bg-slate-200 text-slate-800 px-4 py-2 rounded-lg font-bold flex items-center gap-1.5 shrink-0"><i data-lucide="qr-code" class="w-3.5 h-3.5 shrink-0"></i> Konek</button><button onclick="promptDeleteDevice('${d.deviceId}', '${d.deviceName}')" class="text-red-500 hover:text-red-700 p-2 shrink-0"><i data-lucide="trash-2" class="w-4 h-4 shrink-0"></i></button></div></td></tr>`).join(''); lucide.createIcons(); }
-    function promptAddDevice() { if(currentPlan === "Starter" && globalDevices.length >= 1) { showToast("Limit Starter! Upgrade Pro.", "error"); return; } showModal('Device Baru', `<input type="text" id="n-d-n" class="w-full px-4 py-3 mt-4 bg-slate-50 border border-slate-200 rounded-xl outline-none text-sm font-medium" placeholder="Nama Device">`, 'info', async () => { const n = document.getElementById('n-d-n').value; if(!n) return showToast("Wajib diisi!", "error"); setBtnLoading('modal-confirm-btn', true); const res = await fetchGAS("addDevice", [currentUser.email, currentUser.token, n]); closeModal(); showToast(res.message); if(res.status) { loadDevicesData(); requestQR(res.data.sessionId, res.data.deviceName); } }); }
+    
+    function promptAddDevice() { 
+      if(currentPlan === "Starter" && globalDevices.length >= 1) { showToast("Limit Starter! Upgrade Pro.", "error"); return; } 
+      showModal('Device Baru', `<input type="text" id="n-d-n" class="w-full px-4 py-3 mt-4 bg-slate-50 border border-slate-200 rounded-xl outline-none text-sm font-medium" placeholder="Nama Device">`, 'info', async () => { 
+          const n = document.getElementById('n-d-n').value; 
+          if(!n) return showToast("Wajib diisi!", "error"); 
+          setBtnLoading('modal-confirm-btn', true); 
+          const res = await fetchGAS("addDevice", [currentUser.email, currentUser.token, n]); 
+          closeModal(); 
+          showToast(res.message); 
+          if(res.status) { 
+              loadDevicesData(); 
+              requestQR(res.data.sessionId, res.data.deviceName); 
+          } 
+      }); 
+    }
+    
     function promptDeleteDevice(id, name) { showModal('Hapus', `Hapus device ${name}?`, 'danger', async () => { setBtnLoading('modal-confirm-btn', true); const res = await fetchGAS("deleteDevice", [currentUser.email, currentUser.token, id]); closeModal(); showToast(res.message, res.status?'success':'error'); if(res.status) loadDevicesData(); }); }
     
-    async function requestQR(sessionId, name) { document.getElementById('qr-section').classList.remove('hidden'); document.getElementById('qr-device-name').innerText = name; const l = document.getElementById('qr-loading'), q = document.getElementById('qr-image'); l.classList.remove('hidden'); q.classList.add('hidden'); clearInterval(qrInterval); const fQR = async () => { try { const res = await fetch(`${CONFIG.ENGINE_BASE_URL}/get-qr/${sessionId}`, { headers: { 'ngrok-skip-browser-warning': 'true' } }); const data = await res.json(); if(data.qr) { l.classList.add('hidden'); q.classList.remove('hidden'); q.innerHTML = `<img src="https://api.qrserver.com/v1/create-qr-code/?size=250x250&margin=10&data=${encodeURIComponent(data.qr)}" class="w-full h-full rounded-lg border border-slate-200" />`; } else if (data.status === 'CONNECTED') { l.classList.add('hidden'); q.classList.remove('hidden'); q.innerHTML = '<div class="text-center pt-8"><i data-lucide="check-circle" class="w-12 h-12 text-green-500 mx-auto shrink-0"></i><p class="text-xs font-bold text-green-600 mt-3 uppercase tracking-wider">Terhubung</p></div>'; lucide.createIcons(); clearInterval(qrInterval); fetchGAS("updateDeviceStatus", [currentUser.email, currentUser.token, sessionId, "CONNECTED"]).then(()=>loadDevicesData()); } } catch (e) { clearInterval(qrInterval); } }; fQR(); qrInterval = setInterval(fQR, 5000); }
+    // INTEGRASI QR KE NODE.JS ASLI
+    async function requestQR(sessionId, name) { 
+      if (!CONFIG.ENGINE_BASE_URL || !CONFIG.ENGINE_BASE_URL.startsWith("http")) {
+          showToast("URL Engine Node.js belum dikonfigurasi!", "error");
+          return;
+      }
+      
+      document.getElementById('qr-section').classList.remove('hidden'); 
+      document.getElementById('qr-device-name').innerText = name; 
+      
+      const l = document.getElementById('qr-loading'), q = document.getElementById('qr-image'); 
+      l.classList.remove('hidden'); 
+      q.classList.add('hidden'); 
+      clearInterval(qrInterval); 
+      
+      const fQR = async () => { 
+        try { 
+            const res = await fetch(`${CONFIG.ENGINE_BASE_URL}/get-qr/${sessionId}`, { headers: { 'ngrok-skip-browser-warning': 'true' } }); 
+            const data = await res.json(); 
+            if(data.qr) { 
+                l.classList.add('hidden'); 
+                q.classList.remove('hidden'); 
+                q.innerHTML = `<img src="https://api.qrserver.com/v1/create-qr-code/?size=250x250&margin=10&data=${encodeURIComponent(data.qr)}" class="w-full h-full rounded-lg border border-slate-200" />`; 
+            } else if (data.status === 'CONNECTED') { 
+                l.classList.add('hidden'); 
+                q.classList.remove('hidden'); 
+                q.innerHTML = '<div class="text-center pt-8"><i data-lucide="check-circle" class="w-12 h-12 text-green-500 mx-auto shrink-0"></i><p class="text-xs font-bold text-green-600 mt-3 uppercase tracking-wider">Terhubung</p></div>'; 
+                lucide.createIcons(); 
+                clearInterval(qrInterval); 
+                
+                // Minta backend GAS perbarui status
+                fetchGAS("updateDeviceStatus", [currentUser.email, currentUser.token, sessionId, "CONNECTED"]).then(()=>loadDevicesData()); 
+            } 
+        } catch (e) { 
+            console.error("Gagal menarik QR dari Mesin Node.js:", e);
+            clearInterval(qrInterval); 
+            l.innerHTML = '<i data-lucide="x-circle" class="w-8 h-8 mb-3 text-red-500 shrink-0"></i><span class="text-xs text-red-500 font-medium">Gagal menghubungi Server Node.js</span>';
+            lucide.createIcons();
+        } 
+      }; 
+      
+      fQR(); 
+      qrInterval = setInterval(fQR, 5000); 
+    }
 
+    // --- BROADCASTS ---
     function updateCharCount() { document.getElementById('char-count').innerText = `${document.getElementById('bc-message').value.length} Karakter`; }
     function insertVar(v) { const t = document.getElementById('bc-message'), s = t.selectionStart, e = t.selectionEnd, tx = t.value; t.value = tx.substring(0, s) + v + tx.substring(e); t.focus(); t.selectionEnd = s + v.length; updateCharCount(); }
     function populateBroadcastDropdown() { const opts = globalDevices.length ? globalDevices.map(d => `<option value="${d.deviceId}">${d.deviceName} (${d.status||'Off'})</option>`).join('') : '<option value="">-- Device Kosong --</option>'; document.getElementById('bc-device').innerHTML = opts; const qs = document.getElementById('qs-device'); if(qs) qs.innerHTML = opts; }
-    function importFromContacts() { if(!globalContacts.length) return showToast("Buku kosong", "error"); document.getElementById('bc-targets').value = globalContacts.map(c=>c.phone).join(", "); showToast("Import Sukses!"); }
-    function handleBroadcastSubmit(e) { e.preventDefault(); const d = document.getElementById('bc-device').value; if(!d) return showToast("Pilih Device!", "error"); showModal('Kirim Broadcast', 'Pesan masuk antrean sistem.', 'info', async () => { setBtnLoading('modal-confirm-btn', true); const res = await fetchGAS("createBroadcast", [currentUser.email, currentUser.token, d, document.getElementById('bc-targets').value, document.getElementById('bc-message').value, document.getElementById('bc-delay').value]); closeModal(); showToast(res.message, res.status?'success':'error'); if(res.status) { document.getElementById('bc-targets').value=""; document.getElementById('bc-message').value=""; updateCharCount(); loadBroadcastHistory(); } }); }
-    function handleQuickSend(e) { e.preventDefault(); const d = document.getElementById('qs-device').value; if(!d) return showToast("Pilih Device!", "error"); setBtnLoading('btn-qs', true, 'Mengirim...'); fetchGAS("createBroadcast", [currentUser.email, currentUser.token, d, document.getElementById('qs-target').value, document.getElementById('qs-message').value, 0]).then(res => { setBtnLoading('btn-qs', false); showToast(res.message, res.status ? 'success' : 'error'); if(res.status) { document.getElementById('qs-target').value = ''; document.getElementById('qs-message').value = ''; loadBroadcastHistory(); } }); }
-    async function loadBroadcastHistory() { if(!currentUser) return; document.getElementById('broadcast-history-body').innerHTML = `<tr><td colspan="4" class="py-6 text-center"><i data-lucide="loader-2" class="w-4 h-4 animate-spin mx-auto text-slate-400 shrink-0"></i></td></tr>`; lucide.createIcons(); const res = await fetchGAS("getBroadcastHistory", [currentUser.email, currentUser.token]); if(res.status) { globalBroadcasts = res.data; renderBroadcastHistory(); } }
-    function renderBroadcastHistory() { const b = document.getElementById('broadcast-history-body'); if(!globalBroadcasts.length) { b.innerHTML = `<tr><td colspan="4" class="py-6 text-center text-slate-400 text-sm">Kosong.</td></tr>`; return; } b.innerHTML = globalBroadcasts.map(i => { let bg='bg-slate-100 text-slate-600', st=i.status||'Pending'; if(st.toLowerCase()==='success') bg='bg-green-50 border border-green-100 text-green-700'; else if(st.toLowerCase()==='failed') bg='bg-red-50 border border-red-100 text-red-700'; return `<tr class="border-b border-slate-50 last:border-0"><td class="px-5 py-4"><span class="font-bold text-[10px] block text-slate-800 tracking-wider">${i.id}</span></td><td class="px-5 py-4 font-mono truncate max-w-[80px]">${i.target}</td><td class="px-5 py-4 truncate max-w-[200px] font-medium">${i.message}</td><td class="px-5 py-4 text-center"><span class="px-2.5 py-1 rounded-md text-[9px] uppercase font-bold tracking-wider ${bg}">${st}</span></td></tr>`; }).join(''); }
+    function importFromContacts() { if(!globalContacts.length) return showToast("Buku kosong", "error"); document.getElementById('bc-targets').value = globalContacts.map(c=>c.phone).join(",\n"); showToast("Import Sukses!"); }
+    
+    function handleBroadcastSubmit(e) { 
+      e.preventDefault(); 
+      const d = document.getElementById('bc-device').value; 
+      if(!d) return showToast("Pilih Device!", "error"); 
+      
+      showModal('Kirim Broadcast', 'Pesan akan dimasukkan ke antrean sistem.', 'info', async () => { 
+        setBtnLoading('modal-confirm-btn', true); 
+        const res = await fetchGAS("createBroadcast", [currentUser.email, currentUser.token, d, document.getElementById('bc-targets').value, document.getElementById('bc-message').value, document.getElementById('bc-delay').value]); 
+        closeModal(); 
+        showToast(res.message, res.status?'success':'error'); 
+        if(res.status) { 
+            document.getElementById('bc-targets').value=""; 
+            document.getElementById('bc-message').value=""; 
+            updateCharCount(); 
+            loadBroadcastHistory(); 
+            calculateStats();
+        } 
+      }); 
+    }
+    
+    function handleQuickSend(e) { 
+      e.preventDefault(); 
+      const d = document.getElementById('qs-device').value; 
+      if(!d) return showToast("Pilih Device!", "error"); 
+      
+      setBtnLoading('btn-qs', true, 'Mengirim...'); 
+      fetchGAS("createBroadcast", [currentUser.email, currentUser.token, d, document.getElementById('qs-target').value, document.getElementById('qs-message').value, 0]).then(res => { 
+          setBtnLoading('btn-qs', false); 
+          showToast(res.message, res.status ? 'success' : 'error'); 
+          if(res.status) { 
+              document.getElementById('qs-target').value = ''; 
+              document.getElementById('qs-message').value = ''; 
+              loadBroadcastHistory(); 
+              calculateStats();
+          } 
+      }); 
+    }
+    
+    async function loadBroadcastHistory() { 
+      if(!currentUser) return; 
+      document.getElementById('broadcast-history-body').innerHTML = `<tr><td colspan="4" class="py-6 text-center"><i data-lucide="loader-2" class="w-4 h-4 animate-spin mx-auto text-slate-400 shrink-0"></i></td></tr>`; 
+      lucide.createIcons(); 
+      
+      const res = await fetchGAS("getBroadcastHistory", [currentUser.email, currentUser.token]); 
+      if(res.status) { 
+          globalBroadcasts = res.data; 
+          renderBroadcastHistory(); 
+      } 
+    }
+    
+    function renderBroadcastHistory() { 
+      const b = document.getElementById('broadcast-history-body'); 
+      if(!globalBroadcasts.length) { b.innerHTML = `<tr><td colspan="4" class="py-6 text-center text-slate-400 text-sm">Belum ada riwayat.</td></tr>`; return; } 
+      
+      b.innerHTML = globalBroadcasts.map(i => { 
+        let bg='bg-slate-100 text-slate-600', st=i.status||'Pending'; 
+        if(st.toLowerCase()==='success') bg='bg-green-50 border border-green-100 text-green-700'; 
+        else if(st.toLowerCase()==='failed') bg='bg-red-50 border border-red-100 text-red-700'; 
+        else if(st.toLowerCase()==='processing') bg='bg-blue-50 border border-blue-100 text-blue-700';
+        
+        return `<tr class="border-b border-slate-50 last:border-0"><td class="px-5 py-4"><span class="font-bold text-[10px] block text-slate-800 tracking-wider">${i.id}</span></td><td class="px-5 py-4 font-mono truncate max-w-[80px]" title="${i.target}">${i.target}</td><td class="px-5 py-4 truncate max-w-[200px] font-medium" title="${i.message}">${i.message}</td><td class="px-5 py-4 text-center"><span class="px-2.5 py-1 rounded-md text-[9px] uppercase font-bold tracking-wider ${bg}">${st}</span></td></tr>`; 
+      }).join(''); 
+    }
 
+    // --- BILLING ---
     function updatePlanUI() { 
       document.getElementById('dash-plan').innerText = currentPlan; 
       const sp = document.getElementById('set-plan'); if(sp) sp.innerText = currentPlan;
     }
     
     async function applyPromo() { const c = document.getElementById('promo-input').value.toUpperCase(); if(!c) return; setBtnLoading('btn-promo', true); const res = await fetchGAS("validatePromoCode", [c]); setBtnLoading('btn-promo', false); if(res.status) { activePromo = c; showToast("Promo Berhasil!"); document.getElementById('price-pro').innerHTML = `Rp ${(249000-((249000*res.discount)/100)).toLocaleString('id-ID')}`; } else { showToast(res.message, "error"); } }
-    function promptUpgradePlan() { showModal('Upgrade', 'Tagihan dikirim ke email.', 'info', async () => { setBtnLoading('modal-confirm-btn', true); await new Promise(r=>setTimeout(r,1000)); const res = await fetchGAS("sendPurchaseNotification", [currentUser.email, "Business Pro", document.getElementById('price-pro').innerText, activePromo]); closeModal(); if(res.status) { currentPlan="Business"; updatePlanUI(); showToast("Invoice dikirim!"); } }); }
+    function promptUpgradePlan() { showModal('Upgrade', 'Tagihan dikirim ke email.', 'info', async () => { setBtnLoading('modal-confirm-btn', true); const res = await fetchGAS("sendPurchaseNotification", [currentUser.email, "Business Pro", document.getElementById('price-pro').innerText, activePromo]); closeModal(); if(res.status) { currentPlan="Business"; updatePlanUI(); showToast("Invoice dikirim!"); } }); }
 
+    // --- ADMIN ---
     async function fetchAdminUsers() { document.getElementById('admin-table-body').innerHTML = `<tr><td colspan="3" class="py-6 text-center"><i data-lucide="loader-2" class="w-4 h-4 animate-spin mx-auto text-slate-400 shrink-0"></i></td></tr>`; lucide.createIcons(); const u = await fetchGAS("getAllUsers", []); const b = document.getElementById('admin-table-body'); if(!u || !u.length || u.status === false) { b.innerHTML = '<tr><td colspan="3" class="text-center py-5 font-medium">Kosong</td></tr>'; return; } b.innerHTML = u.map(i => `<tr class="border-b border-slate-50"><td class="px-5 py-3.5 font-semibold">${i.email}</td><td class="px-5 py-3.5 text-center"><span class="px-2.5 py-1 rounded-md text-[10px] uppercase font-bold tracking-wider bg-slate-100">${i.status}</span></td><td class="px-5 py-3.5 text-center uppercase text-[10px] font-bold tracking-wider">${i.role}</td></tr>`).join(''); }
     function handleEmailBlast(e) { e.preventDefault(); showModal('Blast Email', 'Kirim ke semua user?', 'danger', async () => { setBtnLoading('modal-confirm-btn', true); const res = await fetchGAS("adminEmailBlast", [currentUser.email, currentUser.token, document.getElementById('blast-subject').value, document.getElementById('blast-content').value]); closeModal(); showToast(res.message, res.status?"success":"error"); if(res.status) e.target.reset(); }); }
 
+    // --- CHART ---
     let dashboardChart = null;
     function renderOverviewChart() {
       const c = document.getElementById('broadcastChart'); if(!c) return; if(dashboardChart) dashboardChart.destroy();
+      
+      // Data dummy untuk chart karena butuh agregasi khusus dari DB
+      const sentData = [0, 0, 0, 0, 0, 0, globalBroadcasts.length > 0 ? globalBroadcasts.length : 0];
+      
       dashboardChart = new Chart(c, {
-        type: 'line', data: { labels: ['Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab', 'Min'], datasets: [{ label: 'Terkirim', data: [220, 390, 450, 320, 500, 600, 410], borderColor: '#0f172a', backgroundColor: 'transparent', borderWidth: 2, tension: 0.3, pointBackgroundColor: '#fff', pointBorderColor: '#0f172a', pointRadius: 4 }] },
+        type: 'line', data: { labels: ['Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab', 'Hari Ini'], datasets: [{ label: 'Antrean Masuk', data: sentData, borderColor: '#0f172a', backgroundColor: 'transparent', borderWidth: 2, tension: 0.3, pointBackgroundColor: '#fff', pointBorderColor: '#0f172a', pointRadius: 4 }] },
         options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, grid: { color: '#f1f5f9' }, border: {display: false} }, x: { grid: { display: false }, border: {display: false} } } }
       });
     }
 
-    window.onload = async () => { const t = localStorage.getItem('wag_token'); if(t) { const res = await fetchGAS("autoLogin", [t]); if(res.status) { initDashboard(res.data); setTimeout(renderOverviewChart, 600); } else localStorage.removeItem('wag_token'); } };
+    // --- INIT ---
+    window.onload = async () => { 
+      const t = localStorage.getItem('wag_token'); 
+      if(t) { 
+          // Coba login otomatis jika ada token
+          const res = await fetchGAS("autoLogin", [t]); 
+          if(res.status) { 
+              initDashboard(res.data); 
+          } else {
+              localStorage.removeItem('wag_token');
+          }
+      } 
+    };
   </script>
 </body>
 </html>
