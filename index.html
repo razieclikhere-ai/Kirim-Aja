@@ -1194,10 +1194,15 @@
       // Initialize Data Loaders based on active panel
       if(id === 'panel-devices') loadDevicesData(); 
       if(id === 'panel-contacts') loadContactsData(); 
-      if(id === 'panel-chat') loadChatListUI();
+      if(id === 'panel-chat') {
+          populateChatDeviceDropdown();
+          loadChatListUI();
+          // Interval untuk menarik pesan masuk terbaru otomatis setiap 5 detik
+          if(!window.liveChatInterval) window.liveChatInterval = setInterval(() => { if(document.getElementById('panel-chat').classList.contains('hidden') === false) loadChatListUI(); }, 5000);
+      }
       if(id === 'panel-autoreply') loadAutoRepliesData(); 
       if(id === 'panel-broadcast') { loadDevicesData(); loadBroadcastHistory(); } 
-      if(id === 'panel-admin' && currentUser.role === 'admin') fetchAdminUsers(); 
+      if(id === 'panel-admin' && currentUser.role === 'admin') fetchAdminUsers();
       if(id === 'panel-home') {
           calculateStats();
           if(!dashboardChart) setTimeout(renderOverviewChart, 300);
@@ -1261,66 +1266,64 @@
     async function promptDeleteContact(id, name) { showModal('Hapus', `Hapus kontak ${name}?`, 'danger', async () => { setBtnLoading('modal-confirm-btn', true); const res = await fetchGAS("deleteContact", [currentUser.email, currentUser.token, id]); closeModal(); showToast(res.message, res.status ? 'success':'error'); if(res.status) loadContactsData(); }); }
 
     // ==========================================
-    // --- LIVE CHAT SYSTEM (NEW) ---
+    // --- LIVE CHAT SYSTEM (REAL-TIME) ---
     // ==========================================
-    // Karena Backend GAS belum menyimpan pesan masuk secara permanen (hanya membalas webhook),
-    // UI Live Chat ini menggunakan Data Sementara yang mensimulasikan interaksi nyata.
-    // Jika Anda mengirim pesan dari sini, pesan AKAN TERKIRIM secara nyata menggunakan Node.js.
-    
-    let dummyChats = [
-      { id: 'chat1', name: 'Pelanggan Baru', phone: '6281234567890', unread: 1, lastTime: '10:30', 
-        messages: [{text: 'Apakah produk ini masih ready?', fromMe: false, time: '10:30'}] 
-      },
-      { id: 'chat2', name: 'Bapak Budi', phone: '6289876543210', unread: 0, lastTime: '09:15', 
-        messages: [{text: 'Terima kasih, barang sudah sampai.', fromMe: false, time: '09:10'}, {text: 'Sama-sama Bapak Budi! Ditunggu orderan selanjutnya ya.', fromMe: true, time: '09:15', isAI: false}] 
-      }
-    ];
+    let liveChatsData = [];
+    let activeChatId = null;
 
-    function loadChatListUI() {
-      const listContainer = document.getElementById('chat-list-container');
-      
-      if (!dummyChats || dummyChats.length === 0) {
-        listContainer.innerHTML = `<div class="p-5 text-center text-xs text-slate-400 font-medium mt-10">Belum ada pesan masuk.</div>`;
-        return;
+    async function loadChatListUI() {
+      const deviceId = document.getElementById('chat-device-select')?.value;
+      if(!deviceId) {
+          document.getElementById('chat-list-container').innerHTML = `<div class="p-5 text-center text-xs text-slate-400 font-medium mt-10">Pilih Device terlebih dahulu.</div>`;
+          return;
       }
       
-      renderChatListHTML(dummyChats);
-      populateChatDeviceDropdown();
+      const res = await fetchGAS("getLiveChats", [currentUser.email, currentUser.token, deviceId]);
+      if(res.status) {
+          liveChatsData = res.data;
+          filterChats(); // Render ulang list
+          if(activeChatId) viewChat(activeChatId, true); // Refresh bubble chat jika sedang buka chat
+      }
     }
 
     function renderChatListHTML(chatArray) {
        const listContainer = document.getElementById('chat-list-container');
+       if (!chatArray || chatArray.length === 0) {
+         listContainer.innerHTML = `<div class="p-5 text-center text-xs text-slate-400 font-medium mt-10">Belum ada pesan.</div>`;
+         return;
+       }
        listContainer.innerHTML = chatArray.map(c => `
-         <div onclick="viewChat('${c.id}')" class="p-4 border-b border-slate-100 hover:bg-slate-50 cursor-pointer transition-colors flex gap-3 items-center group">
+         <div onclick="viewChat('${c.id}')" class="p-4 border-b border-slate-100 hover:bg-slate-50 cursor-pointer transition-colors flex gap-3 items-center group ${activeChatId === c.id ? 'bg-slate-50' : ''}">
              <div class="w-10 h-10 rounded-full bg-slate-900 text-white flex items-center justify-center font-bold shrink-0 text-sm shadow-sm relative">
-                ${c.name.charAt(0).toUpperCase()}
+                <i data-lucide="user" class="w-5 h-5"></i>
                 ${c.unread > 0 ? `<span class="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-accent-500 text-[9px] font-bold text-white shadow-sm border-2 border-white">${c.unread}</span>` : ''}
              </div>
              <div class="flex-1 overflow-hidden">
                  <div class="flex justify-between items-center mb-1">
-                   <h4 class="font-bold text-slate-900 text-sm truncate group-hover:text-accent-600 transition-colors">${c.name}</h4>
+                   <h4 class="font-bold text-slate-900 text-sm truncate group-hover:text-accent-600 transition-colors">${c.phone}</h4>
                    <span class="text-[10px] text-slate-400 shrink-0 font-medium">${c.lastTime}</span>
                  </div>
                  <p class="text-xs text-slate-500 truncate">${c.messages[c.messages.length - 1].text}</p>
              </div>
          </div>
       `).join('');
+      lucide.createIcons();
     }
 
     function filterChats() {
        const q = document.getElementById('search-chat-input').value.toLowerCase();
-       renderChatListHTML(dummyChats.filter(c => c.name.toLowerCase().includes(q) || c.phone.includes(q)));
+       renderChatListHTML(liveChatsData.filter(c => c.phone.includes(q)));
     }
 
-    function viewChat(id) {
-       const chat = dummyChats.find(c => c.id === id);
+    function viewChat(id, isRefresh = false) {
+       const chat = liveChatsData.find(c => c.id === id);
        if(!chat) return;
        
-       // Mark as read
+       activeChatId = id;
        chat.unread = 0; 
-       filterChats(); // Re-render sidebar to clear badge
+       if(!isRefresh) filterChats(); 
 
-       document.getElementById('chat-active-name').innerText = chat.name;
+       document.getElementById('chat-active-name').innerText = chat.phone;
        document.getElementById('chat-active-number').innerText = chat.phone;
        document.getElementById('chat-target-number').value = chat.phone;
        
@@ -1328,12 +1331,15 @@
        document.getElementById('chat-reply-form').classList.remove('hidden');
 
        const bubbles = document.getElementById('chat-bubbles-container');
+       
+       // Deteksi scroll otomatis ke bawah
+       const isScrolledToBottom = bubbles.scrollHeight - bubbles.clientHeight <= bubbles.scrollTop + 50;
+
        bubbles.innerHTML = chat.messages.map(m => {
            if(m.fromMe) {
                return `
                 <div class="flex justify-end animate-slide-up" style="animation-duration: 0.2s">
                    <div class="bg-slate-900 text-white p-3.5 rounded-2xl rounded-tr-none max-w-[85%] sm:max-w-[70%] shadow-sm relative">
-                       ${m.isAI ? '<div class="absolute -top-2 -left-2 bg-accent-500 text-white text-[9px] font-bold px-2 py-0.5 rounded-full border-2 border-[#f8fafc] shadow-sm flex items-center gap-1"><i data-lucide="sparkles" class="w-2.5 h-2.5"></i> AI Bot</div>' : ''}
                        <p class="text-[13px] leading-relaxed text-left font-medium pt-1">${m.text}</p>
                        <div class="flex justify-end items-center gap-1 mt-1.5 opacity-70">
                          <span class="text-[9px] font-medium tracking-wider">${m.time}</span>
@@ -1353,13 +1359,16 @@
        }).join('');
        
        lucide.createIcons();
-       bubbles.scrollTop = bubbles.scrollHeight; // Auto scroll ke bawah
+       if(!isRefresh || isScrolledToBottom) bubbles.scrollTop = bubbles.scrollHeight;
     }
 
     function populateChatDeviceDropdown() { 
        const opts = globalDevices.length ? globalDevices.map(d => `<option value="${d.deviceId}">${d.deviceName}</option>`).join('') : '<option value="">-- No Device --</option>'; 
        const ds = document.getElementById('chat-device-select');
-       if(ds) ds.innerHTML = opts; 
+       if(ds) {
+           ds.innerHTML = opts; 
+           ds.onchange = () => { activeChatId = null; loadChatListUI(); };
+       }
     }
 
     async function sendChatReply(e) {
@@ -1373,32 +1382,21 @@
 
        setBtnLoading('btn-send-reply', true, '');
        
-       // Mengirim pesan secara real-time via API Broadcast (Delay 0)
-       const res = await fetchGAS("createBroadcast", [currentUser.email, currentUser.token, deviceId, target, msg, 0]); 
+       // Mengirim via API Khusus Chat (Akan tersimpan ke Database)
+       const res = await fetchGAS("sendLiveChat", [currentUser.email, currentUser.token, deviceId, target, msg]); 
        
        setBtnLoading('btn-send-reply', false);
-       document.getElementById('btn-send-reply').innerHTML = '<i data-lucide="send" class="w-5 h-5"></i>'; // restore icon
+       document.getElementById('btn-send-reply').innerHTML = '<i data-lucide="send" class="w-5 h-5"></i>';
        lucide.createIcons();
 
        if(res.status) {
-           // Tambahkan ke UI (Visual Feedback)
-           const chat = dummyChats.find(c => c.phone === target);
-           if(chat) {
-               const now = new Date();
-               const timeStr = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
-               chat.messages.push({ text: msg, fromMe: true, isAI: false, time: timeStr });
-               chat.lastTime = timeStr;
-               document.getElementById('chat-reply-msg').value = '';
-               document.getElementById('chat-reply-msg').style.height = '';
-               viewChat(chat.id); // Re-render balasan
-               filterChats(); // Update sidebar
-           }
-           showToast("Terkirim!", "success");
+           document.getElementById('chat-reply-msg').value = '';
+           document.getElementById('chat-reply-msg').style.height = '';
+           loadChatListUI(); // Tarik data terbaru dari DB seketika
        } else {
            showToast(res.message, "error");
        }
     }
-
 
     // --- AUTO REPLY & AI ---
     async function loadAutoRepliesData() {
