@@ -414,7 +414,7 @@
 
               <div class="clean-card rounded-2xl p-6">
                 <div class="flex justify-between items-center mb-4 border-b border-slate-100 pb-3">
-                  <h3 class="text-xs font-bold text-slate-500 uppercase tracking-wider">Test Kirim Pesan</h3>
+                  <h3 class="text-xs font-bold text-slate-500 uppercase tracking-wider">Test Kirim Pesan<<input type="text" id="qs-target" list="contact-datalist" required placeholder="Pilih Kontak / No WA" class="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs outline-none font-mono">/h3>
                   <i data-lucide="message-square" class="w-4 h-4 text-slate-400 shrink-0"></i>
                 </div>
                 <form onsubmit="handleQuickSend(event)" class="space-y-3">
@@ -546,10 +546,14 @@
                  </button>
               </div>
               <!-- Search Chat -->
-              <div class="p-3 border-b border-slate-100">
+              <div class="p-3 border-b border-slate-100 flex flex-col gap-2">
                 <div class="relative">
                   <i data-lucide="search" class="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-slate-400"></i>
-                  <input type="text" id="search-chat-input" onkeyup="filterChats()" class="w-full pl-9 pr-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-xs outline-none" placeholder="Cari nama atau nomor...">
+                  <input type="text" id="search-chat-input" onkeyup="filterChats()" class="w-full pl-9 pr-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-xs outline-none focus:bg-white transition-colors" placeholder="Cari riwayat chat...">
+                </div>
+                <div class="flex gap-2">
+                   <input type="text" id="new-chat-target" list="contact-datalist" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-xs outline-none focus:bg-white" placeholder="Mulai chat ke kontak...">
+                   <button onclick="startNewLiveChat()" class="bg-slate-900 text-white px-3 py-2 rounded-lg text-xs font-bold hover:bg-slate-800"><i data-lucide="message-square-plus" class="w-3.5 h-3.5"></i></button>
                 </div>
               </div>
               <div class="flex-1 overflow-y-auto hide-scrollbar bg-white" id="chat-list-container">
@@ -586,12 +590,17 @@
               </div>
               
               <!-- Chat Input Form -->
-              <form id="chat-reply-form" onsubmit="sendChatReply(event)" class="p-4 bg-white border-t border-slate-200 flex gap-2 items-end hidden shrink-0">
+              <form id="chat-reply-form" onsubmit="sendChatReply(event)" class="p-4 bg-white border-t border-slate-200 flex flex-col gap-2 hidden shrink-0">
                  <input type="hidden" id="chat-target-number">
-                 <textarea id="chat-reply-msg" required rows="1" class="flex-1 px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm outline-none resize-none leading-relaxed" placeholder="Ketik balasan..." oninput="this.style.height = '';this.style.height = this.scrollHeight + 'px'"></textarea>
-                 <button type="submit" id="btn-send-reply" class="bg-slate-900 hover:bg-slate-800 text-white p-3 rounded-xl transition-colors shrink-0 flex items-center justify-center">
-                   <i data-lucide="send" class="w-5 h-5"></i>
-                 </button>
+                 <div class="flex gap-2 w-full">
+                     <input type="datetime-local" id="chat-schedule-time" class="px-3 py-2 w-full bg-slate-50 border border-slate-200 rounded-lg text-xs font-bold text-slate-600 outline-none" title="Kosongkan jika ingin kirim sekarang">
+                 </div>
+                 <div class="flex gap-2 items-end">
+                     <textarea id="chat-reply-msg" required rows="1" class="flex-1 px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm outline-none resize-none leading-relaxed" placeholder="Ketik pesan..." oninput="this.style.height = '';this.style.height = this.scrollHeight + 'px'"></textarea>
+                     <button type="submit" id="btn-send-reply" class="bg-slate-900 hover:bg-slate-800 text-white p-3 rounded-xl transition-colors shrink-0 flex items-center justify-center">
+                       <i data-lucide="send" class="w-5 h-5"></i>
+                     </button>
+                 </div>
               </form>
             </div>
           </div>
@@ -617,12 +626,9 @@
                     </select>
                   </div>
                   <div>
-                    <label class="block text-xs font-bold text-slate-600 mb-2">Jeda (Detik)</label>
-                    <select id="bc-delay" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm font-medium text-slate-900 outline-none">
-                      <option value="15">Standar (15s)</option>
-                      <option value="30">Aman (30s)</option>
-                      <option value="5">Cepat (5s)</option>
-                    </select>
+                    <label class="block text-xs font-bold text-slate-600 mb-2">Waktu Kirim (Opsional)</label>
+                    <input type="datetime-local" id="bc-schedule-time" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm font-medium text-slate-900 outline-none" title="Kosongkan untuk kirim sekarang">
+                    <input type="hidden" id="bc-delay" value="15">
                   </div>
                 </div>
                 
@@ -1237,7 +1243,15 @@
       if(res.status) { 
           globalContacts = res.data.map(c => ({ id: c.id, name: c.name, phone: c.phone, label: c.label || '', address: c.address || c.label?.split('-')[1] || '-', group: c.group || c.label?.split('-')[0] || '-' })); 
           renderContactTable(globalContacts); 
-          updateTargetFilters(); // Update dropdown opsi broadcast
+          updateTargetFilters(); 
+          
+          let datalist = document.getElementById('contact-datalist');
+          if(!datalist) {
+              datalist = document.createElement('datalist');
+              datalist.id = 'contact-datalist';
+              document.body.appendChild(datalist);
+          }
+          datalist.innerHTML = globalContacts.map(c => `<option value="${c.phone}">${c.name}</option>`).join('');
       } else {
           document.getElementById('contact-table-body').innerHTML = `<tr><td colspan="5" class="py-10 text-center text-red-400 text-sm">Gagal memuat data kontak.</td></tr>`;
       }
@@ -1362,7 +1376,24 @@
        if(!isRefresh || isScrolledToBottom) bubbles.scrollTop = bubbles.scrollHeight;
     }
 
-    function populateChatDeviceDropdown() { 
+    function startNewLiveChat() {
+       const targetInput = document.getElementById('new-chat-target').value;
+       if(!targetInput) return showToast("Pilih kontak terlebih dahulu!", "error");
+       
+       const phone = targetInput.replace(/[^0-9]/g, ''); 
+       activeChatId = 'C-' + phone;
+       
+       document.getElementById('chat-active-name').innerText = "Kontak Baru";
+       document.getElementById('chat-active-number').innerText = phone;
+       document.getElementById('chat-target-number').value = phone;
+       document.getElementById('chat-header-actions').classList.remove('hidden');
+       document.getElementById('chat-reply-form').classList.remove('hidden');
+       document.getElementById('chat-bubbles-container').innerHTML = `<div class="flex items-center justify-center flex-1 text-slate-400 text-sm font-medium flex-col gap-2"><i data-lucide="message-square" class="w-10 h-10 text-slate-300"></i>Ketik pesan pertama Anda di bawah.</div>`;
+       lucide.createIcons();
+       document.getElementById('new-chat-target').value = '';
+    }
+
+    function populateChatDeviceDropdown() {
        const opts = globalDevices.length ? globalDevices.map(d => `<option value="${d.deviceId}">${d.deviceName}</option>`).join('') : '<option value="">-- No Device --</option>'; 
        const ds = document.getElementById('chat-device-select');
        if(ds) {
@@ -1376,14 +1407,14 @@
        const target = document.getElementById('chat-target-number').value;
        const msg = document.getElementById('chat-reply-msg').value;
        const deviceId = document.getElementById('chat-device-select').value;
+       const scheduleTime = document.getElementById('chat-schedule-time').value;
 
        if(!target || !msg) return;
        if(!deviceId) return showToast("Tidak ada device aktif!", "error");
 
        setBtnLoading('btn-send-reply', true, '');
        
-       // Mengirim via API Khusus Chat (Akan tersimpan ke Database)
-       const res = await fetchGAS("sendLiveChat", [currentUser.email, currentUser.token, deviceId, target, msg]); 
+       const res = await fetchGAS("sendLiveChat", [currentUser.email, currentUser.token, deviceId, target, msg, scheduleTime]);
        
        setBtnLoading('btn-send-reply', false);
        document.getElementById('btn-send-reply').innerHTML = '<i data-lucide="send" class="w-5 h-5"></i>';
@@ -1557,8 +1588,9 @@
       
       const type = document.getElementById('bc-target-type').value;
       const filterVal = document.getElementById('bc-target-filter').value;
-      const template = document.getElementById('bc-message').value;
+    const template = document.getElementById('bc-message').value;
       const delay = document.getElementById('bc-delay').value;
+      const scheduleTime = document.getElementById('bc-schedule-time').value;
       
       let targetList = [];
       
@@ -1581,26 +1613,21 @@
       showModal('Kirim Broadcast', `Sistem akan memproses pengiriman ke ${targetList.length} nomor. Lanjutkan?`, 'info', async () => { 
         setBtnLoading('modal-confirm-btn', true); 
         
-        // Cek apakah ada variabel personalisasi
         const hasVars = /{name}|{address}|{phone}/i.test(template);
         
         if(hasVars && type !== 'manual') {
-            // Personalisasi: Buat 1 tugas antrean untuk setiap kontak yang terpilih
             let successCount = 0;
-            showToast(`Memproses ${targetList.length} pesan antrean personalisasi...`, 'info');
-            
+            showToast(`Memproses ${targetList.length} antrean personalisasi...`, 'info');
             for(let c of targetList) {
                 let msg = template.replace(/{name}/gi, c.name || '').replace(/{phone}/gi, c.phone || '').replace(/{address}/gi, c.address || '');
-                const res = await fetchGAS("createBroadcast", [currentUser.email, currentUser.token, d, c.phone, msg, delay]);
+                const res = await fetchGAS("createBroadcast", [currentUser.email, currentUser.token, d, c.phone, msg, delay, scheduleTime]);
                 if(res.status) successCount++;
             }
-            
             closeModal();
-            showToast(`Selesai! ${successCount} pesan telah masuk antrean.`, 'success');
+            showToast(`Selesai! ${successCount} pesan masuk antrean.`, 'success');
         } else {
-            // Bulk Kirim: Tarik semua nomor, kirim sebagai 1 tugas massal
             const phones = targetList.map(c => c.phone).join(',');
-            const res = await fetchGAS("createBroadcast", [currentUser.email, currentUser.token, d, phones, template, delay]); 
+            const res = await fetchGAS("createBroadcast", [currentUser.email, currentUser.token, d, phones, template, delay, scheduleTime]);
             closeModal(); 
             showToast(res.message, res.status?'success':'error'); 
         }
