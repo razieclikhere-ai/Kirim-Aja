@@ -3,12 +3,12 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-  <title>KirimAja | Minimalist WA Gateway</title>
+  <title>KirimAja | WA Gateway SaaS Professional</title>
   
   <!-- Fonts: Plus Jakarta Sans -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
   
   <!-- CDN Tailwind CSS & Lucide Icons & Chart.js -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -22,15 +22,16 @@
           fontFamily: { sans: ['"Plus Jakarta Sans"', 'sans-serif'] },
           colors: {
             primary: { 50: '#f8fafc', 100: '#f1f5f9', 400: '#94a3b8', 500: '#64748b', 600: '#475569', 700: '#334155', 900: '#0f172a' },
-            accent: { 50: '#eff6ff', 100: '#dbeafe', 500: '#2563eb', 600: '#1d4ed8' },
+            accent: { 50: '#eff6ff', 100: '#dbeafe', 500: '#2563eb', 600: '#1d4ed8', 700: '#1e40af' },
             success: { 50: '#f0fdf4', 100: '#dcfce7', 500: '#22c55e', 600: '#16a34a' },
-            dark: { 800: '#1e293b', 900: '#0f172a', 950: '#020617' }
           },
           animation: {
-            'slide-up': 'slideUp 0.4s ease-out forwards',
+            'slide-up': 'slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards',
+            'float': 'float 6s ease-in-out infinite',
           },
           keyframes: {
-            slideUp: { '0%': { opacity: '0', transform: 'translateY(10px)' }, '100%': { opacity: '1', transform: 'translateY(0)' } },
+            slideUp: { '0%': { opacity: '0', transform: 'translateY(20px)' }, '100%': { opacity: '1', transform: 'translateY(0)' } },
+            float: { '0%, 100%': { transform: 'translateY(0)' }, '50%': { transform: 'translateY(-10px)' } },
           }
         }
       }
@@ -44,19 +45,19 @@
     ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
     .hide-scrollbar::-webkit-scrollbar { display: none; }
 
-    .clean-card { background: #ffffff; border: 1px solid #e2e8f0; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+    .clean-card { background: #ffffff; border: 1px solid #e2e8f0; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05), 0 2px 4px -1px rgba(0,0,0,0.03); }
     
     .view-section { display: none; opacity: 0; transition: opacity 0.3s ease; }
     .view-active { display: flex; opacity: 1; }
     
-    /* Tombol Navigasi Presisi & Simetris */
+    /* Tombol Navigasi Dasbor */
     .nav-btn { @apply w-full flex items-center justify-start gap-3 px-4 py-3.5 text-sm font-semibold text-slate-500 rounded-xl transition-all duration-200 border border-transparent outline-none; }
     .nav-btn:hover { @apply bg-slate-50 text-slate-900 border-slate-200; }
     .nav-btn-active { @apply bg-slate-900 text-white shadow-md border-slate-900; }
     .nav-btn-active:hover { @apply bg-slate-800 text-white border-slate-800; }
     .nav-btn-active i { @apply text-white; }
     
-    /* Bottom Navigation App Style */
+    /* Mobile Bottom Nav */
     .pb-safe { padding-bottom: env(safe-area-inset-bottom); }
     .bottom-nav-btn { @apply flex-1 py-3 flex flex-col items-center gap-1 text-slate-400 transition-all duration-200 outline-none; }
     .bottom-nav-btn:active { @apply scale-95; }
@@ -69,17 +70,21 @@
     .toggle-checkbox:checked { right: 0; border-color: #22c55e; }
     .toggle-checkbox:checked + .toggle-label { background-color: #22c55e; }
 
+    /* Modal Styles */
     #global-modal { transition: opacity 0.2s ease, visibility 0.2s; }
     #global-modal.show { opacity: 1; visibility: visible; }
     #global-modal.hide { opacity: 0; visibility: hidden; }
     .modal-content { transition: transform 0.3s ease; transform: scale(0.95) translateY(10px); }
     #global-modal.show .modal-content { transform: scale(1) translateY(0); }
+
+    /* Custom Gradient Text */
+    .text-gradient { background: linear-gradient(135deg, #0f172a 0%, #334155 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
   </style>
 </head>
 <body class="bg-[#fafafa] text-slate-800 antialiased selection:bg-slate-200 overflow-x-hidden min-h-screen flex flex-col relative font-sans">
 
   <!-- TOAST NOTIFICATION -->
-  <div id="toast" class="fixed top-6 left-1/2 -translate-x-1/2 z-[200] transition-all duration-300 opacity-0 -translate-y-10 px-5 py-3 rounded-xl font-semibold text-sm shadow-lg flex items-center gap-3 text-white border">
+  <div id="toast" class="fixed top-6 left-1/2 -translate-x-1/2 z-[200] transition-all duration-300 opacity-0 -translate-y-10 px-5 py-3 rounded-xl font-semibold text-sm shadow-xl flex items-center gap-3 text-white border">
     <div id="toast-icon" class="flex-shrink-0"></div>
     <span id="toast-msg" class="tracking-wide"></span>
   </div>
@@ -99,7 +104,7 @@
         </div>
         <div class="flex justify-end gap-3 mt-6 pt-6 border-t border-slate-100">
           <button type="button" onclick="closeModal()" class="px-5 py-2.5 rounded-xl font-semibold text-sm text-slate-600 bg-white border border-slate-200 hover:bg-slate-50 transition-colors">Batal</button>
-          <button type="button" id="modal-confirm-btn" class="px-6 py-2.5 rounded-xl font-bold text-sm text-white transition-all flex items-center gap-2 bg-slate-900 hover:bg-slate-800">
+          <button type="button" id="modal-confirm-btn" class="px-6 py-2.5 rounded-xl font-bold text-sm text-white transition-all flex items-center gap-2 bg-slate-900 hover:bg-slate-800 shadow-md">
             Konfirmasi
           </button>
         </div>
@@ -108,60 +113,253 @@
   </div>
 
   <!-- ======================================================== -->
-  <!-- VIEW 1: MARKETING (Landing Page)                         -->
+  <!-- VIEW 1: MARKETING LANDING PAGE (SANGAT DIOPTIMALKAN)       -->
   <!-- ======================================================== -->
-  <section id="view-marketing" class="view-section view-active flex-col flex-1 relative w-full">
-    <nav class="bg-white/80 backdrop-blur-md fixed w-full top-0 left-0 right-0 z-50 border-b border-slate-200 px-6 sm:px-8 py-4 flex justify-between items-center">
-      <div class="text-xl font-bold flex items-center gap-2 text-slate-900">
-        <i data-lucide="zap" class="w-5 h-5 text-slate-900 shrink-0"></i>
+  <section id="view-marketing" class="view-section view-active flex-col flex-1 relative w-full overflow-y-auto">
+    
+    <!-- Navbar Marketing -->
+    <nav class="bg-white/80 backdrop-blur-lg fixed w-full top-0 left-0 right-0 z-50 border-b border-slate-200 px-6 sm:px-10 py-4 flex justify-between items-center transition-all duration-300 shadow-sm">
+      <div class="text-2xl font-black flex items-center gap-2 text-slate-900 tracking-tight">
+        <div class="w-8 h-8 rounded-lg bg-slate-900 flex items-center justify-center text-white shrink-0"><i data-lucide="zap" class="w-5 h-5"></i></div>
         KirimAja
       </div>
-      <div class="hidden md:flex gap-8 text-sm font-semibold text-slate-500">
-        <a href="#fitur" class="hover:text-slate-900 transition-colors">Fitur</a>
-        <a href="#harga" class="hover:text-slate-900 transition-colors">Harga</a>
-        <a href="#api" class="hover:text-slate-900 transition-colors">API Docs</a>
+      <div class="hidden md:flex gap-8 text-sm font-bold text-slate-500">
+        <a href="#hero" class="hover:text-slate-900 transition-colors">Home</a>
+        <a href="#fitur" class="hover:text-slate-900 transition-colors">Fitur Unggulan</a>
+        <a href="#harga" class="hover:text-slate-900 transition-colors">Harga Paket</a>
       </div>
       <div class="flex items-center gap-3">
-        <button onclick="switchView('auth', 'login')" class="text-sm font-semibold text-slate-600 hover:text-slate-900 transition px-4 py-2 hidden sm:block">Log In</button>
-        <button onclick="switchView('auth', 'register')" class="bg-slate-900 text-white px-5 py-2 rounded-lg font-semibold text-sm hover:bg-slate-800 transition-colors">Mulai Gratis</button>
+        <button onclick="switchView('auth', 'login')" class="text-sm font-bold text-slate-600 hover:text-slate-900 transition px-4 py-2 hidden sm:block">Log In</button>
+        <button onclick="switchView('auth', 'register')" class="bg-accent-600 text-white px-6 py-2.5 rounded-xl font-bold text-sm hover:bg-accent-700 transition-colors shadow-md shadow-accent-600/20">Coba Gratis</button>
       </div>
     </nav>
 
-    <main class="pt-32 pb-24 px-6 flex-col justify-center items-center text-center flex-1 flex animate-slide-up z-10 w-full max-w-5xl mx-auto">
-      <div class="inline-flex items-center gap-2 px-3 py-1 bg-slate-100 text-slate-600 rounded-full text-[11px] font-bold uppercase tracking-wider mb-8 border border-slate-200">
-        <span class="w-2 h-2 rounded-full bg-accent-500"></span> SaaS Gateway Ready
-      </div>
-      
-      <h1 class="text-4xl md:text-6xl lg:text-7xl font-extrabold tracking-tight text-slate-900 leading-[1.1]">
-        Kendalikan WhatsApp.<br />
-        <span class="text-slate-400">Cepat & Presisi.</span>
-      </h1>
-      
-      <p class="mt-6 text-lg text-slate-500 max-w-2xl mx-auto font-medium">
-        SaaS WhatsApp Gateway minimalis dengan integrasi Gemini AI, Spintax Anti-Banned, dan sistem Multi-Device yang andal.
-      </p>
-      
-      <div class="mt-10 flex flex-col sm:flex-row justify-center items-center gap-4 w-full">
-        <button onclick="switchView('auth', 'login')" class="w-full sm:w-auto bg-slate-900 text-white px-8 py-3.5 rounded-xl font-bold text-base hover:bg-slate-800 transition-colors flex items-center justify-center gap-2 group">
-          Buka Dashboard <i data-lucide="arrow-right" class="w-4 h-4 shrink-0 group-hover:translate-x-1 transition-transform"></i>
-        </button>
+    <!-- HERO SECTION -->
+    <div id="hero" class="pt-32 pb-20 px-6 md:pt-40 md:pb-28 max-w-7xl mx-auto w-full flex flex-col lg:flex-row items-center gap-12 lg:gap-20">
+      <div class="flex-1 text-center lg:text-left animate-slide-up z-10">
+        <div class="inline-flex items-center gap-2 px-3 py-1.5 bg-green-50 text-green-700 rounded-full text-xs font-bold uppercase tracking-wider mb-6 border border-green-200">
+          <span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span> Sistem Stabil & Terpercaya
+        </div>
+        <h1 class="text-4xl md:text-6xl lg:text-7xl font-black tracking-tight text-slate-900 leading-[1.15] mb-6">
+          Kirim Ribuan Pesan WA <span class="text-accent-600 relative inline-block">Tanpa Banned.<svg class="absolute -bottom-2 left-0 w-full" viewBox="0 0 100 20" preserveAspectRatio="none"><path d="M0,10 Q50,20 100,10" stroke="#2563eb" stroke-width="4" fill="transparent"/></svg></span>
+        </h1>
+        <p class="text-lg md:text-xl text-slate-500 max-w-2xl mx-auto lg:mx-0 font-medium mb-10 leading-relaxed">
+          Tingkatkan omset dan interaksi pelanggan dengan fitur Broadcast Masal, Spintax Cerdas, hingga integrasi CS berbasis Gemini AI. Semua dalam satu dasbor minimalis.
+        </p>
+        <div class="flex flex-col sm:flex-row justify-center lg:justify-start items-center gap-4">
+          <button onclick="switchView('auth', 'register')" class="w-full sm:w-auto bg-slate-900 text-white px-8 py-4 rounded-xl font-bold text-base hover:bg-slate-800 transition-all shadow-xl shadow-slate-900/20 flex items-center justify-center gap-2 group">
+            Mulai Gratis Sekarang <i data-lucide="arrow-right" class="w-5 h-5 shrink-0 group-hover:translate-x-1 transition-transform"></i>
+          </button>
+          <a href="#fitur" class="w-full sm:w-auto bg-white border border-slate-200 text-slate-700 px-8 py-4 rounded-xl font-bold text-base hover:bg-slate-50 transition-colors flex items-center justify-center gap-2">
+            Pelajari Fitur
+          </a>
+        </div>
+        <div class="mt-8 flex items-center justify-center lg:justify-start gap-4 text-sm font-semibold text-slate-400">
+          <div class="flex -space-x-2">
+            <img class="w-8 h-8 rounded-full border-2 border-white" src="https://i.pravatar.cc/100?img=1" alt="User">
+            <img class="w-8 h-8 rounded-full border-2 border-white" src="https://i.pravatar.cc/100?img=2" alt="User">
+            <img class="w-8 h-8 rounded-full border-2 border-white" src="https://i.pravatar.cc/100?img=3" alt="User">
+          </div>
+          <p>Dipercaya oleh 1.000+ Bisnis di Indonesia</p>
+        </div>
       </div>
 
-      <div class="mt-16 w-full max-w-4xl mx-auto">
-        <div class="rounded-2xl overflow-hidden border border-slate-200 bg-white shadow-2xl shadow-slate-200/50">
-          <div class="bg-slate-50 w-full h-12 border-b border-slate-200 flex items-center px-4 gap-2">
-            <div class="w-3 h-3 rounded-full bg-slate-300"></div>
-            <div class="w-3 h-3 rounded-full bg-slate-300"></div>
-            <div class="w-3 h-3 rounded-full bg-slate-300"></div>
-            <div class="mx-auto bg-white border border-slate-200 px-4 py-1 rounded text-xs text-slate-400 font-mono">app.kirimaja.com</div>
+      <div class="flex-1 w-full relative animate-float">
+        <!-- Mockup Visual -->
+        <div class="relative bg-white p-2 rounded-3xl shadow-2xl border border-slate-200 z-10 w-full max-w-lg mx-auto">
+          <div class="bg-slate-50 rounded-2xl border border-slate-100 overflow-hidden">
+            <div class="bg-slate-900 h-12 w-full flex items-center px-4 gap-2">
+              <div class="w-3 h-3 rounded-full bg-red-500"></div>
+              <div class="w-3 h-3 rounded-full bg-yellow-500"></div>
+              <div class="w-3 h-3 rounded-full bg-green-500"></div>
+            </div>
+            <div class="p-6">
+              <div class="flex items-center gap-4 mb-6 pb-4 border-b border-slate-200">
+                <div class="w-12 h-12 bg-accent-100 rounded-full flex items-center justify-center text-accent-600"><i data-lucide="send" class="w-6 h-6"></i></div>
+                <div>
+                  <h4 class="font-bold text-slate-900">Broadcast Campaign</h4>
+                  <p class="text-xs text-slate-500 font-medium">Promo Akhir Tahun 2026</p>
+                </div>
+                <div class="ml-auto bg-green-100 text-green-700 px-3 py-1 rounded-full text-xs font-bold">100% Sent</div>
+              </div>
+              <div class="space-y-4">
+                <div class="h-4 bg-slate-200 rounded w-3/4"></div>
+                <div class="h-4 bg-slate-200 rounded w-full"></div>
+                <div class="h-4 bg-slate-200 rounded w-5/6"></div>
+              </div>
+              <div class="mt-6 flex justify-between items-center pt-4 border-t border-slate-200">
+                <span class="text-xs font-bold text-slate-400">Target: 5.000 Kontak</span>
+                <button class="bg-slate-900 text-white px-4 py-2 rounded-lg text-xs font-bold">Sedang Mengirim...</button>
+              </div>
+            </div>
           </div>
-          <div class="aspect-[16/9] bg-white flex flex-col items-center justify-center text-slate-300">
-             <i data-lucide="layout-dashboard" class="w-16 h-16 mb-4 shrink-0"></i>
-             <p class="font-medium text-sm">Clean Workspace Interface</p>
+        </div>
+        <!-- Ornaments -->
+        <div class="absolute -top-10 -right-10 w-32 h-32 bg-accent-500/10 rounded-full blur-3xl z-0"></div>
+        <div class="absolute -bottom-10 -left-10 w-40 h-40 bg-green-500/10 rounded-full blur-3xl z-0"></div>
+      </div>
+    </div>
+
+    <!-- LOGO BANNER -->
+    <div class="w-full bg-slate-50 border-y border-slate-200 py-10">
+      <div class="max-w-7xl mx-auto px-6 text-center">
+        <p class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-6">Integrasi Seamless Dengan Ekosistem Anda</p>
+        <div class="flex flex-wrap justify-center items-center gap-8 md:gap-16 opacity-60 grayscale hover:grayscale-0 transition-all duration-500">
+          <div class="flex items-center gap-2 font-black text-xl text-slate-800"><i data-lucide="blocks" class="w-6 h-6"></i> Node.js</div>
+          <div class="flex items-center gap-2 font-black text-xl text-slate-800"><i data-lucide="database" class="w-6 h-6"></i> Google Sheets</div>
+          <div class="flex items-center gap-2 font-black text-xl text-slate-800"><i data-lucide="bot" class="w-6 h-6"></i> Gemini AI</div>
+          <div class="flex items-center gap-2 font-black text-xl text-slate-800"><i data-lucide="webhook" class="w-6 h-6"></i> REST API</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- FITUR SECTION -->
+    <div id="fitur" class="py-24 bg-white relative">
+      <div class="max-w-7xl mx-auto px-6">
+        <div class="text-center max-w-3xl mx-auto mb-16">
+          <h2 class="text-accent-600 font-bold tracking-wider uppercase text-sm mb-3">Mengapa Memilih KirimAja?</h2>
+          <h3 class="text-3xl md:text-5xl font-black text-slate-900 mb-6">Bukan Sekadar Gateway Biasa.</h3>
+          <p class="text-slate-500 text-lg font-medium">Kami membangun infrastruktur WhatsApp marketing yang fokus pada keamanan nomor, kecepatan, dan otomatisasi pintar.</p>
+        </div>
+
+        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <!-- Feature 1 -->
+          <div class="clean-card p-8 rounded-3xl hover:-translate-y-2 transition-transform duration-300">
+            <div class="w-14 h-14 bg-blue-50 text-blue-600 rounded-2xl flex items-center justify-center mb-6"><i data-lucide="shield-check" class="w-7 h-7"></i></div>
+            <h4 class="text-xl font-bold text-slate-900 mb-3">Spintax Anti-Banned</h4>
+            <p class="text-slate-500 font-medium leading-relaxed">Hindari pemblokiran dari WhatsApp dengan fitur {Spintax|Randomizer} dan jeda pengiriman dinamis untuk pesan masal Anda.</p>
+          </div>
+          <!-- Feature 2 -->
+          <div class="clean-card p-8 rounded-3xl hover:-translate-y-2 transition-transform duration-300">
+            <div class="w-14 h-14 bg-purple-50 text-purple-600 rounded-2xl flex items-center justify-center mb-6"><i data-lucide="bot" class="w-7 h-7"></i></div>
+            <h4 class="text-xl font-bold text-slate-900 mb-3">Customer Service AI</h4>
+            <p class="text-slate-500 font-medium leading-relaxed">Integrasikan dengan Google Gemini AI. Biarkan robot cerdas membalas pesan pelanggan layaknya manusia 24/7 tanpa lelah.</p>
+          </div>
+          <!-- Feature 3 -->
+          <div class="clean-card p-8 rounded-3xl hover:-translate-y-2 transition-transform duration-300">
+            <div class="w-14 h-14 bg-green-50 text-green-600 rounded-2xl flex items-center justify-center mb-6"><i data-lucide="smartphone" class="w-7 h-7"></i></div>
+            <h4 class="text-xl font-bold text-slate-900 mb-3">Multi-Device Support</h4>
+            <p class="text-slate-500 font-medium leading-relaxed">Kelola puluhan nomor WhatsApp (CS1, CS2, Admin) dalam satu dashboard tunggal secara bersamaan tanpa perlu instal software.</p>
+          </div>
+          <!-- Feature 4 -->
+          <div class="clean-card p-8 rounded-3xl hover:-translate-y-2 transition-transform duration-300">
+            <div class="w-14 h-14 bg-orange-50 text-orange-600 rounded-2xl flex items-center justify-center mb-6"><i data-lucide="users" class="w-7 h-7"></i></div>
+            <h4 class="text-xl font-bold text-slate-900 mb-3">Manajemen Kontak Pintar</h4>
+            <p class="text-slate-500 font-medium leading-relaxed">Simpan database nomor pelanggan, kelompokkan berdasarkan Label/Grup, lalu broadcast hanya ke target yang relevan dengan promo.</p>
+          </div>
+          <!-- Feature 5 -->
+          <div class="clean-card p-8 rounded-3xl hover:-translate-y-2 transition-transform duration-300">
+            <div class="w-14 h-14 bg-red-50 text-red-600 rounded-2xl flex items-center justify-center mb-6"><i data-lucide="webhook" class="w-7 h-7"></i></div>
+            <h4 class="text-xl font-bold text-slate-900 mb-3">API Terbuka (REST)</h4>
+            <p class="text-slate-500 font-medium leading-relaxed">Punya aplikasi sendiri? Integrasikan pengiriman OTP, Notifikasi Pesanan, atau Alert sistem dengan Endpoint API kami yang sangat mudah.</p>
+          </div>
+          <!-- Feature 6 -->
+          <div class="clean-card p-8 rounded-3xl hover:-translate-y-2 transition-transform duration-300">
+            <div class="w-14 h-14 bg-slate-100 text-slate-800 rounded-2xl flex items-center justify-center mb-6"><i data-lucide="message-circle" class="w-7 h-7"></i></div>
+            <h4 class="text-xl font-bold text-slate-900 mb-3">Real-time Live Chat</h4>
+            <p class="text-slate-500 font-medium leading-relaxed">Balas chat pelanggan secara manual langsung dari dasbor web. Tidak perlu lagi membuka WhatsApp Web di banyak tab browser.</p>
           </div>
         </div>
       </div>
-    </main>
+    </div>
+
+    <!-- PRICING SECTION -->
+    <div id="harga" class="py-24 bg-slate-900 relative border-t border-slate-800">
+      <div class="max-w-7xl mx-auto px-6">
+        <div class="text-center max-w-3xl mx-auto mb-16">
+          <h2 class="text-accent-400 font-bold tracking-wider uppercase text-sm mb-3">Harga Transparan</h2>
+          <h3 class="text-3xl md:text-5xl font-black text-white mb-6">Investasi Kecil, Untung Maksimal.</h3>
+          <p class="text-slate-400 text-lg font-medium">Mulai dari gratis selamanya, atau tingkatkan ke Pro saat bisnismu mulai meroket.</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <!-- Gratis -->
+          <div class="bg-slate-800 rounded-3xl p-8 border border-slate-700 flex flex-col hover:border-slate-500 transition-colors">
+            <h3 class="text-xl font-bold text-white mb-2">Gratis</h3>
+            <p class="text-sm text-slate-400 mb-6 font-medium">Bagi yang ingin mencoba</p>
+            <div class="text-4xl font-black text-white mb-8">Rp 0</div>
+            <ul class="space-y-4 mb-8 text-sm text-slate-300 font-medium flex-1">
+              <li class="flex items-start gap-3"><i data-lucide="check" class="text-green-400 w-5 h-5 shrink-0"></i> 1 Device WA</li>
+              <li class="flex items-start gap-3"><i data-lucide="check" class="text-green-400 w-5 h-5 shrink-0"></i> 100 Broadcast / Hari</li>
+              <li class="flex items-start gap-3"><i data-lucide="check" class="text-green-400 w-5 h-5 shrink-0"></i> Auto Reply Teks Dasar</li>
+              <li class="flex items-start gap-3"><i data-lucide="minus" class="text-slate-600 w-5 h-5 shrink-0"></i> Tanpa Live Chat</li>
+              <li class="flex items-start gap-3"><i data-lucide="minus" class="text-slate-600 w-5 h-5 shrink-0"></i> Tanpa AI</li>
+            </ul>
+            <button onclick="switchView('auth', 'register')" class="w-full py-3.5 rounded-xl bg-slate-700 text-white font-bold hover:bg-slate-600 transition-colors">Daftar Gratis</button>
+          </div>
+
+          <!-- Lite -->
+          <div class="bg-slate-800 rounded-3xl p-8 border border-slate-700 flex flex-col hover:border-slate-500 transition-colors">
+            <h3 class="text-xl font-bold text-white mb-2">Lite</h3>
+            <p class="text-sm text-slate-400 mb-6 font-medium">Untuk bisnis skala kecil</p>
+            <div class="flex items-end gap-1 mb-2">
+              <div class="text-4xl font-black text-white">49k</div><div class="text-sm text-slate-400 mb-1">/bln</div>
+            </div>
+            <p class="text-xs text-slate-500 mb-6 block">atau Rp 500k / tahun</p>
+            <ul class="space-y-4 mb-8 text-sm text-slate-300 font-medium flex-1">
+              <li class="flex items-start gap-3"><i data-lucide="check" class="text-accent-400 w-5 h-5 shrink-0"></i> 5 Device WA</li>
+              <li class="flex items-start gap-3"><i data-lucide="check" class="text-accent-400 w-5 h-5 shrink-0"></i> 500 Buku Kontak</li>
+              <li class="flex items-start gap-3"><i data-lucide="check" class="text-accent-400 w-5 h-5 shrink-0"></i> 2.500 Broadcast / Hari</li>
+              <li class="flex items-start gap-3"><i data-lucide="check" class="text-accent-400 w-5 h-5 shrink-0"></i> Fitur Live Chat</li>
+              <li class="flex items-start gap-3"><i data-lucide="minus" class="text-slate-600 w-5 h-5 shrink-0"></i> Tanpa AI</li>
+            </ul>
+            <button onclick="switchView('auth', 'register')" class="w-full py-3.5 rounded-xl bg-white text-slate-900 font-bold hover:bg-slate-100 transition-colors">Pilih Lite</button>
+          </div>
+
+          <!-- PRO (Highlight) -->
+          <div class="bg-gradient-to-b from-accent-600 to-accent-800 rounded-3xl p-8 border border-accent-500 shadow-2xl relative flex flex-col transform md:-translate-y-4">
+            <div class="absolute -top-4 left-1/2 -translate-x-1/2 bg-yellow-400 text-yellow-900 px-4 py-1.5 rounded-full text-[11px] font-black uppercase tracking-widest shadow-sm">Paling Populer</div>
+            <h3 class="text-xl font-bold text-white mb-2">Pro</h3>
+            <p class="text-sm text-accent-200 mb-6 font-medium">Buka seluruh potensi</p>
+            <div class="flex items-end gap-1 mb-2">
+              <div class="text-4xl font-black text-white">249k</div><div class="text-sm text-accent-200 mb-1">/bln</div>
+            </div>
+            <p class="text-xs text-accent-300 mb-6 block">atau Rp 1.500k / tahun</p>
+            <ul class="space-y-4 mb-8 text-sm text-white font-semibold flex-1">
+              <li class="flex items-start gap-3"><i data-lucide="check-circle-2" class="text-white w-5 h-5 shrink-0"></i> 20 Device WA</li>
+              <li class="flex items-start gap-3"><i data-lucide="check-circle-2" class="text-white w-5 h-5 shrink-0"></i> 2.000 Buku Kontak</li>
+              <li class="flex items-start gap-3"><i data-lucide="check-circle-2" class="text-white w-5 h-5 shrink-0"></i> 5.000 Broadcast / Hari</li>
+              <li class="flex items-start gap-3"><i data-lucide="check-circle-2" class="text-white w-5 h-5 shrink-0"></i> Full Fitur Live Chat</li>
+              <li class="flex items-start gap-3"><i data-lucide="sparkles" class="text-yellow-300 w-5 h-5 shrink-0"></i> AI Agent (Gemini)</li>
+            </ul>
+            <button onclick="switchView('auth', 'register')" class="w-full py-3.5 rounded-xl bg-yellow-400 text-yellow-900 font-black hover:bg-yellow-300 transition-colors shadow-lg shadow-yellow-500/20">Ambil Pro</button>
+          </div>
+
+          <!-- VIP -->
+          <div class="bg-slate-800 rounded-3xl p-8 border border-slate-700 flex flex-col hover:border-slate-500 transition-colors">
+            <h3 class="text-xl font-bold text-white mb-2">VIP / Enterprise</h3>
+            <p class="text-sm text-slate-400 mb-6 font-medium">Solusi korporasi tanpa batas</p>
+            <div class="flex items-end gap-1 mb-2">
+              <div class="text-4xl font-black text-white">499k</div><div class="text-sm text-slate-400 mb-1">/bln</div>
+            </div>
+            <p class="text-xs text-slate-500 mb-6 block">atau Rp 3.450k / tahun</p>
+            <ul class="space-y-4 mb-8 text-sm text-slate-300 font-medium flex-1">
+              <li class="flex items-start gap-3"><i data-lucide="infinity" class="text-accent-400 w-5 h-5 shrink-0"></i> Unlimited Device</li>
+              <li class="flex items-start gap-3"><i data-lucide="infinity" class="text-accent-400 w-5 h-5 shrink-0"></i> Unlimited Kontak</li>
+              <li class="flex items-start gap-3"><i data-lucide="infinity" class="text-accent-400 w-5 h-5 shrink-0"></i> Unlimited Broadcast</li>
+              <li class="flex items-start gap-3"><i data-lucide="check" class="text-accent-400 w-5 h-5 shrink-0"></i> Semua Fitur Terbuka</li>
+              <li class="flex items-start gap-3"><i data-lucide="check" class="text-accent-400 w-5 h-5 shrink-0"></i> Prioritas Dukungan</li>
+            </ul>
+            <button onclick="switchView('auth', 'register')" class="w-full py-3.5 rounded-xl bg-white text-slate-900 font-bold hover:bg-slate-100 transition-colors">Pilih VIP</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CTA & FOOTER -->
+    <footer class="bg-white border-t border-slate-200">
+      <div class="py-20 px-6 text-center max-w-4xl mx-auto">
+        <h2 class="text-3xl font-black text-slate-900 mb-6">Siap Mengotomatiskan CS Anda?</h2>
+        <p class="text-slate-500 font-medium mb-8">Bergabung dengan ribuan pebisnis yang telah menghemat waktu dan meningkatkan closing rate mereka menggunakan KirimAja.</p>
+        <button onclick="switchView('auth', 'register')" class="bg-slate-900 text-white px-10 py-4 rounded-xl font-bold text-lg hover:bg-slate-800 transition-all shadow-xl shadow-slate-900/20">Buat Akun Gratis</button>
+      </div>
+      <div class="border-t border-slate-100 py-8 text-center px-6">
+        <div class="text-xl font-black flex justify-center items-center gap-2 text-slate-900 mb-4 opacity-50">
+          <i data-lucide="zap" class="w-5 h-5"></i> KirimAja
+        </div>
+        <p class="text-sm text-slate-400 font-medium">© 2026 KirimAja SaaS. All rights reserved.</p>
+      </div>
+    </footer>
   </section>
 
   <!-- ======================================================== -->
@@ -170,26 +368,25 @@
   <section id="view-auth" class="view-section items-center justify-center min-h-screen p-4 bg-slate-50 relative w-full">
     <button onclick="switchView('marketing')" class="absolute top-6 left-6 text-slate-400 hover:text-slate-900 transition p-2 bg-white rounded-lg border border-slate-200 shadow-sm"><i data-lucide="arrow-left" class="w-5 h-5 shrink-0"></i></button>
     
-    <div class="w-full max-w-[400px] bg-white border border-slate-200 rounded-2xl p-8 sm:p-10 shadow-sm animate-slide-up">
+    <div class="w-full max-w-[400px] bg-white border border-slate-200 rounded-2xl p-8 sm:p-10 shadow-xl shadow-slate-200/50 animate-slide-up">
       <div class="text-center mb-8">
-        <div class="w-12 h-12 bg-slate-900 text-white rounded-xl flex items-center justify-center mx-auto mb-4 shrink-0"><i data-lucide="zap" class="w-6 h-6"></i></div>
-        <h2 id="auth-title" class="text-2xl font-bold text-slate-900 tracking-tight">Masuk</h2>
-        <p id="auth-sub" class="text-sm text-slate-500 mt-1">Akses portal manajemen Anda.</p>
-        <p class="text-[10px] text-slate-400 mt-2">Demo Admin: admin@kirimaja.com / admin123</p>
+        <div class="w-12 h-12 bg-slate-900 text-white rounded-xl flex items-center justify-center mx-auto mb-4 shrink-0 shadow-md shadow-slate-900/20"><i data-lucide="zap" class="w-6 h-6"></i></div>
+        <h2 id="auth-title" class="text-2xl font-black text-slate-900 tracking-tight">Masuk</h2>
+        <p id="auth-sub" class="text-sm text-slate-500 mt-1 font-medium">Akses portal manajemen Anda.</p>
       </div>
 
       <form onsubmit="handleAuthSubmit(event)" class="space-y-4">
         <input type="hidden" id="auth-mode" value="login">
         
         <div id="group-email">
-          <label class="block text-xs font-semibold text-slate-600 mb-1.5">Email Bisnis</label>
+          <label class="block text-xs font-bold text-slate-600 mb-1.5 uppercase tracking-wider">Email Bisnis</label>
           <input type="email" id="email" required class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm font-medium text-slate-900 placeholder:text-slate-400" placeholder="nama@perusahaan.com">
         </div>
         
         <div id="group-pass">
           <div class="flex justify-between items-center mb-1.5">
-            <label class="block text-xs font-semibold text-slate-600">Password</label>
-            <button type="button" onclick="changeAuthState('forgot')" class="text-xs font-semibold text-accent-500 hover:text-accent-600">Lupa Sandi?</button>
+            <label class="block text-xs font-bold text-slate-600 uppercase tracking-wider">Password</label>
+            <button type="button" onclick="changeAuthState('forgot')" class="text-xs font-bold text-accent-600 hover:text-accent-700">Lupa Sandi?</button>
           </div>
           <div class="relative w-full">
             <input type="password" id="password" class="w-full pl-4 pr-11 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm font-medium text-slate-900 placeholder:text-slate-400" placeholder="••••••••">
@@ -201,28 +398,28 @@
         </div>
 
         <div id="group-referral" class="hidden">
-          <label class="block text-xs font-semibold text-slate-600 mb-1.5">Kode Referral (Opsional)</label>
+          <label class="block text-xs font-bold text-slate-600 mb-1.5 uppercase tracking-wider">Kode Referral (Opsional)</label>
           <input type="text" id="referral" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm font-medium text-slate-900 uppercase placeholder:normal-case placeholder:text-slate-400" placeholder="Punya kode dari teman?">
         </div>
 
         <div id="group-otp" class="hidden">
-          <label class="block text-xs font-semibold text-slate-600 mb-1.5 text-center">Masukkan 6-Digit OTP</label>
-          <input type="number" id="otp" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-center text-2xl font-bold tracking-[0.3em] text-slate-900 outline-none">
+          <label class="block text-xs font-bold text-slate-600 mb-1.5 text-center uppercase tracking-wider">Masukkan 6-Digit OTP</label>
+          <input type="number" id="otp" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-center text-2xl font-black tracking-[0.3em] text-slate-900 outline-none">
         </div>
 
         <div id="group-remember" class="flex items-center gap-2 py-1">
           <input type="checkbox" id="remember" class="w-4 h-4 rounded border-slate-300 text-slate-900 focus:ring-slate-900 cursor-pointer shrink-0">
-          <label for="remember" class="text-sm text-slate-600 cursor-pointer select-none">Ingat saya</label>
+          <label for="remember" class="text-sm font-semibold text-slate-600 cursor-pointer select-none">Ingat saya</label>
         </div>
 
-        <button type="submit" id="btn-auth" class="w-full py-3 mt-2 bg-slate-900 hover:bg-slate-800 text-white font-semibold rounded-xl transition-colors flex items-center justify-center gap-2 text-sm">
+        <button type="submit" id="btn-auth" class="w-full py-3.5 mt-2 bg-slate-900 hover:bg-slate-800 text-white font-bold rounded-xl transition-colors flex items-center justify-center gap-2 text-sm shadow-lg shadow-slate-900/20">
           Akses Portal <i data-lucide="arrow-right" class="w-4 h-4 shrink-0"></i>
         </button>
       </form>
 
       <div class="mt-8 text-center text-sm pt-6 border-t border-slate-100">
-        <span id="auth-footer-text" class="text-slate-500">Belum memiliki akun?</span> 
-        <button onclick="toggleAuthMode()" id="auth-footer-btn" class="font-semibold text-slate-900 hover:underline ml-1">Daftar</button>
+        <span id="auth-footer-text" class="text-slate-500 font-medium">Belum memiliki akun?</span> 
+        <button onclick="toggleAuthMode()" id="auth-footer-btn" class="font-black text-slate-900 hover:text-accent-600 ml-1 transition-colors">Daftar Gratis</button>
       </div>
     </div>
   </section>
@@ -234,7 +431,7 @@
     
     <!-- Mobile Header -->
     <div class="md:hidden flex justify-between items-center bg-white/90 backdrop-blur-md p-4 sticky top-0 z-40 border-b border-slate-200 shadow-sm">
-      <div class="text-lg font-bold text-slate-900 flex items-center gap-2">
+      <div class="text-lg font-black text-slate-900 flex items-center gap-2">
         <i data-lucide="zap" class="w-5 h-5 text-slate-900 shrink-0"></i> KirimAja
       </div>
       <div class="w-8 h-8 rounded-full bg-slate-900 text-white flex items-center justify-center font-bold text-xs cursor-pointer shadow-md" id="mobile-avatar" onclick="showPanel('panel-settings')">U</div>
@@ -251,7 +448,7 @@
       <button id="bot-nav-contacts" onclick="showPanel('panel-contacts')" class="bottom-nav-btn">
         <i data-lucide="users" class="w-5 h-5"></i><span class="text-[10px] font-bold mt-1">Kontak</span>
       </button>
-      <button id="bot-nav-chat" onclick="showPanel('panel-chat')" class="bottom-nav-btn">
+      <button id="bot-nav-chat" onclick="showPanel('panel-chat')" class="bottom-nav-btn" style="display:none;">
         <i data-lucide="message-circle" class="w-5 h-5"></i><span class="text-[10px] font-bold mt-1">Chat</span>
       </button>
       <button onclick="toggleMobileSidebar()" class="bottom-nav-btn">
@@ -266,8 +463,8 @@
     <aside id="sidebar" class="fixed inset-y-0 left-0 transform -translate-x-full md:relative md:translate-x-0 w-[270px] bg-white border-r border-slate-200 flex flex-col h-screen z-[70] transition-transform duration-300 ease-in-out shrink-0">
       <!-- Brand Logo -->
       <div class="h-16 hidden md:flex items-center px-7 border-b border-slate-100 shrink-0">
-        <div class="text-xl font-bold flex items-center gap-2.5 text-slate-900">
-          <i data-lucide="zap" class="w-5 h-5 text-slate-900 shrink-0"></i> KirimAja
+        <div class="text-xl font-black flex items-center gap-2.5 text-slate-900">
+          <div class="w-6 h-6 rounded bg-slate-900 flex items-center justify-center text-white"><i data-lucide="zap" class="w-4 h-4 shrink-0"></i></div> KirimAja
         </div>
       </div>
       
@@ -279,21 +476,21 @@
 
       <div class="p-5 flex-1 overflow-y-auto hide-scrollbar flex flex-col gap-8 pb-24 md:pb-5">
         <!-- User Profile Card -->
-        <div class="flex items-center justify-start gap-3.5 p-3.5 bg-slate-50/80 rounded-2xl border border-slate-100 hover:border-slate-300 transition-colors cursor-pointer group" onclick="showPanel('panel-settings')">
+        <div class="flex items-center justify-start gap-3.5 p-3.5 bg-slate-50 rounded-2xl border border-slate-100 hover:border-slate-300 transition-colors cursor-pointer group" onclick="showPanel('panel-settings')">
            <div class="w-10 h-10 rounded-full bg-slate-900 text-white flex items-center justify-center font-bold text-sm shrink-0 shadow-sm" id="dash-avatar">U</div>
            <div class="overflow-hidden flex-1 flex flex-col justify-center text-left">
               <p id="dash-email" class="text-xs font-bold text-slate-900 truncate w-full group-hover:text-accent-600 transition-colors mt-0.5">user@mail.com</p>
               <div class="flex items-center gap-2 mt-1">
                 <span id="dash-role" class="text-[10px] font-semibold text-slate-500 capitalize">User</span>
                 <div class="w-1 h-1 rounded-full bg-slate-300 shrink-0"></div>
-                <span id="dash-plan" class="text-[10px] font-bold text-accent-600 uppercase tracking-wider">Starter</span>
+                <span id="dash-plan" class="text-[10px] font-bold text-accent-600 uppercase tracking-wider">Gratis</span>
               </div>
            </div>
         </div>
 
         <!-- Main Menus -->
         <div class="w-full flex flex-col">
-          <p class="text-[10px] font-extrabold text-slate-400 uppercase tracking-[0.15em] mb-4 px-4 text-left">Menu Utama</p>
+          <p class="text-[10px] font-black text-slate-400 uppercase tracking-[0.15em] mb-4 px-4 text-left">Menu Utama</p>
           <nav class="space-y-1.5 px-2 flex flex-col w-full" id="nav-menu">
             <button id="btn-nav-home" onclick="showPanel('panel-home')" class="nav-btn nav-btn-active text-left">
                <div class="w-6 h-6 flex items-center justify-center shrink-0"><i data-lucide="layout-dashboard" class="w-[18px] h-[18px]"></i></div> 
@@ -308,8 +505,8 @@
                <span class="truncate mt-0.5">Buku Kontak</span>
             </button>
 
-            <!-- LIVE CHAT MENU MOVED HERE -->
-            <button id="btn-nav-chat" onclick="showPanel('panel-chat')" class="nav-btn text-left">
+            <!-- LIVE CHAT MENU (Hidden for Gratis) -->
+            <button id="btn-nav-chat" onclick="showPanel('panel-chat')" class="nav-btn text-left" style="display:none;">
                <div class="w-6 h-6 flex items-center justify-center shrink-0"><i data-lucide="message-circle" class="w-[18px] h-[18px]"></i></div> 
                <span class="truncate mt-0.5">Live Chat</span>
             </button>
@@ -329,7 +526,7 @@
             
             <button id="btn-nav-billing" onclick="showPanel('panel-billing')" class="nav-btn text-left">
                <div class="w-6 h-6 flex items-center justify-center shrink-0"><i data-lucide="credit-card" class="w-[18px] h-[18px]"></i></div> 
-               <span class="truncate mt-0.5">Langganan</span>
+               <span class="truncate mt-0.5">Langganan <span class="bg-red-500 text-white px-1.5 py-0.5 rounded text-[8px] ml-1 uppercase">Upgrade</span></span>
             </button>
             <button id="btn-nav-settings" onclick="showPanel('panel-settings')" class="nav-btn text-left">
                <div class="w-6 h-6 flex items-center justify-center shrink-0"><i data-lucide="settings" class="w-[18px] h-[18px]"></i></div> 
@@ -340,7 +537,7 @@
 
         <!-- Admin Only Menu -->
         <div id="nav-admin" class="hidden mt-2 border-t border-slate-200 pt-6">
-           <p class="text-[10px] font-extrabold text-slate-400 uppercase tracking-[0.15em] mb-4 px-4 text-left">Admin Panel</p>
+           <p class="text-[10px] font-black text-slate-400 uppercase tracking-[0.15em] mb-4 px-4 text-left">Admin Panel</p>
            <nav class="px-2 w-full">
              <button id="btn-nav-admin" onclick="showPanel('panel-admin')" class="nav-btn text-left hover:text-slate-900">
                 <div class="w-6 h-6 flex items-center justify-center shrink-0"><i data-lucide="server-cog" class="w-[18px] h-[18px]"></i></div> 
@@ -368,54 +565,54 @@
         <div id="panel-home" class="space-y-6 animate-slide-up">
           <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
             <div>
-              <h2 class="text-2xl font-bold text-slate-900">Overview</h2>
-              <p class="text-sm text-slate-500">Pantau aktivitas WhatsApp Gateway Anda.</p>
+              <h2 class="text-2xl font-black text-slate-900 tracking-tight">Overview</h2>
+              <p class="text-sm text-slate-500 font-medium mt-1">Pantau performa kampanye WhatsApp Anda hari ini.</p>
             </div>
-            <button onclick="showPanel('panel-broadcast')" class="bg-slate-900 text-white px-5 py-3 rounded-xl font-semibold transition-colors hover:bg-slate-800 flex items-center gap-2 text-sm">
-              <i data-lucide="plus" class="w-4 h-4 shrink-0"></i> Kampanye Baru
+            <button onclick="showPanel('panel-broadcast')" class="bg-slate-900 text-white px-5 py-3 rounded-xl font-bold transition-colors hover:bg-slate-800 flex items-center gap-2 text-sm shadow-md">
+              <i data-lucide="plus" class="w-4 h-4 shrink-0"></i> Buat Kampanye
             </button>
           </div>
           
           <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
             <div class="clean-card rounded-2xl p-6">
-              <p class="text-slate-500 text-xs font-bold uppercase tracking-wider mb-2">Total Pesan Keluar</p>
-              <h3 class="text-3xl font-extrabold text-slate-900" id="stat-total-bc">0</h3>
+              <p class="text-slate-500 text-xs font-bold uppercase tracking-wider mb-2">Pesan Keluar (Total)</p>
+              <h3 class="text-3xl font-black text-slate-900" id="stat-total-bc">0</h3>
             </div>
-            <div class="clean-card rounded-2xl p-6">
-              <p class="text-slate-500 text-xs font-bold uppercase tracking-wider mb-2">Sukses Terkirim</p>
-              <h3 class="text-3xl font-extrabold text-slate-900" id="stat-success-bc">0</h3>
+            <div class="clean-card rounded-2xl p-6 border-green-100 bg-green-50/30">
+              <p class="text-green-600 text-xs font-bold uppercase tracking-wider mb-2">Sukses Terkirim</p>
+              <h3 class="text-3xl font-black text-green-700" id="stat-success-bc">0</h3>
             </div>
-            <div class="clean-card rounded-2xl p-6">
-              <p class="text-slate-500 text-xs font-bold uppercase tracking-wider mb-2">Gagal / Ditolak</p>
-              <h3 class="text-3xl font-extrabold text-slate-900" id="stat-failed-bc">0</h3>
+            <div class="clean-card rounded-2xl p-6 border-red-100 bg-red-50/30">
+              <p class="text-red-600 text-xs font-bold uppercase tracking-wider mb-2">Gagal / Ditolak</p>
+              <h3 class="text-3xl font-black text-red-700" id="stat-failed-bc">0</h3>
             </div>
             <div class="clean-card rounded-2xl p-6">
               <p class="text-slate-500 text-xs font-bold uppercase tracking-wider mb-2">Device Aktif</p>
-              <h3 class="text-3xl font-extrabold text-slate-900" id="stat-active-devices">0</h3>
+              <h3 class="text-3xl font-black text-slate-900" id="stat-active-devices">0</h3>
             </div>
           </div>
 
           <div class="grid lg:grid-cols-3 gap-6 mt-6">
-            <div class="clean-card rounded-2xl p-6 lg:col-span-2 flex flex-col">
-              <h3 class="text-sm font-bold text-slate-900 mb-4">Grafik Pengiriman (7 Hari)</h3>
+            <div class="clean-card rounded-3xl p-6 lg:col-span-2 flex flex-col shadow-sm">
+              <h3 class="text-sm font-bold text-slate-900 mb-4">Aktivitas Pengiriman (7 Hari Terakhir)</h3>
               <div class="relative w-full flex-1 min-h-[250px]">
                 <canvas id="broadcastChart"></canvas>
               </div>
             </div>
 
             <div class="space-y-5">
-              <div class="clean-card rounded-2xl p-6">
-                <h3 class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-3">Status Engine</h3>
+              <div class="clean-card rounded-3xl p-6 border-l-4 border-l-green-500">
+                <h3 class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-3">Status Mesin Inti</h3>
                 <div class="flex items-center gap-3">
                   <div class="w-3 h-3 rounded-full bg-green-500 animate-pulse shrink-0"></div>
-                  <span class="text-sm font-bold text-slate-900">Online & Terhubung</span>
+                  <span class="text-sm font-black text-slate-900">Online & Terhubung</span>
                 </div>
               </div>
 
-              <div class="clean-card rounded-2xl p-6">
+              <div class="clean-card rounded-3xl p-6 shadow-sm">
                 <div class="flex justify-between items-center mb-4 border-b border-slate-100 pb-3">
-                  <h3 class="text-xs font-bold text-slate-500 uppercase tracking-wider">Test Kirim Pesan</h3>
-                  <i data-lucide="message-square" class="w-4 h-4 text-slate-400 shrink-0"></i>
+                  <h3 class="text-xs font-bold text-slate-500 uppercase tracking-wider">Test Kirim Cepat</h3>
+                  <i data-lucide="zap" class="w-4 h-4 text-accent-500 shrink-0"></i>
                 </div>
                 <form onsubmit="handleQuickSend(event)" class="space-y-3.5 mt-2">
                   <div class="relative">
@@ -428,7 +625,7 @@
                   
                   <div class="relative">
                      <i data-lucide="user" class="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400"></i>
-                     <input type="text" id="qs-target" list="contact-datalist" required placeholder="Pilih Kontak / No WA" class="w-full pl-10 pr-4 py-2.5 bg-slate-50 focus:bg-white border border-slate-200 rounded-xl text-xs font-semibold text-slate-900 outline-none transition-colors placeholder:text-slate-400 shadow-sm">
+                     <input type="text" id="qs-target" list="contact-datalist" required placeholder="No WA (Cth: 628...)" class="w-full pl-10 pr-4 py-2.5 bg-slate-50 focus:bg-white border border-slate-200 rounded-xl text-xs font-semibold text-slate-900 outline-none transition-colors placeholder:text-slate-400 shadow-sm">
                   </div>
                   
                   <div class="relative">
@@ -436,7 +633,7 @@
                   </div>
                   
                   <button type="submit" id="btn-qs" class="w-full py-3 bg-slate-900 hover:bg-slate-800 text-white font-bold rounded-xl transition-all shadow-md shadow-slate-900/20 text-xs flex items-center justify-center gap-2 mt-2">
-                    <i data-lucide="send-horizontal" class="w-4 h-4 shrink-0"></i> Kirim Sekarang
+                    <i data-lucide="send-horizontal" class="w-4 h-4 shrink-0"></i> Kirim Instan
                   </button>
                 </form>
               </div>
@@ -450,25 +647,25 @@
         <div id="panel-devices" class="hidden space-y-6 animate-slide-up">
           <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
             <div>
-              <h2 class="text-2xl font-bold text-slate-900">Devices</h2>
-              <p class="text-sm text-slate-500">Kelola koneksi WhatsApp Anda.</p>
+              <h2 class="text-2xl font-black text-slate-900 tracking-tight">Devices</h2>
+              <p class="text-sm text-slate-500 font-medium">Kelola koneksi perangkat WhatsApp Anda.</p>
             </div>
-            <button onclick="promptAddDevice()" class="bg-slate-900 text-white px-5 py-3 rounded-xl font-semibold transition-colors hover:bg-slate-800 flex items-center gap-2 text-sm">
-              <i data-lucide="plus" class="w-4 h-4 shrink-0"></i> Tambah Device
+            <button onclick="promptAddDevice()" class="bg-slate-900 text-white px-5 py-3 rounded-xl font-bold transition-colors hover:bg-slate-800 flex items-center gap-2 text-sm shadow-md">
+              <i data-lucide="smartphone" class="w-4 h-4 shrink-0"></i> Tambah Device
             </button>
           </div>
 
-          <div class="clean-card rounded-2xl overflow-hidden">
+          <div class="clean-card rounded-2xl overflow-hidden shadow-sm">
             <div class="overflow-x-auto hide-scrollbar">
               <table class="w-full text-left whitespace-nowrap min-w-[600px]">
                 <thead class="bg-slate-50 border-b border-slate-200">
                   <tr>
                     <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Nama Device</th>
-                    <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider text-center">Status</th>
+                    <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider text-center">Status Jaringan</th>
                     <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider text-right">Aksi</th>
                   </tr>
                 </thead>
-                <tbody id="device-table-body" class="divide-y divide-slate-100 text-sm font-medium text-slate-700">
+                <tbody id="device-table-body" class="divide-y divide-slate-100 text-sm font-medium text-slate-700 bg-white">
                   <tr><td colspan="3" class="px-6 py-10 text-center"><i data-lucide="loader-2" class="w-6 h-6 animate-spin mx-auto text-slate-400 shrink-0"></i></td></tr>
                 </tbody>
               </table>
@@ -476,19 +673,20 @@
           </div>
 
           <!-- QR Scanner -->
-          <div id="qr-section" class="hidden clean-card p-8 rounded-2xl flex flex-col items-center text-center max-w-sm mx-auto mt-8">
-            <h3 class="text-lg font-bold text-slate-900 mb-1">Scan QR</h3>
-            <p class="text-slate-500 text-xs mb-6">Hubungkan perangkat <span id="qr-device-name" class="font-bold text-slate-900">Device</span></p>
+          <div id="qr-section" class="hidden clean-card p-8 rounded-3xl flex flex-col items-center text-center max-w-sm mx-auto mt-8 shadow-xl border-slate-300">
+            <div class="w-12 h-12 bg-slate-100 rounded-full flex items-center justify-center mb-3"><i data-lucide="qr-code" class="w-6 h-6 text-slate-800"></i></div>
+            <h3 class="text-lg font-black text-slate-900 mb-1">Pindai QR Code</h3>
+            <p class="text-slate-500 text-xs mb-6 font-medium">Buka WA di HP > Perangkat Tautkan > Scan untuk <span id="qr-device-name" class="font-bold text-slate-900">Device</span></p>
             
-            <div class="w-64 h-64 bg-slate-50 border border-slate-200 rounded-xl flex items-center justify-center p-4">
+            <div class="w-64 h-64 bg-slate-50 border border-slate-200 rounded-2xl flex items-center justify-center p-4">
               <div id="qr-loading" class="flex flex-col items-center text-slate-400">
                 <i data-lucide="loader-2" class="w-8 h-8 animate-spin mb-3 text-slate-400 shrink-0"></i>
-                <span class="text-xs font-medium uppercase tracking-widest">Generating QR...</span>
+                <span class="text-xs font-bold uppercase tracking-widest">Generating QR...</span>
               </div>
               <div id="qr-image" class="hidden w-full h-full"></div>
             </div>
             
-            <button onclick="document.getElementById('qr-section').classList.add('hidden'); clearInterval(qrInterval);" class="mt-6 px-5 py-2.5 rounded-lg text-sm font-bold text-slate-600 bg-slate-100 hover:bg-slate-200 transition-colors w-full">Tutup Scanner</button>
+            <button onclick="document.getElementById('qr-section').classList.add('hidden'); clearInterval(qrInterval);" class="mt-6 px-5 py-3 rounded-xl text-sm font-bold text-slate-600 bg-slate-100 hover:bg-slate-200 transition-colors w-full">Batal / Tutup</button>
           </div>
         </div>
 
@@ -498,27 +696,27 @@
         <div id="panel-contacts" class="hidden space-y-6 animate-slide-up">
           <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
             <div>
-              <h2 class="text-2xl font-bold text-slate-900">Buku Kontak</h2>
-              <p class="text-sm text-slate-500">Database nomor tujuan Anda.</p>
+              <h2 class="text-2xl font-black text-slate-900 tracking-tight">Buku Kontak</h2>
+              <p class="text-sm text-slate-500 font-medium">Database terpusat untuk pelanggan Anda.</p>
             </div>
             <div class="flex gap-3">
-               <button onclick="loadContactsData()" class="bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 px-5 py-3 rounded-xl font-semibold transition-colors flex items-center gap-2 text-sm shadow-sm">
+               <button onclick="loadContactsData()" class="bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 px-5 py-3 rounded-xl font-bold transition-colors flex items-center gap-2 text-sm shadow-sm">
                  <i data-lucide="refresh-cw" class="w-4 h-4 shrink-0"></i> Sync
                </button>
-               <button onclick="promptAddContact()" class="bg-slate-900 text-white px-5 py-3 rounded-xl font-semibold transition-colors hover:bg-slate-800 flex items-center gap-2 text-sm">
-                 <i data-lucide="plus" class="w-4 h-4 shrink-0"></i> Tambah
+               <button onclick="promptAddContact()" class="bg-slate-900 text-white px-5 py-3 rounded-xl font-bold transition-colors hover:bg-slate-800 flex items-center gap-2 text-sm shadow-md">
+                 <i data-lucide="user-plus" class="w-4 h-4 shrink-0"></i> Tambah Kontak
                </button>
             </div>
           </div>
 
-          <div class="clean-card rounded-2xl flex flex-col h-[600px] overflow-hidden">
+          <div class="clean-card rounded-2xl flex flex-col h-[600px] overflow-hidden shadow-sm">
             <div class="p-5 border-b border-slate-200 flex flex-col md:flex-row justify-between items-center gap-4 bg-white">
               <div class="relative w-full md:w-[350px]">
                 <i data-lucide="search" class="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 shrink-0"></i>
-                <input type="text" id="search-contact" onkeyup="filterContacts()" placeholder="Cari kontak..." class="w-full pl-11 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-medium focus:bg-white outline-none">
+                <input type="text" id="search-contact" onkeyup="filterContacts()" placeholder="Cari nama, WA, alamat..." class="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm font-semibold focus:bg-white outline-none">
               </div>
-              <div class="text-xs font-bold text-slate-500 bg-slate-50 px-4 py-2.5 rounded-xl border border-slate-200">
-                Total: <span id="contact-count" class="text-slate-900">0</span>
+              <div class="text-xs font-bold text-slate-500 bg-slate-50 px-4 py-3 rounded-xl border border-slate-200">
+                Total Tersimpan: <span id="contact-count" class="text-slate-900 font-black ml-1 text-sm">0</span>
               </div>
             </div>
             <div class="overflow-x-auto flex-1 hide-scrollbar">
@@ -532,7 +730,7 @@
                     <th class="px-6 py-4"></th>
                   </tr>
                 </thead>
-                <tbody id="contact-table-body" class="divide-y divide-slate-100 text-sm text-slate-700 bg-white">
+                <tbody id="contact-table-body" class="divide-y divide-slate-100 text-sm font-medium text-slate-700 bg-white">
                 </tbody>
               </table>
             </div>
@@ -544,28 +742,28 @@
         <!-- ============================================== -->
         <div id="panel-chat" class="hidden space-y-6 animate-slide-up">
           <div class="mb-6">
-            <h2 class="text-2xl font-bold text-slate-900">Live Chat</h2>
-            <p class="text-sm text-slate-500 mt-1">Pantau dan balas pesan secara langsung.</p>
+            <h2 class="text-2xl font-black text-slate-900 tracking-tight">Live Chat</h2>
+            <p class="text-sm text-slate-500 font-medium mt-1">Interaksi langsung dengan pelanggan Anda secara real-time.</p>
           </div>
           
-          <div class="clean-card rounded-2xl flex flex-col md:flex-row h-[650px] overflow-hidden shadow-sm">
+          <div class="clean-card rounded-3xl flex flex-col md:flex-row h-[650px] overflow-hidden shadow-sm border-slate-200">
             <!-- Sidebar Chat List -->
             <div class="w-full md:w-1/3 border-b md:border-b-0 md:border-r border-slate-200 flex flex-col bg-white overflow-hidden shrink-0">
               <div class="p-4 border-b border-slate-100 bg-slate-50 shrink-0 flex justify-between items-center">
-                 <h3 class="font-bold text-slate-900 text-sm">Riwayat Pesan</h3>
+                 <h3 class="font-bold text-slate-900 text-sm">Pesan Masuk</h3>
                  <button onclick="loadChatListUI()" class="text-slate-400 hover:text-slate-800 p-1.5 rounded-md hover:bg-slate-200 transition-colors" title="Refresh">
                    <i data-lucide="refresh-cw" class="w-4 h-4"></i>
                  </button>
               </div>
               <!-- Search Chat -->
-              <div class="p-3 border-b border-slate-100 flex flex-col gap-2">
+              <div class="p-4 border-b border-slate-100 flex flex-col gap-3">
                 <div class="relative">
-                  <i data-lucide="search" class="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-slate-400"></i>
-                  <input type="text" id="search-chat-input" onkeyup="filterChats()" class="w-full pl-9 pr-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-xs outline-none focus:bg-white transition-colors" placeholder="Cari riwayat chat...">
+                  <i data-lucide="search" class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400"></i>
+                  <input type="text" id="search-chat-input" onkeyup="filterChats()" class="w-full pl-9 pr-3 py-2.5 bg-slate-50 border border-slate-200 rounded-lg text-sm font-medium outline-none focus:bg-white transition-colors" placeholder="Cari riwayat chat...">
                 </div>
                 <div class="flex gap-2">
-                   <input type="text" id="new-chat-target" list="contact-datalist" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-xs outline-none focus:bg-white" placeholder="Mulai chat ke kontak...">
-                   <button onclick="startNewLiveChat()" class="bg-slate-900 text-white px-3 py-2 rounded-lg text-xs font-bold hover:bg-slate-800"><i data-lucide="message-square-plus" class="w-3.5 h-3.5"></i></button>
+                   <input type="text" id="new-chat-target" list="contact-datalist" class="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-lg text-sm font-medium outline-none focus:bg-white" placeholder="Nomor / Kontak baru...">
+                   <button onclick="startNewLiveChat()" class="bg-slate-900 text-white px-3.5 py-2.5 rounded-lg text-sm font-bold hover:bg-slate-800"><i data-lucide="message-square-plus" class="w-4 h-4"></i></button>
                 </div>
               </div>
               <div class="flex-1 overflow-y-auto hide-scrollbar bg-white" id="chat-list-container">
@@ -579,15 +777,15 @@
               <div class="p-4 border-b border-slate-200 bg-white flex items-center justify-between shrink-0 h-[73px]">
                 <div class="flex items-center gap-3 w-full">
                    <div class="w-10 h-10 rounded-full bg-slate-100 border border-slate-200 flex items-center justify-center text-slate-500 font-bold shrink-0">
-                     <i data-lucide="message-square" class="w-5 h-5"></i>
+                     <i data-lucide="user" class="w-5 h-5"></i>
                    </div>
                    <div class="overflow-hidden flex-1">
                      <h4 class="font-bold text-slate-900 text-sm truncate" id="chat-active-name">Pilih Percakapan</h4>
-                     <p class="text-xs text-slate-500 truncate" id="chat-active-number">Menunggu interaksi...</p>
+                     <p class="text-xs text-slate-500 font-medium truncate" id="chat-active-number">Menunggu interaksi...</p>
                    </div>
                 </div>
                 <div class="shrink-0 hidden" id="chat-header-actions">
-                   <select id="chat-device-select" class="text-xs font-bold text-slate-600 bg-slate-50 border border-slate-200 rounded-lg px-2 py-1.5 outline-none w-32 truncate">
+                   <select id="chat-device-select" class="text-xs font-bold text-slate-600 bg-slate-50 border border-slate-200 rounded-lg px-2 py-2 outline-none w-32 truncate">
                       <!-- Loaded via JS -->
                    </select>
                 </div>
@@ -595,9 +793,9 @@
               
               <!-- Chat Bubbles -->
               <div class="flex-1 overflow-y-auto p-5 space-y-4 hide-scrollbar flex flex-col" id="chat-bubbles-container">
-                <div class="flex items-center justify-center flex-1 text-slate-400 text-sm font-medium flex-col gap-2">
-                   <i data-lucide="inbox" class="w-10 h-10 text-slate-300"></i>
-                   Pilih pesan di sebelah kiri untuk melihat detail.
+                <div class="flex items-center justify-center flex-1 text-slate-400 text-sm font-medium flex-col gap-3">
+                   <div class="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mb-2"><i data-lucide="inbox" class="w-8 h-8 text-slate-400"></i></div>
+                   Pilih obrolan di sebelah kiri untuk melihat detail.
                 </div>
               </div>
               
@@ -605,11 +803,11 @@
               <form id="chat-reply-form" onsubmit="sendChatReply(event)" class="p-4 bg-white border-t border-slate-200 flex flex-col gap-2 hidden shrink-0">
                  <input type="hidden" id="chat-target-number">
                  <div class="flex gap-2 w-full">
-                     <input type="datetime-local" id="chat-schedule-time" class="px-3 py-2 w-full bg-slate-50 border border-slate-200 rounded-lg text-xs font-bold text-slate-600 outline-none" title="Kosongkan jika ingin kirim sekarang">
+                     <input type="datetime-local" id="chat-schedule-time" class="px-4 py-2.5 w-full bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold text-slate-600 outline-none" title="Kosongkan jika ingin kirim sekarang">
                  </div>
                  <div class="flex gap-2 items-end">
-                     <textarea id="chat-reply-msg" required rows="1" class="flex-1 px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm outline-none resize-none leading-relaxed" placeholder="Ketik pesan..." oninput="this.style.height = '';this.style.height = this.scrollHeight + 'px'"></textarea>
-                     <button type="submit" id="btn-send-reply" class="bg-slate-900 hover:bg-slate-800 text-white p-3 rounded-xl transition-colors shrink-0 flex items-center justify-center">
+                     <textarea id="chat-reply-msg" required rows="1" class="flex-1 px-4 py-3.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-medium outline-none resize-none leading-relaxed" placeholder="Ketik pesan Anda..." oninput="this.style.height = '';this.style.height = this.scrollHeight + 'px'"></textarea>
+                     <button type="submit" id="btn-send-reply" class="bg-accent-600 hover:bg-accent-700 text-white p-3.5 rounded-xl transition-colors shrink-0 flex items-center justify-center shadow-md">
                        <i data-lucide="send" class="w-5 h-5"></i>
                      </button>
                  </div>
@@ -623,44 +821,43 @@
         <!-- ============================================== -->
         <div id="panel-broadcast" class="hidden space-y-6 animate-slide-up">
           <div class="mb-8">
-            <h2 class="text-2xl font-bold text-slate-900">Broadcast</h2>
-            <p class="text-sm text-slate-500">Kirim pesan masal ke kontak Anda.</p>
+            <h2 class="text-2xl font-black text-slate-900 tracking-tight">Broadcast Masal</h2>
+            <p class="text-sm text-slate-500 font-medium mt-1">Kirim promo atau informasi ke ribuan kontak sekaligus.</p>
           </div>
           
           <div class="grid lg:grid-cols-12 gap-8">
-            <div class="clean-card p-8 rounded-2xl lg:col-span-8">
+            <div class="clean-card p-8 rounded-3xl lg:col-span-7 shadow-sm">
               <form onsubmit="handleBroadcastSubmit(event)" class="space-y-6">
                 <div class="grid sm:grid-cols-2 gap-5">
                   <div>
-                    <label class="block text-xs font-bold text-slate-600 mb-2">Pilih Device</label>
-                    <select id="bc-device" required class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm font-medium text-slate-900 outline-none">
+                    <label class="block text-xs font-bold text-slate-600 mb-2 uppercase tracking-wider">Gunakan Device</label>
+                    <select id="bc-device" required class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm font-bold text-slate-900 outline-none focus:bg-white">
                       <option value="">-- Muat Device --</option>
                     </select>
                   </div>
                   <div>
-                    <label class="block text-xs font-bold text-slate-600 mb-2">Waktu Kirim (Opsional)</label>
-                    <input type="datetime-local" id="bc-schedule-time" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm font-medium text-slate-900 outline-none" title="Kosongkan untuk kirim sekarang">
+                    <label class="block text-xs font-bold text-slate-600 mb-2 uppercase tracking-wider">Jadwal Kirim (Opsional)</label>
+                    <input type="datetime-local" id="bc-schedule-time" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm font-bold text-slate-900 outline-none focus:bg-white" title="Kosongkan untuk kirim sekarang">
                     <input type="hidden" id="bc-delay" value="15">
                   </div>
                 </div>
                 
-                <!-- NEW SELECTION FOR CONTACTS & GROUPS -->
                 <div class="bg-white border border-slate-200 p-5 rounded-2xl mt-4">
                   <div class="flex justify-between items-center mb-4">
                      <label class="block text-sm font-bold text-slate-800">Target Penerima</label>
                   </div>
                   
                   <div class="mb-4">
-                    <select id="bc-target-type" onchange="updateTargetFilters()" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm font-bold text-slate-900 outline-none transition-all">
-                      <option value="manual">1. Input Manual (Pisahkan koma)</option>
+                    <select id="bc-target-type" onchange="updateTargetFilters()" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm font-bold text-accent-700 outline-none transition-all">
+                      <option value="manual">1. Input Angka Manual (Pisahkan koma)</option>
                       <option value="all">2. Semua Kontak di Buku</option>
-                      <option value="group">3. Berdasarkan Grup</option>
-                      <option value="label">4. Berdasarkan Label</option>
+                      <option value="group">3. Berdasarkan Nama Grup</option>
+                      <option value="label">4. Berdasarkan Nama Label</option>
                     </select>
                   </div>
 
                   <div id="bc-target-manual" class="block animate-slide-up">
-                    <textarea id="bc-targets" rows="3" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl font-mono text-sm outline-none resize-y" placeholder="Contoh: 62812..., 62813..."></textarea>
+                    <textarea id="bc-targets" rows="3" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl font-mono text-sm outline-none resize-y" placeholder="Cth: 6281234, 6285678"></textarea>
                   </div>
 
                   <div id="bc-target-select" class="hidden animate-slide-up">
@@ -669,34 +866,34 @@
                     </select>
                   </div>
 
-                  <p id="bc-target-info" class="text-[11px] text-slate-500 font-medium mt-3 flex items-center gap-1.5"><i data-lucide="info" class="w-3.5 h-3.5 shrink-0"></i> Target manual tidak mendukung variabel {name} & {address}.</p>
+                  <p id="bc-target-info" class="text-[11px] text-slate-500 font-medium mt-3 flex items-center gap-1.5"><i data-lucide="info" class="w-3.5 h-3.5 shrink-0"></i> Target manual tidak mendukung variabel dinamis.</p>
                 </div>
                 
                 <div>
                   <div class="flex flex-wrap gap-2 mb-3 items-center border-b border-slate-100 pb-3">
-                     <span class="text-xs font-bold text-slate-500 mr-2">Variabel:</span>
-                     <button type="button" onclick="insertVar('{name}')" class="px-3 py-1.5 text-[10px] bg-slate-100 border border-slate-200 text-slate-600 rounded-lg hover:bg-slate-200 font-bold">+ Nama</button>
-                     <button type="button" onclick="insertVar('{phone}')" class="px-3 py-1.5 text-[10px] bg-slate-100 border border-slate-200 text-slate-600 rounded-lg hover:bg-slate-200 font-bold">+ No WA</button>
-                     <button type="button" onclick="insertVar('{address}')" class="px-3 py-1.5 text-[10px] bg-slate-100 border border-slate-200 text-slate-600 rounded-lg hover:bg-slate-200 font-bold">+ Alamat</button>
-                     <span class="text-[10px] text-slate-400 ml-auto font-mono font-bold">Spintax: {Halo|Hai}</span>
+                     <span class="text-xs font-bold text-slate-500 mr-2">Suntik Variabel:</span>
+                     <button type="button" onclick="insertVar('{name}')" class="px-3 py-1.5 text-[10px] bg-slate-100 border border-slate-200 text-slate-700 rounded-lg hover:bg-slate-200 font-bold">+ {Nama}</button>
+                     <button type="button" onclick="insertVar('{phone}')" class="px-3 py-1.5 text-[10px] bg-slate-100 border border-slate-200 text-slate-700 rounded-lg hover:bg-slate-200 font-bold">+ {No WA}</button>
+                     <button type="button" onclick="insertVar('{address}')" class="px-3 py-1.5 text-[10px] bg-slate-100 border border-slate-200 text-slate-700 rounded-lg hover:bg-slate-200 font-bold">+ {Alamat}</button>
+                     <span class="text-[10px] text-slate-400 ml-auto font-mono font-bold" title="Spintax Anti-Banned">Format: {Halo|Hai}</span>
                   </div>
-                  <textarea id="bc-message" required rows="6" oninput="updateCharCount()" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm font-medium text-slate-900 outline-none resize-y leading-relaxed" placeholder="Contoh: {Halo|Hai} {name}, promo khusus untuk Anda yang ada di daerah {address}..."></textarea>
+                  <textarea id="bc-message" required rows="6" oninput="updateCharCount()" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm font-medium text-slate-900 outline-none resize-y leading-relaxed focus:bg-white" placeholder="Ketik pesan broadcast Anda di sini..."></textarea>
                   <p id="char-count" class="text-[10px] font-bold text-slate-400 text-right mt-2">0 Karakter</p>
                 </div>
 
-                <button type="submit" id="btn-bc" class="w-full py-3.5 bg-slate-900 hover:bg-slate-800 text-white font-bold rounded-xl transition-colors text-sm flex items-center justify-center gap-2 mt-2">
-                  <i data-lucide="send" class="w-4 h-4 shrink-0"></i> Mulai Broadcast
+                <button type="submit" id="btn-bc" class="w-full py-4 bg-slate-900 hover:bg-slate-800 text-white font-black rounded-xl transition-colors text-sm flex items-center justify-center gap-2 mt-2 shadow-lg shadow-slate-900/20">
+                  <i data-lucide="rocket" class="w-5 h-5 shrink-0"></i> Luncurkan Broadcast
                 </button>
               </form>
             </div>
 
-            <div class="space-y-6 lg:col-span-4">
-              <div class="clean-card rounded-2xl flex flex-col h-full min-h-[450px]">
+            <div class="space-y-6 lg:col-span-5">
+              <div class="clean-card rounded-3xl flex flex-col h-full min-h-[450px] shadow-sm overflow-hidden">
                 <div class="p-5 border-b border-slate-200 flex justify-between items-center bg-slate-50">
-                   <h3 class="font-bold text-slate-900 text-sm">Riwayat Terakhir</h3>
-                   <button onclick="loadBroadcastHistory()" class="text-slate-500 hover:text-slate-900 bg-white p-1.5 rounded-lg border border-slate-200"><i data-lucide="refresh-cw" class="w-4 h-4 shrink-0"></i></button>
+                   <h3 class="font-bold text-slate-900 text-sm">Riwayat Kampanye Terakhir</h3>
+                   <button onclick="loadBroadcastHistory()" class="text-slate-500 hover:text-slate-900 bg-white p-1.5 rounded-lg border border-slate-200 shadow-sm"><i data-lucide="refresh-cw" class="w-4 h-4 shrink-0"></i></button>
                 </div>
-                <div class="overflow-y-auto flex-1 hide-scrollbar p-0">
+                <div class="overflow-y-auto flex-1 hide-scrollbar p-0 bg-white">
                   <table class="w-full text-left">
                     <tbody id="broadcast-history-body" class="divide-y divide-slate-100 text-xs text-slate-700">
                     </tbody>
@@ -712,53 +909,53 @@
         <!-- ============================================== -->
         <div id="panel-autoreply" class="hidden space-y-6 animate-slide-up">
           <div class="mb-8">
-            <h2 class="text-2xl font-bold text-slate-900">Auto Reply & AI</h2>
-            <p class="text-sm text-slate-500 mt-1">Atur balasan otomatis atau gunakan agen AI.</p>
+            <h2 class="text-2xl font-black text-slate-900 tracking-tight">Auto Reply & Mesin AI</h2>
+            <p class="text-sm text-slate-500 font-medium mt-1">Biarkan sistem membalas pesan pelanggan saat Anda tidur.</p>
           </div>
 
           <div class="flex gap-2 mb-8 border-b border-slate-200 pb-px overflow-x-auto hide-scrollbar">
             <button onclick="switchArTab('keyword')" id="tab-ar-keyword" class="px-6 py-3 border-b-2 border-slate-900 text-slate-900 font-bold text-sm transition-colors shrink-0">
-              Keyword Dasar
+              Keyword Dasar (Teks)
             </button>
-            <button onclick="switchArTab('ai')" id="tab-ar-ai" class="px-6 py-3 border-b-2 border-transparent text-slate-500 hover:text-slate-800 font-bold text-sm transition-colors shrink-0">
-              Gemini AI
+            <button onclick="switchArTab('ai')" id="tab-ar-ai" class="px-6 py-3 border-b-2 border-transparent text-slate-500 hover:text-slate-800 font-bold text-sm transition-colors shrink-0" style="display:none;">
+              Gemini AI Agent <span class="bg-yellow-400 text-yellow-900 px-1.5 py-0.5 rounded text-[9px] ml-1 uppercase">Pro</span>
             </button>
           </div>
 
           <!-- TAB 1: KEYWORD DASAR -->
           <div id="ar-section-keyword" class="grid lg:grid-cols-12 gap-8">
-            <div class="clean-card rounded-2xl p-7 lg:col-span-4 h-fit">
-              <h3 class="text-sm font-bold text-slate-900 mb-5 uppercase tracking-wider">Buat Aturan Baru</h3>
+            <div class="clean-card rounded-3xl p-7 lg:col-span-4 h-fit shadow-sm">
+              <h3 class="text-sm font-bold text-slate-900 mb-5 uppercase tracking-wider">Aturan Balas Otomatis Baru</h3>
               <form onsubmit="handleAutoReplySubmit(event)" class="space-y-5">
                 <div>
-                  <label class="block text-xs font-bold text-slate-600 mb-1.5">Keyword</label>
-                  <input type="text" id="ar-keyword" required class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm outline-none focus:bg-white">
+                  <label class="block text-xs font-bold text-slate-600 mb-1.5">Kata Kunci (Trigger)</label>
+                  <input type="text" id="ar-keyword" required class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm font-bold outline-none focus:bg-white" placeholder="Cth: harga, info, halo">
                 </div>
                 <div>
-                  <label class="block text-xs font-bold text-slate-600 mb-1.5">Logika (Match)</label>
-                  <select id="ar-match-type" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm outline-none focus:bg-white">
-                    <option value="exact">Sama Persis</option>
-                    <option value="contains">Mengandung Kata</option>
+                  <label class="block text-xs font-bold text-slate-600 mb-1.5">Kondisi (Match Type)</label>
+                  <select id="ar-match-type" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm font-bold outline-none focus:bg-white">
+                    <option value="exact">Sama Persis (=)</option>
+                    <option value="contains">Mengandung Kata (Like)</option>
                   </select>
                 </div>
                 <div>
-                  <label class="block text-xs font-bold text-slate-600 mb-1.5">Pesan Balasan</label>
-                  <textarea id="ar-message" required rows="4" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm resize-none outline-none focus:bg-white leading-relaxed"></textarea>
+                  <label class="block text-xs font-bold text-slate-600 mb-1.5">Isi Pesan Balasan</label>
+                  <textarea id="ar-message" required rows="5" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm font-medium resize-none outline-none focus:bg-white leading-relaxed"></textarea>
                 </div>
-                <button type="submit" id="btn-ar" class="w-full py-3 bg-slate-900 text-white font-bold rounded-xl text-sm hover:bg-slate-800 transition-colors mt-2">
+                <button type="submit" id="btn-ar" class="w-full py-3.5 bg-slate-900 text-white font-bold rounded-xl text-sm hover:bg-slate-800 transition-colors mt-2 shadow-md">
                   Simpan Aturan
                 </button>
               </form>
             </div>
 
-            <div class="clean-card rounded-2xl lg:col-span-8 flex flex-col h-[550px] overflow-hidden">
-              <div class="overflow-x-auto flex-1 hide-scrollbar">
+            <div class="clean-card rounded-3xl lg:col-span-8 flex flex-col h-[550px] overflow-hidden shadow-sm">
+              <div class="overflow-x-auto flex-1 hide-scrollbar bg-white">
                 <table class="w-full text-left whitespace-nowrap min-w-[500px]">
                   <thead class="sticky top-0 bg-slate-50 z-10 border-b border-slate-200">
                     <tr>
                       <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Trigger</th>
-                      <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Response</th>
-                      <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider text-right">Aksi</th>
+                      <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Pesan Balasan</th>
+                      <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider text-right">Status & Aksi</th>
                     </tr>
                   </thead>
                   <tbody id="autoreply-table-body" class="divide-y divide-slate-100 text-sm text-slate-700">
@@ -769,24 +966,27 @@
           </div>
 
           <!-- TAB 2: AI ASSISTANT -->
-          <div id="ar-section-ai" class="hidden max-w-3xl animate-slide-up">
-            <div class="clean-card rounded-2xl p-6 sm:p-10">
+          <div id="ar-section-ai" class="hidden max-w-4xl animate-slide-up">
+            <div class="clean-card rounded-3xl p-6 sm:p-10 border-l-4 border-l-accent-500 shadow-lg">
               
               <div class="mb-8 border-b border-slate-200 pb-8 flex flex-col sm:flex-row items-start sm:items-center gap-5 justify-between">
                 <div>
-                  <h3 class="text-xl font-bold text-slate-900">Gemini AI Agent</h3>
-                  <p class="text-sm text-slate-500 mt-1">Ubah WA jadi Customer Service cerdas.</p>
+                  <h3 class="text-xl font-black text-slate-900">Google Gemini AI Engine</h3>
+                  <p class="text-sm text-slate-500 font-medium mt-1">Ubah nomor WA Anda jadi Customer Service robot cerdas.</p>
                 </div>
                 <div class="w-full sm:w-auto">
-                  <select id="ai-device" onchange="fetchAiConfig(this.value)" required class="w-full sm:w-64 px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-900 font-medium outline-none">
-                    <option value="">-- Pilih Device AI --</option>
+                  <select id="ai-device" onchange="fetchAiConfig(this.value)" required class="w-full sm:w-72 px-4 py-3 bg-slate-50 border border-slate-300 rounded-xl text-sm text-slate-900 font-bold outline-none focus:bg-white shadow-sm">
+                    <option value="">-- Pilih Device Target AI --</option>
                   </select>
                 </div>
               </div>
 
               <form onsubmit="handleAiSubmit(event)" class="space-y-6">
-                <div class="flex items-center justify-between p-5 bg-slate-50 rounded-xl border border-slate-200">
-                  <span class="font-bold text-slate-800 text-sm">Aktifkan Bot di Device ini</span>
+                <div class="flex items-center justify-between p-5 bg-accent-50 rounded-xl border border-accent-100">
+                  <div class="flex items-center gap-3">
+                    <i data-lucide="bot" class="w-6 h-6 text-accent-600"></i>
+                    <span class="font-bold text-accent-900 text-sm">Hidupkan Mesin AI di Device Ini</span>
+                  </div>
                   <label class="relative inline-flex items-center cursor-pointer shrink-0">
                     <input type="checkbox" id="ai-status" class="sr-only toggle-checkbox peer">
                     <div class="w-11 h-6 bg-slate-300 peer-focus:outline-none rounded-full peer-checked:bg-accent-500 transition-colors toggle-label"></div>
@@ -795,9 +995,9 @@
                 </div>
 
                 <div>
-                  <label class="block text-xs font-bold text-slate-600 mb-2">API Key Gemini (Opsional)</label>
+                  <label class="block text-xs font-bold text-slate-600 mb-2 uppercase tracking-wider">Gemini API Key (Dapatkan di Google AI Studio)</label>
                   <div class="relative w-full">
-                    <input type="password" id="ai-api-key" class="w-full pl-5 pr-11 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-900 outline-none focus:bg-white font-mono">
+                    <input type="password" id="ai-api-key" class="w-full pl-5 pr-11 py-3.5 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-900 outline-none focus:bg-white font-mono font-bold" placeholder="AIzaSy...">
                     <button type="button" onclick="toggleVisibility('ai-api-key')" class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 p-1 outline-none">
                       <i data-lucide="eye" id="eye-ai-api-key" class="w-4 h-4 shrink-0 block"></i>
                       <i data-lucide="eye-off" id="eye-off-ai-api-key" class="w-4 h-4 shrink-0 hidden"></i>
@@ -806,13 +1006,13 @@
                 </div>
 
                 <div>
-                  <label class="block text-xs font-bold text-slate-600 mb-2">System Prompt / Basis Pengetahuan</label>
-                  <textarea id="ai-prompt" required rows="6" class="w-full px-5 py-4 bg-slate-50 border border-slate-200 rounded-xl text-sm font-medium text-slate-900 resize-y outline-none focus:bg-white leading-relaxed" placeholder="Contoh: Anda adalah CS toko baju. Buka jam 08-20..."></textarea>
+                  <label class="block text-xs font-bold text-slate-600 mb-2 uppercase tracking-wider">System Prompt (Pengetahuan Otak AI)</label>
+                  <textarea id="ai-prompt" required rows="8" class="w-full px-5 py-4 bg-slate-50 border border-slate-200 rounded-xl text-sm font-medium text-slate-900 resize-y outline-none focus:bg-white leading-relaxed" placeholder="Contoh: Nama Anda adalah Sarah. Anda adalah Customer Service dari Toko Sepatu XYZ. Toko buka Senin-Jumat jam 08:00 - 17:00. Jika orang bertanya harga sepatu Sneaker, jawab Rp 250.000..."></textarea>
                 </div>
 
                 <div class="pt-4 text-right">
-                  <button type="submit" id="btn-ai" class="px-8 py-3.5 bg-slate-900 text-white font-bold rounded-xl transition-colors hover:bg-slate-800 text-sm">
-                    Simpan Konfigurasi
+                  <button type="submit" id="btn-ai" class="px-10 py-4 bg-slate-900 text-white font-black rounded-xl transition-colors hover:bg-slate-800 text-sm shadow-xl shadow-slate-900/20">
+                    Simpan Otak AI
                   </button>
                 </div>
               </form>
@@ -825,44 +1025,77 @@
         <!-- ============================================== -->
         <div id="panel-billing" class="hidden space-y-6 animate-slide-up">
           <div class="mb-8">
-            <h2 class="text-2xl font-bold text-slate-900">Billing & Upgrade</h2>
-            <p class="text-sm text-slate-500 mt-1">Tingkatkan limit aplikasi Anda.</p>
+            <h2 class="text-2xl font-black text-slate-900 tracking-tight">Langganan & Upgrade</h2>
+            <p class="text-sm text-slate-500 font-medium mt-1">Pilih kekuatan infrastruktur yang paling sesuai untuk ledakan bisnismu.</p>
           </div>
 
-          <div class="grid md:grid-cols-2 gap-8 max-w-4xl">
-            <!-- Starter Plan -->
-            <div class="clean-card rounded-2xl p-8 border-slate-200 opacity-70">
-              <h3 class="text-xl font-bold text-slate-900 mb-1">Starter</h3>
-              <div class="text-4xl font-extrabold mb-8 text-slate-900">Gratis</div>
-              <ul class="space-y-4 mb-10 text-sm text-slate-600 font-medium">
-                <li class="flex items-center gap-3"><i data-lucide="check" class="text-slate-400 w-5 h-5 shrink-0"></i> 1 Device WA</li>
-                <li class="flex items-center gap-3"><i data-lucide="check" class="text-slate-400 w-5 h-5 shrink-0"></i> 100 Broadcast / Hari</li>
-                <li class="flex items-center gap-3"><i data-lucide="minus" class="text-slate-300 w-5 h-5 shrink-0"></i> Tanpa AI</li>
+          <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
+            <!-- Gratis -->
+            <div class="clean-card rounded-3xl p-8 border-slate-200 relative flex flex-col">
+              <h3 class="text-xl font-bold text-slate-900 mb-1">Gratis</h3>
+              <div class="text-3xl font-black mb-6 text-slate-900 mt-2">Rp 0</div>
+              <ul class="space-y-4 mb-8 text-sm text-slate-600 font-semibold flex-1">
+                <li class="flex items-start gap-3"><i data-lucide="check" class="text-slate-400 w-5 h-5 shrink-0"></i> 1 Device WA</li>
+                <li class="flex items-start gap-3"><i data-lucide="check" class="text-slate-400 w-5 h-5 shrink-0"></i> 100 Broadcast / Hari</li>
+                <li class="flex items-start gap-3"><i data-lucide="minus" class="text-slate-300 w-5 h-5 shrink-0"></i> Tanpa Live Chat</li>
+                <li class="flex items-start gap-3"><i data-lucide="minus" class="text-slate-300 w-5 h-5 shrink-0"></i> Tanpa AI Auto Reply</li>
               </ul>
-              <button disabled class="w-full py-3 rounded-xl bg-slate-100 text-slate-500 font-bold text-sm cursor-not-allowed border border-slate-200">Plan Saat Ini</button>
+              <button disabled class="w-full py-3 rounded-xl bg-slate-100 text-slate-500 font-bold text-sm cursor-not-allowed border border-slate-200">Paket Aktif Saat Ini</button>
             </div>
 
-            <!-- Pro Plan -->
-            <div class="clean-card rounded-2xl p-8 border-slate-900 relative shadow-xl">
-              <div class="absolute top-5 right-5 bg-slate-900 text-white px-3 py-1 rounded-md text-[10px] font-bold uppercase tracking-wider">Pro</div>
-              <h3 class="text-xl font-bold text-slate-900 mb-1">Business</h3>
-              <div class="flex items-end gap-1 mb-8">
-                <div class="text-4xl font-extrabold text-slate-900" id="price-pro">Rp 249k</div>
-                <div class="text-sm font-semibold text-slate-500 mb-1.5">/bln</div>
+            <!-- Lite -->
+            <div class="clean-card rounded-3xl p-8 border-slate-200 relative flex flex-col hover:border-slate-400 transition-colors">
+              <h3 class="text-xl font-bold text-slate-900 mb-1">Lite</h3>
+              <div class="flex items-end gap-1 mb-2 mt-2">
+                <div class="text-3xl font-black text-slate-900">49k</div><div class="text-sm text-slate-500 mb-1">/bln</div>
               </div>
-              <ul class="space-y-4 mb-10 text-sm text-slate-700 font-bold">
-                <li class="flex items-center gap-3"><i data-lucide="check" class="text-accent-600 w-5 h-5 shrink-0"></i> Unlimited Device WA</li>
-                <li class="flex items-center gap-3"><i data-lucide="check" class="text-accent-600 w-5 h-5 shrink-0"></i> Unlimited Broadcast</li>
-                <li class="flex items-center gap-3"><i data-lucide="check" class="text-accent-600 w-5 h-5 shrink-0"></i> Full AI Support</li>
+              <p class="text-[11px] font-bold text-slate-400 mb-6 block">atau Rp 500k / tahun</p>
+              <ul class="space-y-4 mb-8 text-sm text-slate-600 font-semibold flex-1">
+                <li class="flex items-start gap-3"><i data-lucide="check" class="text-accent-500 w-5 h-5 shrink-0"></i> 5 Device WA</li>
+                <li class="flex items-start gap-3"><i data-lucide="check" class="text-accent-500 w-5 h-5 shrink-0"></i> 500 Buku Kontak</li>
+                <li class="flex items-start gap-3"><i data-lucide="check" class="text-accent-500 w-5 h-5 shrink-0"></i> 2.500 Broadcast / Hari</li>
+                <li class="flex items-start gap-3"><i data-lucide="check" class="text-accent-500 w-5 h-5 shrink-0"></i> Fitur Live Chat</li>
+              </ul>
+              <button onclick="promptUpgradePlan('Lite', '49.000')" class="w-full py-3 rounded-xl bg-white border border-slate-900 text-slate-900 font-bold hover:bg-slate-50 transition-colors text-sm">Pilih Lite</button>
+            </div>
+
+            <!-- Pro -->
+            <div class="bg-gradient-to-b from-slate-900 to-slate-800 rounded-3xl p-8 border border-slate-700 shadow-2xl relative flex flex-col transform md:-translate-y-4">
+              <div class="absolute -top-4 left-1/2 -translate-x-1/2 bg-accent-500 text-white px-4 py-1.5 rounded-full text-[11px] font-black uppercase tracking-widest shadow-sm">Pilihan Terbaik</div>
+              <h3 class="text-xl font-bold text-white mb-1">Pro</h3>
+              <div class="flex items-end gap-1 mb-2 mt-2">
+                <div class="text-3xl font-black text-white" id="price-pro">249k</div><div class="text-sm text-slate-400 mb-1">/bln</div>
+              </div>
+              <p class="text-[11px] font-bold text-slate-400 mb-6 block">atau Rp 1.500k / tahun</p>
+              <ul class="space-y-4 mb-8 text-sm text-slate-200 font-semibold flex-1">
+                <li class="flex items-start gap-3"><i data-lucide="check-circle-2" class="text-accent-400 w-5 h-5 shrink-0"></i> 20 Device WA</li>
+                <li class="flex items-start gap-3"><i data-lucide="check-circle-2" class="text-accent-400 w-5 h-5 shrink-0"></i> 2.000 Buku Kontak</li>
+                <li class="flex items-start gap-3"><i data-lucide="check-circle-2" class="text-accent-400 w-5 h-5 shrink-0"></i> 5.000 Broadcast / Hari</li>
+                <li class="flex items-start gap-3"><i data-lucide="sparkles" class="text-yellow-400 w-5 h-5 shrink-0"></i> Gemini AI Agent Full</li>
               </ul>
               
               <div class="flex gap-2 mb-5">
-                <input type="text" id="promo-input" placeholder="Kode Promo" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 text-sm font-bold rounded-xl outline-none uppercase">
-                <button type="button" onclick="applyPromo()" id="btn-promo" class="bg-slate-200 text-slate-800 px-5 rounded-xl font-bold text-xs uppercase tracking-wider hover:bg-slate-300 transition-colors shrink-0">Apply</button>
+                <input type="text" id="promo-input" placeholder="Kode Promo" class="w-full px-4 py-2.5 bg-slate-700/50 text-white border border-slate-600 text-xs font-bold rounded-xl outline-none uppercase placeholder:text-slate-500">
+                <button type="button" onclick="applyPromo()" id="btn-promo" class="bg-slate-600 text-white px-4 rounded-xl font-bold text-[10px] uppercase tracking-wider hover:bg-slate-500 transition-colors shrink-0">Apply</button>
               </div>
-              <button onclick="promptUpgradePlan()" id="btn-upgrade" class="w-full py-3.5 rounded-xl bg-slate-900 text-white font-bold hover:bg-slate-800 transition-colors text-sm">
-                Upgrade Sekarang
-              </button>
+
+              <button onclick="promptUpgradePlan('Pro', document.getElementById('price-pro').innerText)" class="w-full py-3.5 rounded-xl bg-accent-600 text-white font-black hover:bg-accent-500 transition-colors text-sm shadow-lg shadow-accent-600/30">Upgrade ke Pro</button>
+            </div>
+
+            <!-- VIP -->
+            <div class="clean-card rounded-3xl p-8 border-slate-200 relative flex flex-col hover:border-slate-400 transition-colors">
+              <h3 class="text-xl font-bold text-slate-900 mb-1">VIP Enterprise</h3>
+              <div class="flex items-end gap-1 mb-2 mt-2">
+                <div class="text-3xl font-black text-slate-900">499k</div><div class="text-sm text-slate-500 mb-1">/bln</div>
+              </div>
+              <p class="text-[11px] font-bold text-slate-400 mb-6 block">atau Rp 3.450k / tahun</p>
+              <ul class="space-y-4 mb-8 text-sm text-slate-600 font-semibold flex-1">
+                <li class="flex items-start gap-3"><i data-lucide="infinity" class="text-slate-900 w-5 h-5 shrink-0"></i> Unlimited Device</li>
+                <li class="flex items-start gap-3"><i data-lucide="infinity" class="text-slate-900 w-5 h-5 shrink-0"></i> Unlimited Kontak</li>
+                <li class="flex items-start gap-3"><i data-lucide="infinity" class="text-slate-900 w-5 h-5 shrink-0"></i> Unlimited Broadcast</li>
+                <li class="flex items-start gap-3"><i data-lucide="check" class="text-slate-900 w-5 h-5 shrink-0"></i> Semua Fitur Terbuka</li>
+              </ul>
+              <button onclick="promptUpgradePlan('VIP', '499.000')" class="w-full py-3 rounded-xl bg-white border border-slate-900 text-slate-900 font-bold hover:bg-slate-50 transition-colors text-sm">Pilih VIP</button>
             </div>
           </div>
         </div>
@@ -872,37 +1105,37 @@
         <!-- ============================================== -->
         <div id="panel-settings" class="hidden space-y-6 animate-slide-up">
           <div class="mb-8">
-            <h2 class="text-2xl font-bold text-slate-900">Pengaturan Akun</h2>
-            <p class="text-sm text-slate-500 mt-1">Kelola profil, keamanan, dan preferensi integrasi Anda.</p>
+            <h2 class="text-2xl font-black text-slate-900 tracking-tight">Pengaturan Akun</h2>
+            <p class="text-sm text-slate-500 font-medium mt-1">Kelola profil, keamanan, dan kunci integrasi (API) Anda.</p>
           </div>
 
           <div class="grid lg:grid-cols-3 gap-8">
             <!-- Profil -->
-            <div class="clean-card rounded-2xl p-7 lg:col-span-1 h-fit">
-              <h3 class="text-xs font-bold text-slate-400 mb-6 uppercase tracking-[0.15em]">Informasi Profil</h3>
+            <div class="clean-card rounded-3xl p-8 lg:col-span-1 h-fit shadow-sm">
+              <h3 class="text-xs font-black text-slate-400 mb-6 uppercase tracking-[0.15em]">Informasi Profil</h3>
               <div class="flex items-center gap-5 mb-8">
-                <div class="w-16 h-16 rounded-full bg-slate-900 text-white flex items-center justify-center font-bold text-2xl shrink-0 shadow-md" id="set-avatar">U</div>
+                <div class="w-16 h-16 rounded-full bg-slate-900 text-white flex items-center justify-center font-bold text-2xl shrink-0 shadow-lg" id="set-avatar">U</div>
                 <div class="overflow-hidden flex flex-col justify-center text-left">
                   <p id="set-email" class="font-bold text-slate-900 truncate w-full text-base">user@mail.com</p>
-                  <p id="set-role" class="text-xs font-semibold text-accent-600 capitalize mt-1 tracking-wide">User</p>
+                  <p id="set-role" class="text-xs font-black text-accent-600 capitalize mt-1 tracking-wide">User</p>
                 </div>
               </div>
-              <div class="space-y-4 text-sm border-t border-slate-100 pt-6">
-                <div class="flex justify-between items-center"><span class="text-slate-500 font-semibold">Paket Aktif</span> <span id="set-plan" class="font-bold text-slate-900 bg-slate-100 px-3 py-1.5 rounded-lg text-[10px] uppercase tracking-wider">Starter</span></div>
-                <div class="flex justify-between items-center"><span class="text-slate-500 font-semibold">Status Akun</span> <span class="text-green-700 font-bold bg-green-50 px-3 py-1.5 rounded-lg text-[10px] uppercase tracking-wider border border-green-100 flex items-center gap-1.5"><i data-lucide="check-circle-2" class="w-3.5 h-3.5 shrink-0"></i> Aktif</span></div>
+              <div class="space-y-4 text-sm border-t border-slate-100 pt-6 font-medium">
+                <div class="flex justify-between items-center"><span class="text-slate-500">Paket Aktif</span> <span id="set-plan" class="font-black text-slate-900 bg-slate-100 px-3 py-1.5 rounded-lg text-[10px] uppercase tracking-wider">Gratis</span></div>
+                <div class="flex justify-between items-center"><span class="text-slate-500">Status Akun</span> <span class="text-green-700 font-black bg-green-50 px-3 py-1.5 rounded-lg text-[10px] uppercase tracking-wider border border-green-100 flex items-center gap-1.5"><i data-lucide="check-circle-2" class="w-3.5 h-3.5 shrink-0"></i> Aktif</span></div>
               </div>
             </div>
 
             <div class="space-y-8 lg:col-span-2">
               <!-- Keamanan -->
-              <div class="clean-card rounded-2xl p-7">
-                <h3 class="text-xs font-bold text-slate-400 mb-5 uppercase tracking-[0.15em] border-b border-slate-100 pb-4">Keamanan Sandi</h3>
+              <div class="clean-card rounded-3xl p-8 shadow-sm">
+                <h3 class="text-xs font-black text-slate-400 mb-6 uppercase tracking-[0.15em] border-b border-slate-100 pb-4">Keamanan Sandi</h3>
                 <form onsubmit="event.preventDefault(); showToast('Sandi berhasil diperbarui', 'success'); this.reset();" class="space-y-5">
-                  <div class="grid sm:grid-cols-2 gap-5">
+                  <div class="grid sm:grid-cols-2 gap-6">
                     <div>
                       <label class="block text-xs font-bold text-slate-600 mb-2">Sandi Saat Ini</label>
                       <div class="relative w-full">
-                        <input type="password" id="current-password" required class="w-full pl-4 pr-11 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm outline-none focus:bg-white font-mono" placeholder="••••••••">
+                        <input type="password" id="current-password" required class="w-full pl-4 pr-11 py-3.5 bg-slate-50 border border-slate-200 rounded-xl text-sm outline-none focus:bg-white font-mono font-medium" placeholder="••••••••">
                         <button type="button" onclick="toggleVisibility('current-password')" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 p-1 outline-none">
                           <i data-lucide="eye" id="eye-current-password" class="w-4 h-4 shrink-0 block"></i>
                           <i data-lucide="eye-off" id="eye-off-current-password" class="w-4 h-4 shrink-0 hidden"></i>
@@ -912,7 +1145,7 @@
                     <div>
                       <label class="block text-xs font-bold text-slate-600 mb-2">Sandi Baru</label>
                       <div class="relative w-full">
-                        <input type="password" id="new-password" required class="w-full pl-4 pr-11 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm outline-none focus:bg-white font-mono" placeholder="••••••••">
+                        <input type="password" id="new-password" required class="w-full pl-4 pr-11 py-3.5 bg-slate-50 border border-slate-200 rounded-xl text-sm outline-none focus:bg-white font-mono font-medium" placeholder="••••••••">
                         <button type="button" onclick="toggleVisibility('new-password')" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 p-1 outline-none">
                           <i data-lucide="eye" id="eye-new-password" class="w-4 h-4 shrink-0 block"></i>
                           <i data-lucide="eye-off" id="eye-off-new-password" class="w-4 h-4 shrink-0 hidden"></i>
@@ -920,31 +1153,31 @@
                       </div>
                     </div>
                   </div>
-                  <div class="pt-2">
-                    <button type="submit" class="px-6 py-3 bg-slate-900 text-white font-bold rounded-xl text-sm hover:bg-slate-800 transition-colors flex items-center gap-2.5"><i data-lucide="shield-check" class="w-4 h-4 shrink-0"></i> Perbarui Keamanan</button>
+                  <div class="pt-3">
+                    <button type="submit" class="px-8 py-3.5 bg-slate-900 text-white font-bold rounded-xl text-sm hover:bg-slate-800 transition-colors flex items-center gap-2.5 shadow-md"><i data-lucide="shield-check" class="w-4 h-4 shrink-0"></i> Perbarui Sandi</button>
                   </div>
                 </form>
               </div>
 
               <!-- API Settings -->
-              <div class="clean-card rounded-2xl p-7">
-                <div class="flex justify-between items-center mb-5 border-b border-slate-100 pb-4">
-                   <h3 class="text-xs font-bold text-slate-400 uppercase tracking-[0.15em]">Developer & API</h3>
-                   <span class="bg-accent-50 text-accent-600 border border-accent-100 px-2.5 py-1 rounded-md text-[10px] font-bold uppercase tracking-wider">Pro Feature</span>
+              <div class="clean-card rounded-3xl p-8 shadow-sm border-l-4 border-l-slate-900">
+                <div class="flex justify-between items-center mb-6 border-b border-slate-100 pb-4">
+                   <h3 class="text-xs font-black text-slate-400 uppercase tracking-[0.15em]">Developer & Webhook API</h3>
+                   <span class="bg-slate-100 text-slate-700 border border-slate-200 px-3 py-1 rounded-md text-[10px] font-black uppercase tracking-wider">Advanced</span>
                 </div>
-                <p class="text-sm text-slate-500 mb-5 font-medium leading-relaxed">Gunakan kredensial API Key ini untuk mengintegrasikan layanan WhatsApp Gateway KirimAja ke dalam aplikasi atau website pihak ketiga Anda.</p>
-                <div class="flex flex-col sm:flex-row gap-3 items-start sm:items-center">
+                <p class="text-sm text-slate-500 mb-6 font-medium leading-relaxed">Gunakan kredensial API Key ini untuk mengintegrasikan pengiriman pesan WA (OTP, Notif Pesanan) ke dalam website atau aplikasi sistem Anda sendiri.</p>
+                <div class="flex flex-col sm:flex-row gap-4 items-start sm:items-center">
                   <div class="relative w-full">
                      <i data-lucide="key" class="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 shrink-0"></i>
-                     <input type="password" id="set-api-key" readonly class="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-900 font-mono font-bold outline-none cursor-not-allowed tracking-wider" value="LOADING...">
+                     <input type="password" id="set-api-key" readonly class="w-full pl-11 pr-4 py-4 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-900 font-mono font-bold outline-none cursor-not-allowed tracking-widest" value="LOADING...">
                   </div>
                   <div class="flex gap-2 w-full sm:w-auto shrink-0">
-                     <button type="button" onclick="toggleVisibility('set-api-key')" class="px-4 py-3 bg-white border border-slate-200 text-slate-600 font-bold rounded-xl hover:bg-slate-50 transition-colors text-sm flex items-center justify-center gap-2 w-full sm:w-auto shrink-0" title="Tampilkan/Sembunyikan">
+                     <button type="button" onclick="toggleVisibility('set-api-key')" class="px-5 py-4 bg-white border border-slate-200 text-slate-600 font-bold rounded-xl hover:bg-slate-50 transition-colors text-sm flex items-center justify-center gap-2 w-full sm:w-auto shrink-0" title="Tampilkan/Sembunyikan">
                        <i data-lucide="eye" id="eye-set-api-key" class="w-4 h-4 shrink-0 block"></i>
                        <i data-lucide="eye-off" id="eye-off-set-api-key" class="w-4 h-4 shrink-0 hidden"></i>
                      </button>
-                     <button type="button" onclick="const v=document.getElementById('set-api-key').value; navigator.clipboard.writeText(v).then(()=>showToast('API Key Disalin!'));" class="px-6 py-3 bg-slate-900 border border-slate-900 text-white font-bold rounded-xl hover:bg-slate-800 transition-colors text-sm flex items-center justify-center gap-2 w-full sm:w-auto shrink-0">
-                       <i data-lucide="copy" class="w-4 h-4 shrink-0"></i> Salin
+                     <button type="button" onclick="const v=document.getElementById('set-api-key').value; navigator.clipboard.writeText(v).then(()=>showToast('API Key Disalin ke Clipboard!'));" class="px-8 py-4 bg-slate-900 border border-slate-900 text-white font-black rounded-xl hover:bg-slate-800 transition-colors text-sm flex items-center justify-center gap-2 w-full sm:w-auto shrink-0 shadow-lg shadow-slate-900/20">
+                       <i data-lucide="copy" class="w-4 h-4 shrink-0"></i> Salin Key
                      </button>
                   </div>
                 </div>
@@ -958,33 +1191,33 @@
         <!-- ============================================== -->
         <div id="panel-admin" class="hidden space-y-6 animate-slide-up">
            <div class="mb-8">
-             <h2 class="text-2xl font-bold text-slate-900">Admin Control</h2>
-             <p class="text-sm text-slate-500 mt-1">Area khusus Super Admin.</p>
+             <h2 class="text-2xl font-black text-slate-900 tracking-tight">Admin Control Center</h2>
+             <p class="text-sm text-slate-500 font-medium mt-1">Area eksklusif untuk manajemen master sistem.</p>
            </div>
            
            <div class="grid lg:grid-cols-2 gap-8">
               <!-- Broadcast Email -->
-              <div class="clean-card rounded-2xl p-7">
-                <h3 class="text-sm font-bold text-slate-900 mb-5 uppercase tracking-wider border-b border-slate-100 pb-3">Email Newsletter Blast</h3>
+              <div class="clean-card rounded-3xl p-8 shadow-sm border-t-4 border-t-accent-600">
+                <h3 class="text-sm font-bold text-slate-900 mb-6 uppercase tracking-wider border-b border-slate-100 pb-3">Email Newsletter Blast</h3>
                 <form onsubmit="handleEmailBlast(event)" class="space-y-5">
-                  <input type="text" id="blast-subject" required class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm outline-none focus:bg-white font-semibold" placeholder="Subjek Email">
-                  <textarea id="blast-content" required rows="5" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm resize-none outline-none focus:bg-white font-medium" placeholder="Konten (HTML Supported)..."></textarea>
-                  <button type="submit" id="btn-blast" class="w-full py-3.5 bg-slate-900 text-white font-bold rounded-xl text-sm hover:bg-slate-800">Kirim ke Semua User</button>
+                  <input type="text" id="blast-subject" required class="w-full px-4 py-3.5 bg-slate-50 border border-slate-200 rounded-xl text-sm outline-none focus:bg-white font-bold" placeholder="Subjek Email Promo...">
+                  <textarea id="blast-content" required rows="6" class="w-full px-4 py-3.5 bg-slate-50 border border-slate-200 rounded-xl text-sm resize-none outline-none focus:bg-white font-medium leading-relaxed" placeholder="Tulis konten (Mendukung tag HTML sederhana)..."></textarea>
+                  <button type="submit" id="btn-blast" class="w-full py-4 bg-slate-900 text-white font-black rounded-xl text-sm hover:bg-slate-800 shadow-lg shadow-slate-900/20">Eksekusi Mass Email</button>
                 </form>
               </div>
               <!-- Users Table -->
-              <div class="clean-card rounded-2xl flex flex-col h-[450px] overflow-hidden">
-                 <div class="p-5 border-b border-slate-200 flex justify-between items-center">
-                    <h3 class="font-bold text-slate-900 text-sm uppercase tracking-wider">Database Klien</h3>
-                    <button onclick="fetchAdminUsers()" class="text-slate-400 hover:text-slate-900"><i data-lucide="refresh-cw" class="w-4 h-4 shrink-0"></i></button>
+              <div class="clean-card rounded-3xl flex flex-col h-[500px] overflow-hidden shadow-sm">
+                 <div class="p-6 border-b border-slate-200 flex justify-between items-center bg-slate-50">
+                    <h3 class="font-bold text-slate-900 text-sm uppercase tracking-wider">Database Klien Aktif</h3>
+                    <button onclick="fetchAdminUsers()" class="text-slate-400 hover:text-slate-900 bg-white p-2 rounded-lg border border-slate-200"><i data-lucide="refresh-cw" class="w-4 h-4 shrink-0"></i></button>
                  </div>
-                 <div class="overflow-auto flex-1 hide-scrollbar">
+                 <div class="overflow-auto flex-1 hide-scrollbar bg-white">
                     <table class="w-full text-left whitespace-nowrap">
                        <thead class="bg-slate-50 sticky top-0 z-10 border-b border-slate-100">
                           <tr>
-                             <th class="px-5 py-3 text-xs font-bold text-slate-500 tracking-wider">Email</th>
-                             <th class="px-5 py-3 text-xs font-bold text-slate-500 tracking-wider text-center">Status</th>
-                             <th class="px-5 py-3 text-xs font-bold text-slate-500 tracking-wider text-center">Role</th>
+                             <th class="px-6 py-4 text-xs font-bold text-slate-500 tracking-wider">Email</th>
+                             <th class="px-6 py-4 text-xs font-bold text-slate-500 tracking-wider text-center">Status</th>
+                             <th class="px-6 py-4 text-xs font-bold text-slate-500 tracking-wider text-center">Role</th>
                           </tr>
                        </thead>
                        <tbody id="admin-table-body" class="divide-y divide-slate-100 text-sm font-medium text-slate-700"></tbody>
@@ -1040,23 +1273,23 @@
     // FRONTEND UI LOGIC & CONTROLLER
     // ==========================================
     let currentUser = null, globalDevices = [], globalContacts = [], globalAutoReplies = [], globalBroadcasts = [];
-    let currentPlan = "Starter", activePromo = "None", statTotals = { sent: 0, success: 0, failed: 0 }, statInterval, qrInterval;
+    let currentPlan = "Gratis", activePromo = "None", statTotals = { sent: 0, success: 0, failed: 0 }, statInterval, qrInterval;
 
     function showToast(msg, type = 'success') {
       const t = document.getElementById('toast'), icon = document.getElementById('toast-icon');
       document.getElementById('toast-msg').innerText = msg;
-      t.className = `fixed top-6 left-1/2 -translate-x-1/2 z-[200] transition-all duration-300 px-5 py-3 rounded-xl font-semibold text-sm shadow-lg flex items-center gap-3 text-white border ${type === 'success' ? 'bg-slate-900 border-slate-700' : 'bg-red-600 border-red-500'}`;
-      icon.innerHTML = type === 'success' ? '<i data-lucide="check" class="w-4 h-4 shrink-0"></i>' : '<i data-lucide="alert-triangle" class="w-4 h-4 shrink-0"></i>';
+      t.className = `fixed top-6 left-1/2 -translate-x-1/2 z-[200] transition-all duration-300 px-5 py-3 rounded-xl font-semibold text-sm shadow-xl flex items-center gap-3 text-white border ${type === 'success' ? 'bg-slate-900 border-slate-700' : 'bg-red-600 border-red-500'}`;
+      icon.innerHTML = type === 'success' ? '<i data-lucide="check-circle-2" class="w-5 h-5 shrink-0"></i>' : '<i data-lucide="alert-triangle" class="w-5 h-5 shrink-0"></i>';
       lucide.createIcons();
       t.classList.remove('opacity-0', '-translate-y-10');
-      setTimeout(() => t.classList.add('opacity-0', '-translate-y-10'), 3000);
+      setTimeout(() => t.classList.add('opacity-0', '-translate-y-10'), 3500);
     }
 
     function setBtnLoading(btnId, isLoading, text = 'Memproses...') {
       const btn = document.getElementById(btnId); if(!btn) return;
       if(isLoading) {
         if(!btn.dataset.html) btn.dataset.html = btn.innerHTML;
-        btn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin shrink-0"></i> ${text}`;
+        btn.innerHTML = `<i data-lucide="loader-2" class="w-5 h-5 animate-spin shrink-0"></i> ${text}`;
         btn.disabled = true; btn.classList.add('opacity-70', 'cursor-not-allowed');
       } else {
         if(btn.dataset.html) btn.innerHTML = btn.dataset.html;
@@ -1089,11 +1322,11 @@
        b.onclick = () => { if(confirmAction) confirmAction(); };
        if(type === 'danger') {
           i.className = 'p-3 rounded-xl shrink-0 bg-red-50 text-red-600 border border-red-100'; i.innerHTML = '<i data-lucide="alert-triangle" class="w-6 h-6 shrink-0"></i>';
-          b.className = 'px-6 py-2.5 rounded-xl font-bold text-sm text-white bg-red-600 hover:bg-red-700 transition-colors flex items-center gap-2';
+          b.className = 'px-6 py-2.5 rounded-xl font-bold text-sm text-white bg-red-600 hover:bg-red-700 transition-colors flex items-center gap-2 shadow-md';
           h.className = 'h-1 w-full bg-red-500';
        } else { 
           i.className = 'p-3 rounded-xl shrink-0 bg-slate-50 text-slate-700 border border-slate-200'; i.innerHTML = '<i data-lucide="info" class="w-6 h-6 shrink-0"></i>';
-          b.className = 'px-6 py-2.5 rounded-xl font-bold text-sm text-white bg-slate-900 hover:bg-slate-800 transition-colors flex items-center gap-2';
+          b.className = 'px-6 py-2.5 rounded-xl font-bold text-sm text-white bg-slate-900 hover:bg-slate-800 transition-colors flex items-center gap-2 shadow-md';
           h.className = 'h-1 w-full bg-slate-900';
        }
        lucide.createIcons(); m.classList.remove('hide'); m.classList.add('show');
@@ -1114,13 +1347,13 @@
       const els = { t: document.getElementById('auth-title'), s: document.getElementById('auth-sub'), b: document.getElementById('btn-auth'), ft: document.getElementById('auth-footer-text'), fb: document.getElementById('auth-footer-btn'), m: document.getElementById('auth-mode'), pass: document.getElementById('group-pass'), otp: document.getElementById('group-otp'), rem: document.getElementById('group-remember'), ref: document.getElementById('group-referral') };
       [els.pass, els.otp, els.rem, els.ref].forEach(el => el.classList.remove('hidden'));
       if(mode === 'login') {
-        els.m.value = 'login'; els.t.innerText = "Masuk"; els.s.innerText = "Akses portal manajemen Anda."; els.b.innerHTML = 'Akses Portal <i data-lucide="arrow-right" class="w-4 h-4 shrink-0"></i>'; els.ft.innerText = "Belum punya akun?"; els.fb.innerText = "Daftar"; els.otp.classList.add('hidden'); els.ref.classList.add('hidden');
+        els.m.value = 'login'; els.t.innerText = "Masuk"; els.s.innerText = "Akses portal manajemen Anda."; els.b.innerHTML = 'Akses Portal <i data-lucide="arrow-right" class="w-5 h-5 shrink-0"></i>'; els.ft.innerText = "Belum memiliki akun?"; els.fb.innerText = "Daftar Gratis"; els.otp.classList.add('hidden'); els.ref.classList.add('hidden');
       } else if(mode === 'register') {
-        els.m.value = 'register'; els.t.innerText = "Daftar"; els.s.innerText = "Buat akun baru gratis."; els.b.innerHTML = 'Daftar Sekarang <i data-lucide="user-plus" class="w-4 h-4 shrink-0"></i>'; els.ft.innerText = "Sudah punya akun?"; els.fb.innerText = "Masuk"; els.otp.classList.add('hidden'); els.rem.classList.add('hidden');
+        els.m.value = 'register'; els.t.innerText = "Daftar"; els.s.innerText = "Buat akun baru gratis selamanya."; els.b.innerHTML = 'Daftar Sekarang <i data-lucide="user-plus" class="w-5 h-5 shrink-0"></i>'; els.ft.innerText = "Sudah memiliki akun?"; els.fb.innerText = "Masuk"; els.otp.classList.add('hidden'); els.rem.classList.add('hidden');
       } else if(mode === 'verify') {
-        els.m.value = 'verify'; els.t.innerText = "Verifikasi"; els.s.innerText = "Cek email untuk kode OTP."; els.b.innerHTML = 'Verifikasi <i data-lucide="check" class="w-4 h-4 shrink-0"></i>'; els.pass.classList.add('hidden'); els.rem.classList.add('hidden'); els.ref.classList.add('hidden');
+        els.m.value = 'verify'; els.t.innerText = "Verifikasi"; els.s.innerText = "Cek email Anda untuk kode OTP."; els.b.innerHTML = 'Verifikasi <i data-lucide="check-circle" class="w-5 h-5 shrink-0"></i>'; els.pass.classList.add('hidden'); els.rem.classList.add('hidden'); els.ref.classList.add('hidden');
       } else if(mode === 'forgot') {
-        els.m.value = 'forgot'; els.t.innerText = "Reset Sandi"; els.s.innerText = "Token akan dikirim ke email."; els.b.innerHTML = 'Kirim Token <i data-lucide="send" class="w-4 h-4 shrink-0"></i>'; els.pass.classList.add('hidden'); els.rem.classList.add('hidden'); els.ref.classList.add('hidden'); els.otp.classList.add('hidden');
+        els.m.value = 'forgot'; els.t.innerText = "Reset Sandi"; els.s.innerText = "Token akan dikirim ke email Anda."; els.b.innerHTML = 'Kirim Token <i data-lucide="send" class="w-5 h-5 shrink-0"></i>'; els.pass.classList.add('hidden'); els.rem.classList.add('hidden'); els.ref.classList.add('hidden'); els.otp.classList.add('hidden');
       }
       lucide.createIcons();
     }
@@ -1175,7 +1408,32 @@
       document.getElementById('set-role').innerText = user.role;
       document.getElementById('set-api-key').value = user.apiKey || "NO_API_KEY";
 
-      if(user.role === 'admin') { document.getElementById('nav-admin').classList.remove('hidden'); currentPlan = "Business"; updatePlanUI(); }
+      // Logika Paket (Gratis, Lite, Pro, VIP)
+      currentPlan = user.plan || "Gratis";
+      if(user.role === 'admin') { 
+        document.getElementById('nav-admin').classList.remove('hidden'); 
+        currentPlan = "VIP"; // Admin otomatis VIP
+      }
+      updatePlanUI();
+
+      // Proteksi Menu Berdasarkan Paket
+      const planLower = currentPlan.toLowerCase();
+      const navChat = document.getElementById('btn-nav-chat');
+      const botNavChat = document.getElementById('bot-nav-chat');
+      const navAiTab = document.getElementById('tab-ar-ai');
+      
+      if(navChat) navChat.style.display = 'flex';
+      if(botNavChat) botNavChat.style.display = 'flex';
+      if(navAiTab) navAiTab.style.display = 'block';
+
+      if(planLower === 'gratis') {
+        if(navChat) navChat.style.display = 'none'; 
+        if(botNavChat) botNavChat.style.display = 'none'; 
+        if(navAiTab) navAiTab.style.display = 'none'; 
+        setTimeout(() => showPanel('panel-billing'), 300); // Redirect langsung ke Status/Billing
+      } else if(planLower === 'lite') {
+        if(navAiTab) navAiTab.style.display = 'none'; 
+      }
       
       // Load all data from GAS
       loadDevicesData(); 
@@ -1227,7 +1485,7 @@
       }
     }
 
-    function promptLogout() { showModal('Sign Out', 'Anda yakin ingin keluar dari sesi ini?', 'info', () => { localStorage.removeItem('wag_token'); currentUser = null; clearInterval(statInterval); clearInterval(qrInterval); closeModal(); switchView('marketing'); showToast("Berhasil Sign Out."); }); }
+    function promptLogout() { showModal('Sign Out', 'Anda yakin ingin keluar dari sesi ini?', 'info', () => { localStorage.removeItem('wag_token'); currentUser = null; clearInterval(statInterval); clearInterval(qrInterval); if(window.liveChatInterval) clearInterval(window.liveChatInterval); closeModal(); switchView('marketing'); showToast("Berhasil Sign Out."); }); }
     
     // Hitung statistik berdasarkan data asli
     async function calculateStats() {
@@ -1271,15 +1529,20 @@
 
     function renderContactTable(data) {
       const tbody = document.getElementById('contact-table-body'); document.getElementById('contact-count').innerText = data.length;
-      if(data.length === 0) { tbody.innerHTML = `<tr><td colspan="5" class="py-10 text-center text-slate-400 text-sm">Kosong. Tambahkan kontak baru.</td></tr>`; return; }
-      tbody.innerHTML = data.map(c => `<tr class="hover:bg-slate-50 border-b border-slate-50 last:border-0"><td class="px-6 py-4">${c.name}</td><td class="px-6 py-4 font-mono text-sm">${c.phone}</td><td class="px-6 py-4 truncate max-w-[200px]">${c.address}</td><td class="px-6 py-4 text-center"><span class="px-2.5 py-1 bg-slate-100 rounded-md text-[10px] uppercase font-bold text-slate-600">${c.group !== '-' ? c.group : (c.label !== '-' ? c.label : '-')}</span></td><td class="px-6 py-4 text-right"><button onclick="promptDeleteContact('${c.id}', '${c.name}')" class="text-red-500 hover:text-red-700 p-1"><i data-lucide="trash-2" class="w-4 h-4 shrink-0"></i></button></td></tr>`).join(''); lucide.createIcons();
+      if(data.length === 0) { tbody.innerHTML = `<tr><td colspan="5" class="py-10 text-center text-slate-400 text-sm font-medium">Belum ada kontak yang tersimpan.</td></tr>`; return; }
+      tbody.innerHTML = data.map(c => `<tr class="hover:bg-slate-50 border-b border-slate-50 last:border-0"><td class="px-6 py-4 font-bold text-slate-800">${c.name}</td><td class="px-6 py-4 font-mono text-sm">${c.phone}</td><td class="px-6 py-4 truncate max-w-[200px]">${c.address}</td><td class="px-6 py-4 text-center"><span class="px-2.5 py-1.5 bg-slate-100 rounded-lg text-[10px] uppercase font-black text-slate-600">${c.group !== '-' ? c.group : (c.label !== '-' ? c.label : '-')}</span></td><td class="px-6 py-4 text-right"><button onclick="promptDeleteContact('${c.id}', '${c.name}')" class="text-red-500 hover:text-red-700 p-2 bg-red-50 rounded-lg"><i data-lucide="trash-2" class="w-4 h-4 shrink-0"></i></button></td></tr>`).join(''); lucide.createIcons();
     }
     
     function filterContacts() { const q = document.getElementById('search-contact').value.toLowerCase(); renderContactTable(globalContacts.filter(c => c.name.toLowerCase().includes(q) || c.phone.includes(q) || c.address.toLowerCase().includes(q))); }
 
     function promptAddContact() {
-       const h = `<div class="space-y-4 mt-5 text-left"><input type="text" id="m-n" class="w-full px-4 py-2.5 bg-slate-50 rounded-xl border border-slate-200 text-sm outline-none font-medium" placeholder="Nama"><input type="number" id="m-p" class="w-full px-4 py-2.5 bg-slate-50 rounded-xl border border-slate-200 text-sm outline-none font-medium" placeholder="No WA (628...)"><input type="text" id="m-a" class="w-full px-4 py-2.5 bg-slate-50 rounded-xl border border-slate-200 text-sm outline-none font-medium" placeholder="Alamat"><div class="flex gap-3"><input type="text" id="m-g" class="w-1/2 px-4 py-2.5 bg-slate-50 rounded-xl border border-slate-200 text-sm outline-none font-medium" placeholder="Grup"><input type="text" id="m-l" class="w-1/2 px-4 py-2.5 bg-slate-50 rounded-xl border border-slate-200 text-sm outline-none font-medium" placeholder="Label"></div></div>`;
-       showModal('Kontak Baru', h, 'info', async () => { 
+       const planLower = currentPlan.toLowerCase();
+       const limit = planLower === 'gratis' ? 0 : (planLower === 'lite' ? 500 : (planLower === 'pro' ? 2000 : 999999));
+       if (planLower === 'gratis') return showToast("Paket Gratis tidak dapat menyimpan kontak. Silakan Upgrade!", "error");
+       if (globalContacts.length >= limit) return showToast(`Batas kontak paket ${currentPlan} penuh (${limit}).`, "error");
+
+       const h = `<div class="space-y-4 mt-5 text-left"><input type="text" id="m-n" class="w-full px-4 py-3 bg-slate-50 rounded-xl border border-slate-200 text-sm outline-none font-bold focus:bg-white" placeholder="Nama Lengkap"><input type="number" id="m-p" class="w-full px-4 py-3 bg-slate-50 rounded-xl border border-slate-200 text-sm outline-none font-bold focus:bg-white" placeholder="No WhatsApp (Cth: 628...)"><input type="text" id="m-a" class="w-full px-4 py-3 bg-slate-50 rounded-xl border border-slate-200 text-sm outline-none font-bold focus:bg-white" placeholder="Alamat / Kota"><div class="flex gap-3"><input type="text" id="m-g" class="w-1/2 px-4 py-3 bg-slate-50 rounded-xl border border-slate-200 text-sm outline-none font-bold focus:bg-white" placeholder="Nama Grup"><input type="text" id="m-l" class="w-1/2 px-4 py-3 bg-slate-50 rounded-xl border border-slate-200 text-sm outline-none font-bold focus:bg-white" placeholder="Label"></div></div>`;
+       showModal('Simpan Kontak Baru', h, 'info', async () => { 
            const n = document.getElementById('m-n').value, p = document.getElementById('m-p').value; 
            if(!n || !p) return showToast("Nama & No WA wajib!", "error"); 
            setBtnLoading('modal-confirm-btn', true); 
@@ -1289,7 +1552,7 @@
            if(res.status) loadContactsData(); 
        });
     }
-    async function promptDeleteContact(id, name) { showModal('Hapus', `Hapus kontak ${name}?`, 'danger', async () => { setBtnLoading('modal-confirm-btn', true); const res = await fetchGAS("deleteContact", [currentUser.email, currentUser.token, id]); closeModal(); showToast(res.message, res.status ? 'success':'error'); if(res.status) loadContactsData(); }); }
+    async function promptDeleteContact(id, name) { showModal('Hapus Permanen', `Anda yakin ingin menghapus kontak ${name}?`, 'danger', async () => { setBtnLoading('modal-confirm-btn', true); const res = await fetchGAS("deleteContact", [currentUser.email, currentUser.token, id]); closeModal(); showToast(res.message, res.status ? 'success':'error'); if(res.status) loadContactsData(); }); }
 
     // ==========================================
     // --- LIVE CHAT SYSTEM (REAL-TIME) ---
@@ -1300,7 +1563,7 @@
     async function loadChatListUI() {
       const deviceId = document.getElementById('chat-device-select')?.value;
       if(!deviceId) {
-          document.getElementById('chat-list-container').innerHTML = `<div class="p-5 text-center text-xs text-slate-400 font-medium mt-10">Pilih Device terlebih dahulu.</div>`;
+          document.getElementById('chat-list-container').innerHTML = `<div class="p-5 text-center text-xs text-slate-400 font-medium mt-10">Pilih Device terlebih dahulu di kanan atas.</div>`;
           return;
       }
       
@@ -1315,21 +1578,21 @@
     function renderChatListHTML(chatArray) {
        const listContainer = document.getElementById('chat-list-container');
        if (!chatArray || chatArray.length === 0) {
-         listContainer.innerHTML = `<div class="p-5 text-center text-xs text-slate-400 font-medium mt-10">Belum ada pesan.</div>`;
+         listContainer.innerHTML = `<div class="p-5 text-center text-xs text-slate-400 font-medium mt-10">Belum ada obrolan masuk.</div>`;
          return;
        }
        listContainer.innerHTML = chatArray.map(c => `
-         <div onclick="viewChat('${c.id}')" class="p-4 border-b border-slate-100 hover:bg-slate-50 cursor-pointer transition-colors flex gap-3 items-center group ${activeChatId === c.id ? 'bg-slate-50' : ''}">
-             <div class="w-10 h-10 rounded-full bg-slate-900 text-white flex items-center justify-center font-bold shrink-0 text-sm shadow-sm relative">
-                <i data-lucide="user" class="w-5 h-5"></i>
-                ${c.unread > 0 ? `<span class="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-accent-500 text-[9px] font-bold text-white shadow-sm border-2 border-white">${c.unread}</span>` : ''}
+         <div onclick="viewChat('${c.id}')" class="p-4 border-b border-slate-100 hover:bg-slate-50 cursor-pointer transition-colors flex gap-3 items-center group ${activeChatId === c.id ? 'bg-accent-50/50' : ''}">
+             <div class="w-12 h-12 rounded-full bg-slate-900 text-white flex items-center justify-center font-bold shrink-0 text-sm shadow-sm relative">
+                <i data-lucide="user" class="w-6 h-6"></i>
+                ${c.unread > 0 ? `<span class="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-[10px] font-black text-white shadow-sm border-2 border-white">${c.unread}</span>` : ''}
              </div>
              <div class="flex-1 overflow-hidden">
                  <div class="flex justify-between items-center mb-1">
-                   <h4 class="font-bold text-slate-900 text-sm truncate group-hover:text-accent-600 transition-colors">${c.phone}</h4>
-                   <span class="text-[10px] text-slate-400 shrink-0 font-medium">${c.lastTime}</span>
+                   <h4 class="font-black text-slate-900 text-sm truncate group-hover:text-accent-600 transition-colors">${c.phone}</h4>
+                   <span class="text-[10px] text-slate-400 shrink-0 font-bold">${c.lastTime}</span>
                  </div>
-                 <p class="text-xs text-slate-500 truncate">${c.messages[c.messages.length - 1].text}</p>
+                 <p class="text-xs text-slate-500 truncate font-medium ${c.unread > 0 ? 'text-slate-800 font-bold' : ''}">${c.messages[c.messages.length - 1].text}</p>
              </div>
          </div>
       `).join('');
@@ -1350,7 +1613,7 @@
        if(!isRefresh) filterChats(); 
 
        document.getElementById('chat-active-name').innerText = chat.phone;
-       document.getElementById('chat-active-number').innerText = chat.phone;
+       document.getElementById('chat-active-number').innerText = "+"+chat.phone;
        document.getElementById('chat-target-number').value = chat.phone;
        
        document.getElementById('chat-header-actions').classList.remove('hidden');
@@ -1365,20 +1628,20 @@
            if(m.fromMe) {
                return `
                 <div class="flex justify-end animate-slide-up" style="animation-duration: 0.2s">
-                   <div class="bg-slate-900 text-white p-3.5 rounded-2xl rounded-tr-none max-w-[85%] sm:max-w-[70%] shadow-sm relative">
-                       <p class="text-[13px] leading-relaxed text-left font-medium pt-1">${m.text}</p>
-                       <div class="flex justify-end items-center gap-1 mt-1.5 opacity-70">
-                         <span class="text-[9px] font-medium tracking-wider">${m.time}</span>
-                         <i data-lucide="check-check" class="w-3 h-3"></i>
+                   <div class="bg-slate-900 text-white p-4 rounded-3xl rounded-tr-sm max-w-[85%] sm:max-w-[70%] shadow-md relative">
+                       <p class="text-[14px] leading-relaxed text-left font-medium pt-1">${m.text}</p>
+                       <div class="flex justify-end items-center gap-1.5 mt-2 opacity-70">
+                         <span class="text-[10px] font-bold tracking-wider">${m.time}</span>
+                         <i data-lucide="check-check" class="w-3.5 h-3.5"></i>
                        </div>
                    </div>
                 </div>`;
            } else {
                return `
                 <div class="flex justify-start animate-slide-up" style="animation-duration: 0.2s">
-                   <div class="bg-white border border-slate-200 text-slate-800 p-3.5 rounded-2xl rounded-tl-none max-w-[85%] sm:max-w-[70%] shadow-sm">
-                       <p class="text-[13px] leading-relaxed font-medium">${m.text}</p>
-                       <p class="text-[9px] text-slate-400 text-right mt-1.5 font-medium tracking-wider">${m.time}</p>
+                   <div class="bg-white border border-slate-200 text-slate-800 p-4 rounded-3xl rounded-tl-sm max-w-[85%] sm:max-w-[70%] shadow-sm">
+                       <p class="text-[14px] leading-relaxed font-bold">${m.text}</p>
+                       <p class="text-[10px] text-slate-400 text-right mt-2 font-bold tracking-wider">${m.time}</p>
                    </div>
                 </div>`;
            }
@@ -1390,17 +1653,17 @@
 
     function startNewLiveChat() {
        const targetInput = document.getElementById('new-chat-target').value;
-       if(!targetInput) return showToast("Pilih kontak terlebih dahulu!", "error");
+       if(!targetInput) return showToast("Masukkan nomor WA atau pilih kontak!", "error");
        
        const phone = targetInput.replace(/[^0-9]/g, ''); 
        activeChatId = 'C-' + phone;
        
-       document.getElementById('chat-active-name').innerText = "Kontak Baru";
-       document.getElementById('chat-active-number').innerText = phone;
+       document.getElementById('chat-active-name').innerText = "Percakapan Baru";
+       document.getElementById('chat-active-number').innerText = "+"+phone;
        document.getElementById('chat-target-number').value = phone;
        document.getElementById('chat-header-actions').classList.remove('hidden');
        document.getElementById('chat-reply-form').classList.remove('hidden');
-       document.getElementById('chat-bubbles-container').innerHTML = `<div class="flex items-center justify-center flex-1 text-slate-400 text-sm font-medium flex-col gap-2"><i data-lucide="message-square" class="w-10 h-10 text-slate-300"></i>Ketik pesan pertama Anda di bawah.</div>`;
+       document.getElementById('chat-bubbles-container').innerHTML = `<div class="flex items-center justify-center flex-1 text-slate-400 text-sm font-medium flex-col gap-3"><div class="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mb-2"><i data-lucide="message-square" class="w-8 h-8 text-slate-400"></i></div>Ketik pesan pertama Anda di kotak bawah ini.</div>`;
        lucide.createIcons();
        document.getElementById('new-chat-target').value = '';
     }
@@ -1422,7 +1685,7 @@
        const scheduleTime = document.getElementById('chat-schedule-time').value;
 
        if(!target || !msg) return;
-       if(!deviceId) return showToast("Tidak ada device aktif!", "error");
+       if(!deviceId) return showToast("Anda belum memilih Device pengirim!", "error");
 
        setBtnLoading('btn-send-reply', true, '');
        
@@ -1447,11 +1710,11 @@
       const res = await fetchGAS("getAutoReplies", [currentUser.email, currentUser.token]); if (res.status) { globalAutoReplies = res.data; renderAutoReplyTable(); }
     }
     function renderAutoReplyTable() {
-      const tbody = document.getElementById('autoreply-table-body'); if(globalAutoReplies.length === 0) { tbody.innerHTML = `<tr><td colspan="3" class="py-10 text-center text-slate-400 text-sm">Kosong. Belum ada aturan dibuat.</td></tr>`; return; }
-      tbody.innerHTML = globalAutoReplies.map(ar => `<tr class="hover:bg-slate-50 border-b border-slate-50 last:border-0"><td class="px-6 py-4 font-bold">${ar.keyword}</td><td class="px-6 py-4 truncate max-w-[200px]">${ar.message}</td><td class="px-6 py-4 flex justify-end gap-4 items-center"><label class="relative inline-flex items-center cursor-pointer scale-90 shrink-0"><input type="checkbox" ${ar.status === 'Active'?'checked':''} onchange="toggleRuleStatus(this, '${ar.keyword}')" class="sr-only peer"><div class="w-11 h-6 bg-slate-300 rounded-full peer peer-checked:after:translate-x-full after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-green-500"></div></label><button onclick="promptDeleteAutoReply('${ar.id}', '${ar.keyword}')" class="text-red-500 hover:text-red-700 p-1"><i data-lucide="trash-2" class="w-4 h-4 shrink-0"></i></button></td></tr>`).join(''); lucide.createIcons();
+      const tbody = document.getElementById('autoreply-table-body'); if(globalAutoReplies.length === 0) { tbody.innerHTML = `<tr><td colspan="3" class="py-10 text-center text-slate-400 text-sm font-medium">Belum ada aturan Auto-Reply yang dibuat.</td></tr>`; return; }
+      tbody.innerHTML = globalAutoReplies.map(ar => `<tr class="hover:bg-slate-50 border-b border-slate-50 last:border-0"><td class="px-6 py-4 font-black text-slate-800">${ar.keyword}</td><td class="px-6 py-4 truncate max-w-[200px] font-medium">${ar.message}</td><td class="px-6 py-4 flex justify-end gap-4 items-center"><label class="relative inline-flex items-center cursor-pointer scale-90 shrink-0"><input type="checkbox" ${ar.status === 'Active'?'checked':''} onchange="toggleRuleStatus(this, '${ar.keyword}')" class="sr-only peer"><div class="w-11 h-6 bg-slate-200 rounded-full peer peer-checked:after:translate-x-full after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-green-500"></div></label><button onclick="promptDeleteAutoReply('${ar.id}', '${ar.keyword}')" class="text-red-500 hover:text-red-700 p-2 bg-red-50 rounded-lg"><i data-lucide="trash-2" class="w-4 h-4 shrink-0"></i></button></td></tr>`).join(''); lucide.createIcons();
     }
     async function toggleRuleStatus(cb, kw) { const res = await fetchGAS("toggleAutoReplyStatus", [currentUser.email, currentUser.token, kw, cb.checked]); showToast(res.message, res.status?"success":"error"); }
-    function promptDeleteAutoReply(id, kw) { showModal('Hapus', `Hapus keyword ${kw}?`, 'danger', async () => { setBtnLoading('modal-confirm-btn', true); const res = await fetchGAS("deleteAutoReply", [currentUser.email, currentUser.token, id]); closeModal(); showToast(res.message, res.status?'success':'error'); if(res.status) loadAutoRepliesData(); }); }
+    function promptDeleteAutoReply(id, kw) { showModal('Hapus Aturan', `Hapus aturan untuk keyword: ${kw}?`, 'danger', async () => { setBtnLoading('modal-confirm-btn', true); const res = await fetchGAS("deleteAutoReply", [currentUser.email, currentUser.token, id]); closeModal(); showToast(res.message, res.status?'success':'error'); if(res.status) loadAutoRepliesData(); }); }
     async function handleAutoReplySubmit(e) { e.preventDefault(); setBtnLoading('btn-ar', true); const res = await fetchGAS("addAutoReply", [currentUser.email, currentUser.token, document.getElementById('ar-keyword').value, document.getElementById('ar-match-type').value, "none", "", document.getElementById('ar-message').value]); setBtnLoading('btn-ar', false); showToast(res.message, res.status ? "success":"error"); if(res.status) { e.target.reset(); loadAutoRepliesData(); } }
     
     function switchArTab(id) {
@@ -1471,9 +1734,9 @@
       }
     }
 
-    function populateAiDeviceDropdown() { const s = document.getElementById('ai-device'); if(globalDevices.length === 0) { s.innerHTML = '<option value="">-- Device Kosong --</option>'; return; } const c = s.value; s.innerHTML = '<option value="">-- Pilih Target Device --</option>' + globalDevices.map(d => `<option value="${d.deviceId}">${d.deviceName} (${d.status||'Offline'})</option>`).join(''); if(c && globalDevices.find(d => d.deviceId === c)) s.value = c; }
+    function populateAiDeviceDropdown() { const s = document.getElementById('ai-device'); if(globalDevices.length === 0) { s.innerHTML = '<option value="">-- Device Anda Kosong --</option>'; return; } const c = s.value; s.innerHTML = '<option value="">-- Pilih Device Target AI --</option>' + globalDevices.map(d => `<option value="${d.deviceId}">${d.deviceName} (${d.status||'Offline'})</option>`).join(''); if(c && globalDevices.find(d => d.deviceId === c)) s.value = c; }
     async function fetchAiConfig(id) { if(!id) { document.getElementById('ai-status').checked=false; document.getElementById('ai-api-key').value=''; document.getElementById('ai-prompt').value=''; return; } const res = await fetchGAS("getAiConfig", [currentUser.email, currentUser.token, id]); if(res.status && res.data) { document.getElementById('ai-status').checked=res.data.isActive; document.getElementById('ai-api-key').value=res.data.apiKey||''; document.getElementById('ai-prompt').value=res.data.prompt||''; } else { document.getElementById('ai-status').checked=false; document.getElementById('ai-api-key').value=''; document.getElementById('ai-prompt').value=''; } }
-    async function handleAiSubmit(e) { e.preventDefault(); const id = document.getElementById('ai-device').value; if(!id) return showToast("Pilih Device!", "error"); setBtnLoading('btn-ai', true); const res = await fetchGAS("saveAiConfigDevice", [currentUser.email, currentUser.token, id, document.getElementById('ai-status').checked, document.getElementById('ai-api-key').value, document.getElementById('ai-prompt').value]); setBtnLoading('btn-ai', false); showToast(res.message, res.status?"success":"error"); }
+    async function handleAiSubmit(e) { e.preventDefault(); const id = document.getElementById('ai-device').value; if(!id) return showToast("Pilih Target Device dulu!", "error"); setBtnLoading('btn-ai', true); const res = await fetchGAS("saveAiConfigDevice", [currentUser.email, currentUser.token, id, document.getElementById('ai-status').checked, document.getElementById('ai-api-key').value, document.getElementById('ai-prompt').value]); setBtnLoading('btn-ai', false); showToast(res.message, res.status?"success":"error"); }
 
     // --- DEVICES ---
     async function loadDevicesData() { 
@@ -1489,30 +1752,29 @@
       } 
     }
     
-    function renderDeviceTable() { const tbody = document.getElementById('device-table-body'); if(globalDevices.length === 0) { tbody.innerHTML = `<tr><td colspan="3" class="py-10 text-center text-slate-400 text-sm">Kosong. Tambah Device.</td></tr>`; return; } tbody.innerHTML = globalDevices.map(d => `<tr class="hover:bg-slate-50 border-b border-slate-50 last:border-0"><td class="px-6 py-4 font-bold text-sm">${d.deviceName}</td><td class="px-6 py-4 text-center"><span class="px-3 py-1.5 rounded-lg text-[10px] uppercase font-bold tracking-wider ${d.status==='CONNECTED'?'bg-green-50 border border-green-100 text-green-700':'bg-yellow-50 border border-yellow-100 text-yellow-700'}">${d.status||'PENDING'}</span></td><td class="px-6 py-4 text-right"><div class="flex justify-end gap-2"><button onclick="requestQR('${d.sessionId}', '${d.deviceName}')" class="text-xs bg-slate-100 hover:bg-slate-200 text-slate-800 px-4 py-2 rounded-lg font-bold flex items-center gap-1.5 shrink-0"><i data-lucide="qr-code" class="w-3.5 h-3.5 shrink-0"></i> Konek</button><button onclick="promptDeleteDevice('${d.deviceId}', '${d.deviceName}')" class="text-red-500 hover:text-red-700 p-2 shrink-0"><i data-lucide="trash-2" class="w-4 h-4 shrink-0"></i></button></div></td></tr>`).join(''); lucide.createIcons(); }
+    function renderDeviceTable() { const tbody = document.getElementById('device-table-body'); if(globalDevices.length === 0) { tbody.innerHTML = `<tr><td colspan="3" class="py-10 text-center text-slate-400 text-sm font-medium">Belum ada Device yang ditambahkan.</td></tr>`; return; } tbody.innerHTML = globalDevices.map(d => `<tr class="hover:bg-slate-50 border-b border-slate-50 last:border-0"><td class="px-6 py-4 font-black text-slate-800 text-sm">${d.deviceName}</td><td class="px-6 py-4 text-center"><span class="px-3 py-1.5 rounded-lg text-[10px] uppercase font-black tracking-wider ${d.status==='CONNECTED'?'bg-green-100 border border-green-200 text-green-700':'bg-yellow-100 border border-yellow-200 text-yellow-700'}">${d.status||'PENDING'}</span></td><td class="px-6 py-4 text-right"><div class="flex justify-end gap-2"><button onclick="requestQR('${d.sessionId}', '${d.deviceName}')" class="text-xs bg-slate-900 hover:bg-slate-800 text-white px-4 py-2.5 rounded-xl font-bold flex items-center gap-1.5 shrink-0 shadow-sm"><i data-lucide="qr-code" class="w-3.5 h-3.5 shrink-0"></i> Konek</button><button onclick="promptDeleteDevice('${d.deviceId}', '${d.deviceName}')" class="text-red-500 hover:text-red-700 p-2.5 bg-red-50 rounded-xl shrink-0"><i data-lucide="trash-2" class="w-4 h-4 shrink-0"></i></button></div></td></tr>`).join(''); lucide.createIcons(); }
     
     function promptAddDevice() { 
-      if(currentPlan === "Starter" && globalDevices.length >= 1) { showToast("Limit Starter! Upgrade Pro.", "error"); return; } 
-      showModal('Device Baru', `<input type="text" id="n-d-n" class="w-full px-4 py-3 mt-4 bg-slate-50 border border-slate-200 rounded-xl outline-none text-sm font-medium" placeholder="Nama Device">`, 'info', async () => { 
+      const planLower = currentPlan.toLowerCase();
+      const limit = planLower === 'gratis' ? 1 : (planLower === 'lite' ? 5 : (planLower === 'pro' ? 20 : 9999));
+      if(globalDevices.length >= limit) { showToast(`Maksimal ${limit} device untuk paket ${currentPlan}! Silakan Upgrade.`, "error"); return; } 
+      showModal('Tambah Device WA', `<input type="text" id="n-d-n" class="w-full px-4 py-3 mt-4 bg-slate-50 border border-slate-200 rounded-xl outline-none text-sm font-bold focus:bg-white" placeholder="Nama Bebas (Cth: CS Rina)">`, 'info', async () => { 
           const n = document.getElementById('n-d-n').value; 
-          if(!n) return showToast("Wajib diisi!", "error"); 
+          if(!n) return showToast("Nama Device wajib diisi!", "error"); 
           setBtnLoading('modal-confirm-btn', true); 
           const res = await fetchGAS("addDevice", [currentUser.email, currentUser.token, n]); 
           closeModal(); 
           showToast(res.message); 
-          if(res.status) { 
-              loadDevicesData(); 
-              requestQR(res.data.sessionId, res.data.deviceName); 
-          } 
+          if(res.status) { loadDevicesData(); requestQR(res.data.sessionId, res.data.deviceName); } 
       }); 
     }
-    
-    function promptDeleteDevice(id, name) { showModal('Hapus', `Hapus device ${name}?`, 'danger', async () => { setBtnLoading('modal-confirm-btn', true); const res = await fetchGAS("deleteDevice", [currentUser.email, currentUser.token, id]); closeModal(); showToast(res.message, res.status?'success':'error'); if(res.status) loadDevicesData(); }); }
+
+    function promptDeleteDevice(id, name) { showModal('Hapus Device', `Anda yakin ingin menghapus device ${name}? Scanner harus diulang jika ditambahkan lagi.`, 'danger', async () => { setBtnLoading('modal-confirm-btn', true); const res = await fetchGAS("deleteDevice", [currentUser.email, currentUser.token, id]); closeModal(); showToast(res.message, res.status?'success':'error'); if(res.status) loadDevicesData(); }); }
     
     // INTEGRASI QR KE NODE.JS ASLI
     async function requestQR(sessionId, name) { 
       if (!CONFIG.ENGINE_BASE_URL || !CONFIG.ENGINE_BASE_URL.startsWith("http")) {
-          showToast("URL Engine Node.js belum dikonfigurasi!", "error");
+          showToast("URL Engine Node.js Anda belum dikonfigurasi di Code.gs!", "error");
           return;
       }
       
@@ -1531,11 +1793,11 @@
             if(data.qr) { 
                 l.classList.add('hidden'); 
                 q.classList.remove('hidden'); 
-                q.innerHTML = `<img src="https://api.qrserver.com/v1/create-qr-code/?size=250x250&margin=10&data=${encodeURIComponent(data.qr)}" class="w-full h-full rounded-lg border border-slate-200" />`; 
+                q.innerHTML = `<img src="https://api.qrserver.com/v1/create-qr-code/?size=250x250&margin=10&data=${encodeURIComponent(data.qr)}" class="w-full h-full rounded-2xl border border-slate-200 shadow-sm p-1 bg-white" />`; 
             } else if (data.status === 'CONNECTED') { 
                 l.classList.add('hidden'); 
                 q.classList.remove('hidden'); 
-                q.innerHTML = '<div class="text-center pt-8"><i data-lucide="check-circle" class="w-12 h-12 text-green-500 mx-auto shrink-0"></i><p class="text-xs font-bold text-green-600 mt-3 uppercase tracking-wider">Terhubung</p></div>'; 
+                q.innerHTML = '<div class="text-center pt-8"><i data-lucide="check-circle-2" class="w-16 h-16 text-green-500 mx-auto shrink-0 mb-2"></i><p class="text-sm font-black text-green-600 mt-3 uppercase tracking-wider">Device Terhubung!</p></div>'; 
                 lucide.createIcons(); 
                 clearInterval(qrInterval); 
                 
@@ -1545,7 +1807,7 @@
         } catch (e) { 
             console.error("Gagal menarik QR dari Mesin Node.js:", e);
             clearInterval(qrInterval); 
-            l.innerHTML = '<i data-lucide="x-circle" class="w-8 h-8 mb-3 text-red-500 shrink-0"></i><span class="text-xs text-red-500 font-medium">Gagal menghubungi Server Node.js</span>';
+            l.innerHTML = '<i data-lucide="x-circle" class="w-8 h-8 mb-3 text-red-500 shrink-0"></i><span class="text-xs text-red-500 font-bold text-center">Gagal menghubungi Server Node.js.<br>Pastikan engine menyala.</span>';
             lucide.createIcons();
         } 
       }; 
@@ -1555,9 +1817,9 @@
     }
 
     // --- BROADCASTS ---
-    function updateCharCount() { document.getElementById('char-count').innerText = `${document.getElementById('bc-message').value.length} Karakter`; }
+    function updateCharCount() { document.getElementById('char-count').innerText = `${document.getElementById('bc-message').value.length} Karakter (Teks Panjang Akan Terpotong di Beberapa Tipe HP)`; }
     function insertVar(v) { const t = document.getElementById('bc-message'), s = t.selectionStart, e = t.selectionEnd, tx = t.value; t.value = tx.substring(0, s) + v + tx.substring(e); t.focus(); t.selectionEnd = s + v.length; updateCharCount(); }
-    function populateBroadcastDropdown() { const opts = globalDevices.length ? globalDevices.map(d => `<option value="${d.deviceId}">${d.deviceName} (${d.status||'Off'})</option>`).join('') : '<option value="">-- Device Kosong --</option>'; document.getElementById('bc-device').innerHTML = opts; const qs = document.getElementById('qs-device'); if(qs) qs.innerHTML = opts; }
+    function populateBroadcastDropdown() { const opts = globalDevices.length ? globalDevices.map(d => `<option value="${d.deviceId}">${d.deviceName} (${d.status||'Off'})</option>`).join('') : '<option value="">-- Device Anda Kosong --</option>'; document.getElementById('bc-device').innerHTML = opts; const qs = document.getElementById('qs-device'); if(qs) qs.innerHTML = opts; }
     
     // Logic Pemilihan Target (Grup, Label, Manual)
     function updateTargetFilters() {
@@ -1572,22 +1834,22 @@
       if(type === 'manual') {
           manualDiv.classList.remove('hidden');
           selectDiv.classList.add('hidden');
-          infoText.innerHTML = '<i data-lucide="info" class="w-3.5 h-3.5 shrink-0"></i> Target manual tidak mendukung variabel {name} & {address}.';
+          infoText.innerHTML = '<i data-lucide="info" class="w-3.5 h-3.5 shrink-0"></i> Target manual tidak mendukung variabel dinamis seperti {name} & {address}.';
       } else if(type === 'all') {
           manualDiv.classList.add('hidden');
           selectDiv.classList.add('hidden');
-          infoText.innerHTML = `<i data-lucide="users" class="w-3.5 h-3.5 shrink-0"></i> Akan mengirim ke total ${globalContacts.length} kontak di buku.`;
+          infoText.innerHTML = `<i data-lucide="users" class="w-3.5 h-3.5 shrink-0"></i> Sistem akan mengirim ke total ${globalContacts.length} kontak di buku Anda.`;
       } else if(type === 'group') {
           manualDiv.classList.add('hidden');
           selectDiv.classList.remove('hidden');
           const groups = [...new Set(globalContacts.map(c => c.group))].filter(g => g && g !== '-');
-          filterSel.innerHTML = groups.length ? groups.map(g => `<option value="${g}">${g}</option>`).join('') : '<option value="">-- Belum ada Grup tersimpan --</option>';
+          filterSel.innerHTML = groups.length ? groups.map(g => `<option value="${g}">${g}</option>`).join('') : '<option value="">-- Belum ada Grup yang tersimpan di kontak --</option>';
           infoText.innerHTML = '<i data-lucide="filter" class="w-3.5 h-3.5 shrink-0"></i> Pilih grup target dari buku kontak.';
       } else if(type === 'label') {
           manualDiv.classList.add('hidden');
           selectDiv.classList.remove('hidden');
           const labels = [...new Set(globalContacts.map(c => c.label))].filter(l => l && l !== '-');
-          filterSel.innerHTML = labels.length ? labels.map(l => `<option value="${l}">${l}</option>`).join('') : '<option value="">-- Belum ada Label tersimpan --</option>';
+          filterSel.innerHTML = labels.length ? labels.map(l => `<option value="${l}">${l}</option>`).join('') : '<option value="">-- Belum ada Label yang tersimpan di kontak --</option>';
           infoText.innerHTML = '<i data-lucide="tag" class="w-3.5 h-3.5 shrink-0"></i> Pilih label target dari buku kontak.';
       }
       lucide.createIcons();
@@ -1596,11 +1858,11 @@
     function handleBroadcastSubmit(e) { 
       e.preventDefault(); 
       const d = document.getElementById('bc-device').value; 
-      if(!d) return showToast("Pilih Device!", "error"); 
+      if(!d) return showToast("Pilih Device Pengirim!", "error"); 
       
       const type = document.getElementById('bc-target-type').value;
       const filterVal = document.getElementById('bc-target-filter').value;
-    const template = document.getElementById('bc-message').value;
+      const template = document.getElementById('bc-message').value;
       const delay = document.getElementById('bc-delay').value;
       const scheduleTime = document.getElementById('bc-schedule-time').value;
       
@@ -1620,23 +1882,23 @@
           targetList = globalContacts.filter(c => c.label === filterVal);
       }
 
-      if(targetList.length === 0) return showToast("Tidak ada kontak target yang ditemukan!", "error");
+      if(targetList.length === 0) return showToast("Tidak ada kontak target yang ditemukan di grup/label tersebut!", "error");
       
-      showModal('Kirim Broadcast', `Sistem akan memproses pengiriman ke ${targetList.length} nomor. Lanjutkan?`, 'info', async () => { 
+      showModal('Konfirmasi Kampanye', `Sistem akan menjadwalkan pengiriman ke <span class="font-bold text-accent-600">${targetList.length} nomor</span>. Lanjutkan?`, 'info', async () => { 
         setBtnLoading('modal-confirm-btn', true); 
         
         const hasVars = /{name}|{address}|{phone}/i.test(template);
         
         if(hasVars && type !== 'manual') {
             let successCount = 0;
-            showToast(`Memproses ${targetList.length} antrean personalisasi...`, 'info');
+            showToast(`Membangun ${targetList.length} antrean personalisasi...`, 'info');
             for(let c of targetList) {
                 let msg = template.replace(/{name}/gi, c.name || '').replace(/{phone}/gi, c.phone || '').replace(/{address}/gi, c.address || '');
                 const res = await fetchGAS("createBroadcast", [currentUser.email, currentUser.token, d, c.phone, msg, delay, scheduleTime]);
                 if(res.status) successCount++;
             }
             closeModal();
-            showToast(`Selesai! ${successCount} pesan masuk antrean.`, 'success');
+            showToast(`Hebat! ${successCount} pesan berhasil didorong ke antrean.`, 'success');
         } else {
             const phones = targetList.map(c => c.phone).join(',');
             const res = await fetchGAS("createBroadcast", [currentUser.email, currentUser.token, d, phones, template, delay, scheduleTime]);
@@ -1655,9 +1917,9 @@
     function handleQuickSend(e) { 
       e.preventDefault(); 
       const d = document.getElementById('qs-device').value; 
-      if(!d) return showToast("Pilih Device!", "error"); 
+      if(!d) return showToast("Pilih Device Pengirim!", "error"); 
       
-      setBtnLoading('btn-qs', true, 'Mengirim...'); 
+      setBtnLoading('btn-qs', true, 'Memproses...'); 
       fetchGAS("createBroadcast", [currentUser.email, currentUser.token, d, document.getElementById('qs-target').value, document.getElementById('qs-message').value, 0]).then(res => { 
           setBtnLoading('btn-qs', false); 
           showToast(res.message, res.status ? 'success' : 'error'); 
@@ -1672,7 +1934,7 @@
     
     async function loadBroadcastHistory() { 
       if(!currentUser) return; 
-      document.getElementById('broadcast-history-body').innerHTML = `<tr><td colspan="4" class="py-6 text-center"><i data-lucide="loader-2" class="w-4 h-4 animate-spin mx-auto text-slate-400 shrink-0"></i></td></tr>`; 
+      document.getElementById('broadcast-history-body').innerHTML = `<tr><td colspan="4" class="py-6 text-center"><i data-lucide="loader-2" class="w-5 h-5 animate-spin mx-auto text-slate-400 shrink-0"></i></td></tr>`; 
       lucide.createIcons(); 
       
       const res = await fetchGAS("getBroadcastHistory", [currentUser.email, currentUser.token]); 
@@ -1684,30 +1946,38 @@
     
     function renderBroadcastHistory() { 
       const b = document.getElementById('broadcast-history-body'); 
-      if(!globalBroadcasts.length) { b.innerHTML = `<tr><td colspan="4" class="py-6 text-center text-slate-400 text-sm">Belum ada riwayat.</td></tr>`; return; } 
+      if(!globalBroadcasts.length) { b.innerHTML = `<tr><td colspan="4" class="py-10 text-center text-slate-400 text-sm font-medium">Belum ada riwayat kampanye.</td></tr>`; return; } 
       
       b.innerHTML = globalBroadcasts.map(i => { 
         let bg='bg-slate-100 text-slate-600', st=i.status||'Pending'; 
-        if(st.toLowerCase()==='success') bg='bg-green-50 border border-green-100 text-green-700'; 
-        else if(st.toLowerCase()==='failed') bg='bg-red-50 border border-red-100 text-red-700'; 
-        else if(st.toLowerCase()==='processing') bg='bg-blue-50 border border-blue-100 text-blue-700';
+        if(st.toLowerCase()==='success') bg='bg-green-100 border border-green-200 text-green-800'; 
+        else if(st.toLowerCase()==='failed') bg='bg-red-100 border border-red-200 text-red-800'; 
+        else if(st.toLowerCase()==='processing') bg='bg-blue-100 border border-blue-200 text-blue-800';
         
-        return `<tr class="border-b border-slate-50 last:border-0"><td class="px-5 py-4"><span class="font-bold text-[10px] block text-slate-800 tracking-wider">${i.id}</span></td><td class="px-5 py-4 font-mono truncate max-w-[80px]" title="${i.target}">${i.target}</td><td class="px-5 py-4 truncate max-w-[200px] font-medium" title="${i.message}">${i.message}</td><td class="px-5 py-4 text-center"><span class="px-2.5 py-1 rounded-md text-[9px] uppercase font-bold tracking-wider ${bg}">${st}</span></td></tr>`; 
+        return `<tr class="border-b border-slate-50 last:border-0"><td class="px-5 py-4"><span class="font-black text-[10px] block text-slate-800 tracking-wider">${i.id}</span></td><td class="px-5 py-4 font-mono font-bold text-slate-700 truncate max-w-[80px]" title="${i.target}">${i.target}</td><td class="px-5 py-4 truncate max-w-[200px] font-medium" title="${i.message}">${i.message}</td><td class="px-5 py-4 text-center"><span class="px-2.5 py-1.5 rounded-lg text-[9px] uppercase font-black tracking-wider ${bg}">${st}</span></td></tr>`; 
       }).join(''); 
     }
 
-    // --- BILLING ---
+    // --- BILLING & PLAN LOGIC ---
     function updatePlanUI() { 
       document.getElementById('dash-plan').innerText = currentPlan; 
       const sp = document.getElementById('set-plan'); if(sp) sp.innerText = currentPlan;
     }
     
-    async function applyPromo() { const c = document.getElementById('promo-input').value.toUpperCase(); if(!c) return; setBtnLoading('btn-promo', true); const res = await fetchGAS("validatePromoCode", [c]); setBtnLoading('btn-promo', false); if(res.status) { activePromo = c; showToast("Promo Berhasil!"); document.getElementById('price-pro').innerHTML = `Rp ${(249000-((249000*res.discount)/100)).toLocaleString('id-ID')}`; } else { showToast(res.message, "error"); } }
-    function promptUpgradePlan() { showModal('Upgrade', 'Tagihan dikirim ke email.', 'info', async () => { setBtnLoading('modal-confirm-btn', true); const res = await fetchGAS("sendPurchaseNotification", [currentUser.email, "Business Pro", document.getElementById('price-pro').innerText, activePromo]); closeModal(); if(res.status) { currentPlan="Business"; updatePlanUI(); showToast("Invoice dikirim!"); } }); }
+    async function applyPromo() { const c = document.getElementById('promo-input')?.value.toUpperCase(); if(!c) return showToast("Masukkan kode promo!", "error"); setBtnLoading('btn-promo', true); const res = await fetchGAS("validatePromoCode", [c]); setBtnLoading('btn-promo', false); if(res.status) { activePromo = c; showToast("Kode Promo Berhasil Diterapkan!"); document.getElementById('price-pro').innerHTML = `${((249000-((249000*res.discount)/100))/1000).toFixed(0)}k`; } else { showToast(res.message, "error"); } }
+    
+    function promptUpgradePlan(planName, price) { 
+      showModal(`Minta Upgrade ke ${planName}`, `Sistem akan mengirimkan e-Invoice tagihan paket ${planName} (Rp ${price}) ke email terdaftar Anda. Lanjutkan proses?`, 'info', async () => { 
+        setBtnLoading('modal-confirm-btn', true); 
+        const res = await fetchGAS("sendPurchaseNotification", [currentUser.email, "Paket " + planName, "Rp " + price, activePromo]); 
+        closeModal(); 
+        if(res.status) { showToast("Invoice berhasil dikirim. Silakan cek Email Anda!"); } 
+      }); 
+    }
 
     // --- ADMIN ---
-    async function fetchAdminUsers() { document.getElementById('admin-table-body').innerHTML = `<tr><td colspan="3" class="py-6 text-center"><i data-lucide="loader-2" class="w-4 h-4 animate-spin mx-auto text-slate-400 shrink-0"></i></td></tr>`; lucide.createIcons(); const u = await fetchGAS("getAllUsers", []); const b = document.getElementById('admin-table-body'); if(!u || !u.length || u.status === false) { b.innerHTML = '<tr><td colspan="3" class="text-center py-5 font-medium">Kosong</td></tr>'; return; } b.innerHTML = u.map(i => `<tr class="border-b border-slate-50"><td class="px-5 py-3.5 font-semibold">${i.email}</td><td class="px-5 py-3.5 text-center"><span class="px-2.5 py-1 rounded-md text-[10px] uppercase font-bold tracking-wider bg-slate-100">${i.status}</span></td><td class="px-5 py-3.5 text-center uppercase text-[10px] font-bold tracking-wider">${i.role}</td></tr>`).join(''); }
-    function handleEmailBlast(e) { e.preventDefault(); showModal('Blast Email', 'Kirim ke semua user?', 'danger', async () => { setBtnLoading('modal-confirm-btn', true); const res = await fetchGAS("adminEmailBlast", [currentUser.email, currentUser.token, document.getElementById('blast-subject').value, document.getElementById('blast-content').value]); closeModal(); showToast(res.message, res.status?"success":"error"); if(res.status) e.target.reset(); }); }
+    async function fetchAdminUsers() { document.getElementById('admin-table-body').innerHTML = `<tr><td colspan="3" class="py-10 text-center"><i data-lucide="loader-2" class="w-5 h-5 animate-spin mx-auto text-slate-400 shrink-0"></i></td></tr>`; lucide.createIcons(); const u = await fetchGAS("getAllUsers", []); const b = document.getElementById('admin-table-body'); if(!u || !u.length || u.status === false) { b.innerHTML = '<tr><td colspan="3" class="text-center py-8 font-medium">Belum ada Klien terdaftar.</td></tr>'; return; } b.innerHTML = u.map(i => `<tr class="border-b border-slate-50"><td class="px-6 py-4 font-bold text-slate-800">${i.email}</td><td class="px-6 py-4 text-center"><span class="px-2.5 py-1.5 rounded-lg text-[10px] uppercase font-black tracking-wider bg-slate-100">${i.status}</span></td><td class="px-6 py-4 text-center uppercase text-[10px] font-black tracking-wider text-accent-600">${i.role}</td></tr>`).join(''); }
+    function handleEmailBlast(e) { e.preventDefault(); showModal('PERINGATAN: Blast Email', 'Ini akan mengirim email promosi massal ke SEMUA pengguna yang terdaftar di database. Anda yakin?', 'danger', async () => { setBtnLoading('modal-confirm-btn', true); const res = await fetchGAS("adminEmailBlast", [currentUser.email, currentUser.token, document.getElementById('blast-subject').value, document.getElementById('blast-content').value]); closeModal(); showToast(res.message, res.status?"success":"error"); if(res.status) e.target.reset(); }); }
 
     // --- CHART ---
     let dashboardChart = null;
@@ -1717,7 +1987,7 @@
       const sentData = [0, 0, 0, 0, 0, 0, globalBroadcasts.length > 0 ? globalBroadcasts.length : 0];
       
       dashboardChart = new Chart(c, {
-        type: 'line', data: { labels: ['Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab', 'Hari Ini'], datasets: [{ label: 'Antrean Masuk', data: sentData, borderColor: '#0f172a', backgroundColor: 'transparent', borderWidth: 2, tension: 0.3, pointBackgroundColor: '#fff', pointBorderColor: '#0f172a', pointRadius: 4 }] },
+        type: 'line', data: { labels: ['Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab', 'Hari Ini'], datasets: [{ label: 'Antrean Masuk', data: sentData, borderColor: '#2563eb', backgroundColor: 'rgba(37, 99, 235, 0.1)', borderWidth: 3, tension: 0.4, pointBackgroundColor: '#fff', pointBorderColor: '#2563eb', pointRadius: 5, fill: true }] },
         options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, grid: { color: '#f1f5f9' }, border: {display: false} }, x: { grid: { display: false }, border: {display: false} } } }
       });
     }
