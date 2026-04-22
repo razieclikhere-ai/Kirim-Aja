@@ -92,18 +92,18 @@
   <!-- GLOBAL MODAL -->
   <div id="global-modal" class="hide fixed inset-0 z-[150] flex items-center justify-center p-4">
     <div class="absolute inset-0 bg-slate-900/40 backdrop-blur-sm" onclick="closeModal()"></div>
-    <div class="modal-content relative w-full max-w-md bg-white rounded-2xl shadow-2xl overflow-hidden flex flex-col border border-slate-200">
-      <div id="modal-header-bg" class="h-1 w-full bg-slate-900"></div>
+    <div class="modal-content relative w-full max-w-md bg-white rounded-2xl shadow-2xl overflow-hidden flex flex-col border border-slate-200 max-h-[90vh] overflow-y-auto hide-scrollbar">
+      <div id="modal-header-bg" class="h-1 w-full bg-slate-900 sticky top-0 z-10"></div>
       <div class="p-6 md:p-8">
         <div class="flex items-start gap-4 mb-4">
           <div id="modal-icon" class="p-3 rounded-xl shrink-0 bg-slate-50 border border-slate-100"></div>
-          <div>
+          <div class="flex-1">
             <h3 id="modal-title" class="text-xl font-bold text-slate-900">Judul Modal</h3>
             <div id="modal-desc" class="text-sm text-slate-500 mt-1 leading-relaxed">Deskripsi modal...</div>
           </div>
         </div>
         <div class="flex justify-end gap-3 mt-6 pt-6 border-t border-slate-100">
-          <button type="button" onclick="closeModal()" class="px-5 py-2.5 rounded-xl font-semibold text-sm text-slate-600 bg-white border border-slate-200 hover:bg-slate-50 transition-colors">Batal</button>
+          <button type="button" onclick="closeModal()" class="px-5 py-2.5 rounded-xl font-semibold text-sm text-slate-600 bg-white border border-slate-200 hover:bg-slate-50 transition-colors">Tutup</button>
           <button type="button" id="modal-confirm-btn" class="px-6 py-2.5 rounded-xl font-bold text-sm text-white transition-all flex items-center gap-2 bg-slate-900 hover:bg-slate-800 shadow-md">
             Konfirmasi
           </button>
@@ -245,7 +245,7 @@
           <div class="clean-card p-8 rounded-3xl hover:-translate-y-2 transition-transform duration-300">
             <div class="w-14 h-14 bg-orange-50 text-orange-600 rounded-2xl flex items-center justify-center mb-6"><i data-lucide="users" class="w-7 h-7"></i></div>
             <h4 class="text-xl font-bold text-slate-900 mb-3">Manajemen Kontak Pintar</h4>
-            <p class="text-slate-500 font-medium leading-relaxed">Simpan database nomor pelanggan, kelompokkan berdasarkan Label/Grup, lalu broadcast hanya ke target yang relevan dengan promo.</p>
+            <p class="text-slate-500 font-medium leading-relaxed">Simpan database nomor pelanggan, kelompokkan berdasarkan Label/Grup, sinkronkan dari HP, lalu broadcast hanya ke target yang relevan dengan promo.</p>
           </div>
           <!-- Feature 5 -->
           <div class="clean-card p-8 rounded-3xl hover:-translate-y-2 transition-transform duration-300">
@@ -266,10 +266,19 @@
     <!-- PRICING SECTION -->
     <div id="harga" class="py-24 bg-slate-900 relative border-t border-slate-800">
       <div class="max-w-7xl mx-auto px-6">
-        <div class="text-center max-w-3xl mx-auto mb-16">
+        <div class="text-center max-w-3xl mx-auto mb-12">
           <h2 class="text-accent-400 font-bold tracking-wider uppercase text-sm mb-3">Harga Transparan</h2>
           <h3 class="text-3xl md:text-5xl font-black text-white mb-6">Investasi Kecil, Untung Maksimal.</h3>
           <p class="text-slate-400 text-lg font-medium">Mulai dari gratis selamanya, atau tingkatkan ke Pro saat bisnismu mulai meroket.</p>
+        </div>
+
+        <div class="flex justify-center items-center gap-4 mb-16">
+          <span class="text-slate-300 font-bold text-sm" id="label-bulanan">Bulanan</span>
+          <label class="relative inline-flex items-center cursor-pointer">
+            <input type="checkbox" id="pricing-toggle" class="sr-only toggle-checkbox peer" onchange="togglePricingPeriod(this.checked)">
+            <div class="w-14 h-7 bg-slate-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-6 after:w-6 after:transition-all peer-checked:bg-accent-500"></div>
+          </label>
+          <span class="text-slate-500 font-bold text-sm flex items-center gap-2" id="label-tahunan">Tahunan <span class="bg-green-500/20 text-green-400 px-2 py-0.5 rounded text-[10px] uppercase">Hemat 15%</span></span>
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -292,10 +301,9 @@
           <div class="bg-slate-800 rounded-3xl p-8 border border-slate-700 flex flex-col hover:border-slate-500 transition-colors">
             <h3 class="text-xl font-bold text-white mb-2">Lite</h3>
             <p class="text-sm text-slate-400 mb-6 font-medium">Untuk bisnis skala kecil</p>
-            <div class="flex items-end gap-1 mb-2">
-              <div class="text-4xl font-black text-white">49k</div><div class="text-sm text-slate-400 mb-1">/bln</div>
+            <div class="flex items-end gap-1 mb-8">
+              <div class="text-4xl font-black text-white"><span id="price-val-lite">49k</span></div><div class="text-sm text-slate-400 mb-1" id="price-period-lite">/bln</div>
             </div>
-            <p class="text-xs text-slate-500 mb-6 block">atau Rp 500k / tahun</p>
             <ul class="space-y-4 mb-8 text-sm text-slate-300 font-medium flex-1">
               <li class="flex items-start gap-3"><i data-lucide="check" class="text-accent-400 w-5 h-5 shrink-0"></i> 5 Device WA</li>
               <li class="flex items-start gap-3"><i data-lucide="check" class="text-accent-400 w-5 h-5 shrink-0"></i> 500 Buku Kontak</li>
@@ -303,7 +311,7 @@
               <li class="flex items-start gap-3"><i data-lucide="check" class="text-accent-400 w-5 h-5 shrink-0"></i> Fitur Live Chat</li>
               <li class="flex items-start gap-3"><i data-lucide="minus" class="text-slate-600 w-5 h-5 shrink-0"></i> Tanpa AI</li>
             </ul>
-            <button onclick="switchView('auth', 'register')" class="w-full py-3.5 rounded-xl bg-white text-slate-900 font-bold hover:bg-slate-100 transition-colors">Pilih Lite</button>
+            <button onclick="handleMarketingBuy('Lite')" class="w-full py-3.5 rounded-xl bg-white text-slate-900 font-bold hover:bg-slate-100 transition-colors">Pilih Lite</button>
           </div>
 
           <!-- PRO (Highlight) -->
@@ -311,10 +319,9 @@
             <div class="absolute -top-4 left-1/2 -translate-x-1/2 bg-yellow-400 text-yellow-900 px-4 py-1.5 rounded-full text-[11px] font-black uppercase tracking-widest shadow-sm">Paling Populer</div>
             <h3 class="text-xl font-bold text-white mb-2">Pro</h3>
             <p class="text-sm text-accent-200 mb-6 font-medium">Buka seluruh potensi</p>
-            <div class="flex items-end gap-1 mb-2">
-              <div class="text-4xl font-black text-white">249k</div><div class="text-sm text-accent-200 mb-1">/bln</div>
+            <div class="flex items-end gap-1 mb-8">
+              <div class="text-4xl font-black text-white"><span id="price-val-pro">249k</span></div><div class="text-sm text-accent-200 mb-1" id="price-period-pro">/bln</div>
             </div>
-            <p class="text-xs text-accent-300 mb-6 block">atau Rp 1.500k / tahun</p>
             <ul class="space-y-4 mb-8 text-sm text-white font-semibold flex-1">
               <li class="flex items-start gap-3"><i data-lucide="check-circle-2" class="text-white w-5 h-5 shrink-0"></i> 20 Device WA</li>
               <li class="flex items-start gap-3"><i data-lucide="check-circle-2" class="text-white w-5 h-5 shrink-0"></i> 2.000 Buku Kontak</li>
@@ -322,17 +329,16 @@
               <li class="flex items-start gap-3"><i data-lucide="check-circle-2" class="text-white w-5 h-5 shrink-0"></i> Full Fitur Live Chat</li>
               <li class="flex items-start gap-3"><i data-lucide="sparkles" class="text-yellow-300 w-5 h-5 shrink-0"></i> AI Agent (Gemini)</li>
             </ul>
-            <button onclick="switchView('auth', 'register')" class="w-full py-3.5 rounded-xl bg-yellow-400 text-yellow-900 font-black hover:bg-yellow-300 transition-colors shadow-lg shadow-yellow-500/20">Ambil Pro</button>
+            <button onclick="handleMarketingBuy('Pro')" class="w-full py-3.5 rounded-xl bg-yellow-400 text-yellow-900 font-black hover:bg-yellow-300 transition-colors shadow-lg shadow-yellow-500/20">Ambil Pro</button>
           </div>
 
           <!-- VIP -->
           <div class="bg-slate-800 rounded-3xl p-8 border border-slate-700 flex flex-col hover:border-slate-500 transition-colors">
             <h3 class="text-xl font-bold text-white mb-2">VIP / Enterprise</h3>
             <p class="text-sm text-slate-400 mb-6 font-medium">Solusi korporasi tanpa batas</p>
-            <div class="flex items-end gap-1 mb-2">
-              <div class="text-4xl font-black text-white">499k</div><div class="text-sm text-slate-400 mb-1">/bln</div>
+            <div class="flex items-end gap-1 mb-8">
+              <div class="text-4xl font-black text-white"><span id="price-val-vip">499k</span></div><div class="text-sm text-slate-400 mb-1" id="price-period-vip">/bln</div>
             </div>
-            <p class="text-xs text-slate-500 mb-6 block">atau Rp 3.450k / tahun</p>
             <ul class="space-y-4 mb-8 text-sm text-slate-300 font-medium flex-1">
               <li class="flex items-start gap-3"><i data-lucide="infinity" class="text-accent-400 w-5 h-5 shrink-0"></i> Unlimited Device</li>
               <li class="flex items-start gap-3"><i data-lucide="infinity" class="text-accent-400 w-5 h-5 shrink-0"></i> Unlimited Kontak</li>
@@ -340,7 +346,7 @@
               <li class="flex items-start gap-3"><i data-lucide="check" class="text-accent-400 w-5 h-5 shrink-0"></i> Semua Fitur Terbuka</li>
               <li class="flex items-start gap-3"><i data-lucide="check" class="text-accent-400 w-5 h-5 shrink-0"></i> Prioritas Dukungan</li>
             </ul>
-            <button onclick="switchView('auth', 'register')" class="w-full py-3.5 rounded-xl bg-white text-slate-900 font-bold hover:bg-slate-100 transition-colors">Pilih VIP</button>
+            <button onclick="handleMarketingBuy('VIP')" class="w-full py-3.5 rounded-xl bg-white text-slate-900 font-bold hover:bg-slate-100 transition-colors">Pilih VIP</button>
           </div>
         </div>
       </div>
@@ -351,7 +357,7 @@
       <div class="py-20 px-6 text-center max-w-4xl mx-auto">
         <h2 class="text-3xl font-black text-slate-900 mb-6">Siap Mengotomatiskan CS Anda?</h2>
         <p class="text-slate-500 font-medium mb-8">Bergabung dengan ribuan pebisnis yang telah menghemat waktu dan meningkatkan closing rate mereka menggunakan KirimAja.</p>
-        <button onclick="switchView('auth', 'register')" class="bg-slate-900 text-white px-10 py-4 rounded-xl font-bold text-lg hover:bg-slate-800 transition-all shadow-xl shadow-slate-900/20">Buat Akun Gratis</button>
+        <button onclick="switchView('auth', 'register')" class="bg-slate-900 text-white px-10 py-4 rounded-xl font-bold text-lg hover:bg-slate-800 transition-all shadow-xl shadow-slate-900/20">Buat Akun Gratis Sekarang</button>
       </div>
       <div class="border-t border-slate-100 py-8 text-center px-6">
         <div class="text-xl font-black flex justify-center items-center gap-2 text-slate-900 mb-4 opacity-50">
@@ -699,12 +705,12 @@
               <h2 class="text-2xl font-black text-slate-900 tracking-tight">Buku Kontak</h2>
               <p class="text-sm text-slate-500 font-medium">Database terpusat untuk pelanggan Anda.</p>
             </div>
-            <div class="flex gap-3">
-               <button onclick="loadContactsData()" class="bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 px-5 py-3 rounded-xl font-bold transition-colors flex items-center gap-2 text-sm shadow-sm">
-                 <i data-lucide="refresh-cw" class="w-4 h-4 shrink-0"></i> Sync
+            <div class="flex flex-wrap gap-3">
+               <button onclick="syncPhoneContacts()" class="bg-blue-50 text-blue-700 hover:bg-blue-100 border border-blue-200 px-5 py-3 rounded-xl font-bold transition-colors flex items-center gap-2 text-sm shadow-sm">
+                 <i data-lucide="smartphone" class="w-4 h-4 shrink-0"></i> Sync Kontak HP
                </button>
                <button onclick="promptAddContact()" class="bg-slate-900 text-white px-5 py-3 rounded-xl font-bold transition-colors hover:bg-slate-800 flex items-center gap-2 text-sm shadow-md">
-                 <i data-lucide="user-plus" class="w-4 h-4 shrink-0"></i> Tambah Kontak
+                 <i data-lucide="user-plus" class="w-4 h-4 shrink-0"></i> Tambah Manual
                </button>
             </div>
           </div>
@@ -715,8 +721,9 @@
                 <i data-lucide="search" class="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 shrink-0"></i>
                 <input type="text" id="search-contact" onkeyup="filterContacts()" placeholder="Cari nama, WA, alamat..." class="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm font-semibold focus:bg-white outline-none">
               </div>
-              <div class="text-xs font-bold text-slate-500 bg-slate-50 px-4 py-3 rounded-xl border border-slate-200">
-                Total Tersimpan: <span id="contact-count" class="text-slate-900 font-black ml-1 text-sm">0</span>
+              <div class="text-xs font-bold text-slate-500 bg-slate-50 px-4 py-3 rounded-xl border border-slate-200 flex items-center gap-3">
+                <button onclick="loadContactsData()" class="text-slate-400 hover:text-slate-900"><i data-lucide="refresh-cw" class="w-4 h-4"></i></button>
+                <span>Total: <span id="contact-count" class="text-slate-900 font-black ml-1 text-sm">0</span></span>
               </div>
             </div>
             <div class="overflow-x-auto flex-1 hide-scrollbar">
@@ -727,7 +734,7 @@
                     <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">WhatsApp</th>
                     <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Alamat</th>
                     <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider text-center">Grup/Label</th>
-                    <th class="px-6 py-4"></th>
+                    <th class="px-6 py-4 text-right text-xs font-bold text-slate-500 uppercase tracking-wider">Aksi</th>
                   </tr>
                 </thead>
                 <tbody id="contact-table-body" class="divide-y divide-slate-100 text-sm font-medium text-slate-700 bg-white">
@@ -1029,6 +1036,15 @@
             <p class="text-sm text-slate-500 font-medium mt-1">Pilih kekuatan infrastruktur yang paling sesuai untuk ledakan bisnismu.</p>
           </div>
 
+          <div class="flex justify-center items-center gap-4 mb-10 bg-white border border-slate-200 p-3 rounded-2xl w-fit mx-auto shadow-sm">
+            <span class="text-slate-500 font-bold text-sm" id="dash-label-bulanan">Bulanan</span>
+            <label class="relative inline-flex items-center cursor-pointer">
+              <input type="checkbox" id="dash-pricing-toggle" class="sr-only toggle-checkbox peer" onchange="togglePricingPeriod(this.checked)">
+              <div class="w-12 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-slate-900"></div>
+            </label>
+            <span class="text-slate-800 font-bold text-sm flex items-center gap-2" id="dash-label-tahunan">Tahunan <span class="bg-green-100 text-green-700 px-2 py-0.5 rounded text-[10px] uppercase font-black">Hemat 15%</span></span>
+          </div>
+
           <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
             <!-- Gratis -->
             <div class="clean-card rounded-3xl p-8 border-slate-200 relative flex flex-col">
@@ -1040,23 +1056,23 @@
                 <li class="flex items-start gap-3"><i data-lucide="minus" class="text-slate-300 w-5 h-5 shrink-0"></i> Tanpa Live Chat</li>
                 <li class="flex items-start gap-3"><i data-lucide="minus" class="text-slate-300 w-5 h-5 shrink-0"></i> Tanpa AI Auto Reply</li>
               </ul>
-              <button disabled class="w-full py-3 rounded-xl bg-slate-100 text-slate-500 font-bold text-sm cursor-not-allowed border border-slate-200">Paket Aktif Saat Ini</button>
+              <button disabled class="w-full py-3 rounded-xl bg-slate-100 text-slate-500 font-bold text-sm cursor-not-allowed border border-slate-200">Paket Dasar</button>
             </div>
 
             <!-- Lite -->
             <div class="clean-card rounded-3xl p-8 border-slate-200 relative flex flex-col hover:border-slate-400 transition-colors">
               <h3 class="text-xl font-bold text-slate-900 mb-1">Lite</h3>
               <div class="flex items-end gap-1 mb-2 mt-2">
-                <div class="text-3xl font-black text-slate-900">49k</div><div class="text-sm text-slate-500 mb-1">/bln</div>
+                <div class="text-3xl font-black text-slate-900" id="dash-price-lite">49k</div><div class="text-sm text-slate-500 mb-1 dash-price-period">/bln</div>
               </div>
-              <p class="text-[11px] font-bold text-slate-400 mb-6 block">atau Rp 500k / tahun</p>
+              <p class="text-[11px] font-bold text-slate-400 mb-6 block" id="dash-desc-lite">Pembayaran per bulan</p>
               <ul class="space-y-4 mb-8 text-sm text-slate-600 font-semibold flex-1">
                 <li class="flex items-start gap-3"><i data-lucide="check" class="text-accent-500 w-5 h-5 shrink-0"></i> 5 Device WA</li>
                 <li class="flex items-start gap-3"><i data-lucide="check" class="text-accent-500 w-5 h-5 shrink-0"></i> 500 Buku Kontak</li>
                 <li class="flex items-start gap-3"><i data-lucide="check" class="text-accent-500 w-5 h-5 shrink-0"></i> 2.500 Broadcast / Hari</li>
                 <li class="flex items-start gap-3"><i data-lucide="check" class="text-accent-500 w-5 h-5 shrink-0"></i> Fitur Live Chat</li>
               </ul>
-              <button onclick="promptUpgradePlan('Lite', '49.000')" class="w-full py-3 rounded-xl bg-white border border-slate-900 text-slate-900 font-bold hover:bg-slate-50 transition-colors text-sm">Pilih Lite</button>
+              <button onclick="promptUpgradePlan('Lite', 'dash-price-lite')" class="w-full py-3 rounded-xl bg-white border border-slate-900 text-slate-900 font-bold hover:bg-slate-50 transition-colors text-sm">Pilih Lite</button>
             </div>
 
             <!-- Pro -->
@@ -1064,9 +1080,9 @@
               <div class="absolute -top-4 left-1/2 -translate-x-1/2 bg-accent-500 text-white px-4 py-1.5 rounded-full text-[11px] font-black uppercase tracking-widest shadow-sm">Pilihan Terbaik</div>
               <h3 class="text-xl font-bold text-white mb-1">Pro</h3>
               <div class="flex items-end gap-1 mb-2 mt-2">
-                <div class="text-3xl font-black text-white" id="price-pro">249k</div><div class="text-sm text-slate-400 mb-1">/bln</div>
+                <div class="text-3xl font-black text-white" id="dash-price-pro">249k</div><div class="text-sm text-slate-400 mb-1 dash-price-period">/bln</div>
               </div>
-              <p class="text-[11px] font-bold text-slate-400 mb-6 block">atau Rp 1.500k / tahun</p>
+              <p class="text-[11px] font-bold text-slate-400 mb-6 block" id="dash-desc-pro">Pembayaran per bulan</p>
               <ul class="space-y-4 mb-8 text-sm text-slate-200 font-semibold flex-1">
                 <li class="flex items-start gap-3"><i data-lucide="check-circle-2" class="text-accent-400 w-5 h-5 shrink-0"></i> 20 Device WA</li>
                 <li class="flex items-start gap-3"><i data-lucide="check-circle-2" class="text-accent-400 w-5 h-5 shrink-0"></i> 2.000 Buku Kontak</li>
@@ -1074,28 +1090,23 @@
                 <li class="flex items-start gap-3"><i data-lucide="sparkles" class="text-yellow-400 w-5 h-5 shrink-0"></i> Gemini AI Agent Full</li>
               </ul>
               
-              <div class="flex gap-2 mb-5">
-                <input type="text" id="promo-input" placeholder="Kode Promo" class="w-full px-4 py-2.5 bg-slate-700/50 text-white border border-slate-600 text-xs font-bold rounded-xl outline-none uppercase placeholder:text-slate-500">
-                <button type="button" onclick="applyPromo()" id="btn-promo" class="bg-slate-600 text-white px-4 rounded-xl font-bold text-[10px] uppercase tracking-wider hover:bg-slate-500 transition-colors shrink-0">Apply</button>
-              </div>
-
-              <button onclick="promptUpgradePlan('Pro', document.getElementById('price-pro').innerText)" class="w-full py-3.5 rounded-xl bg-accent-600 text-white font-black hover:bg-accent-500 transition-colors text-sm shadow-lg shadow-accent-600/30">Upgrade ke Pro</button>
+              <button onclick="promptUpgradePlan('Pro', 'dash-price-pro')" class="w-full py-3.5 rounded-xl bg-accent-600 text-white font-black hover:bg-accent-500 transition-colors text-sm shadow-lg shadow-accent-600/30">Upgrade ke Pro</button>
             </div>
 
             <!-- VIP -->
             <div class="clean-card rounded-3xl p-8 border-slate-200 relative flex flex-col hover:border-slate-400 transition-colors">
               <h3 class="text-xl font-bold text-slate-900 mb-1">VIP Enterprise</h3>
               <div class="flex items-end gap-1 mb-2 mt-2">
-                <div class="text-3xl font-black text-slate-900">499k</div><div class="text-sm text-slate-500 mb-1">/bln</div>
+                <div class="text-3xl font-black text-slate-900" id="dash-price-vip">499k</div><div class="text-sm text-slate-500 mb-1 dash-price-period">/bln</div>
               </div>
-              <p class="text-[11px] font-bold text-slate-400 mb-6 block">atau Rp 3.450k / tahun</p>
+              <p class="text-[11px] font-bold text-slate-400 mb-6 block" id="dash-desc-vip">Pembayaran per bulan</p>
               <ul class="space-y-4 mb-8 text-sm text-slate-600 font-semibold flex-1">
                 <li class="flex items-start gap-3"><i data-lucide="infinity" class="text-slate-900 w-5 h-5 shrink-0"></i> Unlimited Device</li>
                 <li class="flex items-start gap-3"><i data-lucide="infinity" class="text-slate-900 w-5 h-5 shrink-0"></i> Unlimited Kontak</li>
                 <li class="flex items-start gap-3"><i data-lucide="infinity" class="text-slate-900 w-5 h-5 shrink-0"></i> Unlimited Broadcast</li>
                 <li class="flex items-start gap-3"><i data-lucide="check" class="text-slate-900 w-5 h-5 shrink-0"></i> Semua Fitur Terbuka</li>
               </ul>
-              <button onclick="promptUpgradePlan('VIP', '499.000')" class="w-full py-3 rounded-xl bg-white border border-slate-900 text-slate-900 font-bold hover:bg-slate-50 transition-colors text-sm">Pilih VIP</button>
+              <button onclick="promptUpgradePlan('VIP', 'dash-price-vip')" class="w-full py-3 rounded-xl bg-white border border-slate-900 text-slate-900 font-bold hover:bg-slate-50 transition-colors text-sm">Pilih VIP</button>
             </div>
           </div>
         </div>
@@ -1192,12 +1203,12 @@
         <div id="panel-admin" class="hidden space-y-6 animate-slide-up">
            <div class="mb-8">
              <h2 class="text-2xl font-black text-slate-900 tracking-tight">Admin Control Center</h2>
-             <p class="text-sm text-slate-500 font-medium mt-1">Area eksklusif untuk manajemen master sistem.</p>
+             <p class="text-sm text-slate-500 font-medium mt-1">Validasi pembayaran E-Wallet manual dan kelola paket klien dari sini.</p>
            </div>
            
            <div class="grid lg:grid-cols-2 gap-8">
               <!-- Broadcast Email -->
-              <div class="clean-card rounded-3xl p-8 shadow-sm border-t-4 border-t-accent-600">
+              <div class="clean-card rounded-3xl p-8 shadow-sm border-t-4 border-t-accent-600 h-fit">
                 <h3 class="text-sm font-bold text-slate-900 mb-6 uppercase tracking-wider border-b border-slate-100 pb-3">Email Newsletter Blast</h3>
                 <form onsubmit="handleEmailBlast(event)" class="space-y-5">
                   <input type="text" id="blast-subject" required class="w-full px-4 py-3.5 bg-slate-50 border border-slate-200 rounded-xl text-sm outline-none focus:bg-white font-bold" placeholder="Subjek Email Promo...">
@@ -1206,18 +1217,24 @@
                 </form>
               </div>
               <!-- Users Table -->
-              <div class="clean-card rounded-3xl flex flex-col h-[500px] overflow-hidden shadow-sm">
-                 <div class="p-6 border-b border-slate-200 flex justify-between items-center bg-slate-50">
-                    <h3 class="font-bold text-slate-900 text-sm uppercase tracking-wider">Database Klien Aktif</h3>
-                    <button onclick="fetchAdminUsers()" class="text-slate-400 hover:text-slate-900 bg-white p-2 rounded-lg border border-slate-200"><i data-lucide="refresh-cw" class="w-4 h-4 shrink-0"></i></button>
+              <div class="clean-card rounded-3xl flex flex-col h-[600px] overflow-hidden shadow-sm">
+                 <div class="p-6 border-b border-slate-200 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 bg-slate-50">
+                    <div>
+                      <h3 class="font-bold text-slate-900 text-sm uppercase tracking-wider">Database Klien Aktif</h3>
+                      <p class="text-[10px] text-slate-500 mt-1 font-medium">Klik Edit untuk memvalidasi pembayaran manual dan memperpanjang masa aktif. Sistem akan mendowngrade otomatis jika masa aktif habis.</p>
+                    </div>
+                    <button onclick="fetchAdminUsers()" class="text-slate-400 hover:text-slate-900 bg-white p-2 rounded-lg border border-slate-200 shrink-0"><i data-lucide="refresh-cw" class="w-4 h-4 shrink-0"></i></button>
                  </div>
                  <div class="overflow-auto flex-1 hide-scrollbar bg-white">
-                    <table class="w-full text-left whitespace-nowrap">
+                    <table class="w-full text-left whitespace-nowrap min-w-[700px]">
                        <thead class="bg-slate-50 sticky top-0 z-10 border-b border-slate-100">
                           <tr>
                              <th class="px-6 py-4 text-xs font-bold text-slate-500 tracking-wider">Email</th>
                              <th class="px-6 py-4 text-xs font-bold text-slate-500 tracking-wider text-center">Status</th>
                              <th class="px-6 py-4 text-xs font-bold text-slate-500 tracking-wider text-center">Role</th>
+                             <th class="px-6 py-4 text-xs font-bold text-slate-500 tracking-wider text-center">Paket</th>
+                             <th class="px-6 py-4 text-xs font-bold text-slate-500 tracking-wider text-center">Kedaluwarsa</th>
+                             <th class="px-6 py-4 text-xs font-bold text-slate-500 tracking-wider text-center">Aksi</th>
                           </tr>
                        </thead>
                        <tbody id="admin-table-body" class="divide-y divide-slate-100 text-sm font-medium text-slate-700"></tbody>
@@ -1273,7 +1290,8 @@
     // FRONTEND UI LOGIC & CONTROLLER
     // ==========================================
     let currentUser = null, globalDevices = [], globalContacts = [], globalAutoReplies = [], globalBroadcasts = [];
-    let currentPlan = "Gratis", activePromo = "None", statTotals = { sent: 0, success: 0, failed: 0 }, statInterval, qrInterval;
+    let currentPlan = "Gratis", statTotals = { sent: 0, success: 0, failed: 0 }, statInterval, qrInterval;
+    let isPricingYearly = false; // State for Monthly/Yearly Pricing
 
     function showToast(msg, type = 'success') {
       const t = document.getElementById('toast'), icon = document.getElementById('toast-icon');
@@ -1324,14 +1342,27 @@
           i.className = 'p-3 rounded-xl shrink-0 bg-red-50 text-red-600 border border-red-100'; i.innerHTML = '<i data-lucide="alert-triangle" class="w-6 h-6 shrink-0"></i>';
           b.className = 'px-6 py-2.5 rounded-xl font-bold text-sm text-white bg-red-600 hover:bg-red-700 transition-colors flex items-center gap-2 shadow-md';
           h.className = 'h-1 w-full bg-red-500';
-       } else { 
+          b.style.display = 'flex';
+       } else if(type === 'info') { 
           i.className = 'p-3 rounded-xl shrink-0 bg-slate-50 text-slate-700 border border-slate-200'; i.innerHTML = '<i data-lucide="info" class="w-6 h-6 shrink-0"></i>';
           b.className = 'px-6 py-2.5 rounded-xl font-bold text-sm text-white bg-slate-900 hover:bg-slate-800 transition-colors flex items-center gap-2 shadow-md';
           h.className = 'h-1 w-full bg-slate-900';
+          b.style.display = 'flex';
+       } else if (type === 'payment') {
+          // Khusus pop-up pembayaran manual, ubah style header
+          i.className = 'p-3 rounded-xl shrink-0 bg-accent-50 text-accent-700 border border-accent-200'; i.innerHTML = '<i data-lucide="credit-card" class="w-6 h-6 shrink-0"></i>';
+          h.className = 'h-1 w-full bg-accent-600';
+          b.style.display = 'none'; // Sembunyikan tombol konfirmasi dasar
        }
        lucide.createIcons(); m.classList.remove('hide'); m.classList.add('show');
     }
-    function closeModal() { document.getElementById('global-modal').classList.remove('show'); document.getElementById('global-modal').classList.add('hide'); setBtnLoading('modal-confirm-btn', false); }
+    
+    function closeModal() { 
+        document.getElementById('global-modal').classList.remove('show'); 
+        document.getElementById('global-modal').classList.add('hide'); 
+        setBtnLoading('modal-confirm-btn', false); 
+        document.getElementById('modal-confirm-btn').style.display = 'flex'; // Reset visibility
+    }
 
     function switchView(viewId, mode = null) {
       window.scrollTo(0,0);
@@ -1342,6 +1373,52 @@
     }
 
     function toggleMobileSidebar() { document.getElementById('sidebar').classList.toggle('-translate-x-full'); document.getElementById('sidebar-overlay').classList.toggle('hidden'); document.getElementById('sidebar-overlay').classList.toggle('active'); }
+
+    // --- TOGGLE PRICING PERIODE (Marketing & Dasbor) ---
+    function togglePricingPeriod(checked) {
+        isPricingYearly = checked;
+        
+        // Update Labels di Marketing Page
+        const lBulanan = document.getElementById('label-bulanan');
+        const lTahunan = document.getElementById('label-tahunan');
+        if(lBulanan) lBulanan.className = isPricingYearly ? "text-slate-500 font-bold text-sm" : "text-slate-900 font-black text-sm";
+        if(lTahunan) lTahunan.className = isPricingYearly ? "text-slate-900 font-black text-sm flex items-center gap-2" : "text-slate-500 font-bold text-sm flex items-center gap-2";
+        
+        // Update Labels di Dashboard Billing Page
+        const dlBulanan = document.getElementById('dash-label-bulanan');
+        const dlTahunan = document.getElementById('dash-label-tahunan');
+        if(dlBulanan) dlBulanan.className = isPricingYearly ? "text-slate-500 font-bold text-sm" : "text-slate-900 font-black text-sm";
+        if(dlTahunan) dlTahunan.className = isPricingYearly ? "text-slate-900 font-black text-sm flex items-center gap-2" : "text-slate-500 font-bold text-sm flex items-center gap-2";
+
+        // Sinkronkan Toggle jika diklik dari salah satu tempat
+        const mkToggle = document.getElementById('pricing-toggle');
+        const dashToggle = document.getElementById('dash-pricing-toggle');
+        if(mkToggle && mkToggle.checked !== isPricingYearly) mkToggle.checked = isPricingYearly;
+        if(dashToggle && dashToggle.checked !== isPricingYearly) dashToggle.checked = isPricingYearly;
+
+        // Update Value Harga di Marketing Page
+        const pLite = document.getElementById('price-val-lite'); if(pLite) pLite.innerText = isPricingYearly ? '500k' : '49k';
+        const pPro = document.getElementById('price-val-pro'); if(pPro) pPro.innerText = isPricingYearly ? '1.500k' : '249k';
+        const pVip = document.getElementById('price-val-vip'); if(pVip) pVip.innerText = isPricingYearly ? '3.450k' : '499k';
+        
+        document.querySelectorAll('#price-period-lite, #price-period-pro, #price-period-vip').forEach(el => el.innerText = isPricingYearly ? '/thn' : '/bln');
+
+        // Update Value Harga di Dashboard Page
+        const dpLite = document.getElementById('dash-price-lite'); if(dpLite) dpLite.innerText = isPricingYearly ? '500k' : '49k';
+        const dpPro = document.getElementById('dash-price-pro'); if(dpPro) dpPro.innerText = isPricingYearly ? '1.500k' : '249k';
+        const dpVip = document.getElementById('dash-price-vip'); if(dpVip) dpVip.innerText = isPricingYearly ? '3.450k' : '499k';
+        
+        document.querySelectorAll('.dash-price-period').forEach(el => el.innerText = isPricingYearly ? '/thn' : '/bln');
+        
+        const ddLite = document.getElementById('dash-desc-lite'); if(ddLite) ddLite.innerText = isPricingYearly ? 'Pembayaran per tahun (Hemat)' : 'Pembayaran per bulan';
+        const ddPro = document.getElementById('dash-desc-pro'); if(ddPro) ddPro.innerText = isPricingYearly ? 'Pembayaran per tahun (Hemat)' : 'Pembayaran per bulan';
+        const ddVip = document.getElementById('dash-desc-vip'); if(ddVip) ddVip.innerText = isPricingYearly ? 'Pembayaran per tahun (Hemat)' : 'Pembayaran per bulan';
+    }
+
+    function handleMarketingBuy(planName) {
+        // Jika dari halaman marketing klik beli, arahkan ke register
+        switchView('auth', 'register');
+    }
 
     function changeAuthState(mode) {
       const els = { t: document.getElementById('auth-title'), s: document.getElementById('auth-sub'), b: document.getElementById('btn-auth'), ft: document.getElementById('auth-footer-text'), fb: document.getElementById('auth-footer-btn'), m: document.getElementById('auth-mode'), pass: document.getElementById('group-pass'), otp: document.getElementById('group-otp'), rem: document.getElementById('group-remember'), ref: document.getElementById('group-referral') };
@@ -1435,6 +1512,9 @@
         if(navAiTab) navAiTab.style.display = 'none'; 
       }
       
+      // Init Pricing Toggle state to match UI
+      togglePricingPeriod(false);
+
       // Load all data from GAS
       loadDevicesData(); 
       loadContactsData(); 
@@ -1530,10 +1610,57 @@
     function renderContactTable(data) {
       const tbody = document.getElementById('contact-table-body'); document.getElementById('contact-count').innerText = data.length;
       if(data.length === 0) { tbody.innerHTML = `<tr><td colspan="5" class="py-10 text-center text-slate-400 text-sm font-medium">Belum ada kontak yang tersimpan.</td></tr>`; return; }
-      tbody.innerHTML = data.map(c => `<tr class="hover:bg-slate-50 border-b border-slate-50 last:border-0"><td class="px-6 py-4 font-bold text-slate-800">${c.name}</td><td class="px-6 py-4 font-mono text-sm">${c.phone}</td><td class="px-6 py-4 truncate max-w-[200px]">${c.address}</td><td class="px-6 py-4 text-center"><span class="px-2.5 py-1.5 bg-slate-100 rounded-lg text-[10px] uppercase font-black text-slate-600">${c.group !== '-' ? c.group : (c.label !== '-' ? c.label : '-')}</span></td><td class="px-6 py-4 text-right"><button onclick="promptDeleteContact('${c.id}', '${c.name}')" class="text-red-500 hover:text-red-700 p-2 bg-red-50 rounded-lg"><i data-lucide="trash-2" class="w-4 h-4 shrink-0"></i></button></td></tr>`).join(''); lucide.createIcons();
+      tbody.innerHTML = data.map(c => `<tr class="hover:bg-slate-50 border-b border-slate-50 last:border-0">
+        <td class="px-6 py-4 font-bold text-slate-800">${c.name}</td>
+        <td class="px-6 py-4 font-mono text-sm">${c.phone}</td>
+        <td class="px-6 py-4 truncate max-w-[200px]">${c.address}</td>
+        <td class="px-6 py-4 text-center"><span class="px-2.5 py-1.5 bg-slate-100 rounded-lg text-[10px] uppercase font-black text-slate-600">${c.group !== '-' ? c.group : (c.label !== '-' ? c.label : '-')}</span></td>
+        <td class="px-6 py-4 text-right flex justify-end gap-2">
+            <button onclick="promptEditContact('${c.id}', '${c.name.replace(/'/g, "\\'")}', '${c.phone}', '${c.label||''}', '${c.address.replace(/'/g, "\\'")}', '${c.group||''}')" class="text-blue-500 hover:text-blue-700 p-2 bg-blue-50 hover:bg-blue-100 transition-colors rounded-lg"><i data-lucide="edit" class="w-4 h-4 shrink-0"></i></button>
+            <button onclick="promptDeleteContact('${c.id}', '${c.name.replace(/'/g, "\\'")}')" class="text-red-500 hover:text-red-700 p-2 bg-red-50 hover:bg-red-100 transition-colors rounded-lg"><i data-lucide="trash-2" class="w-4 h-4 shrink-0"></i></button>
+        </td>
+      </tr>`).join(''); 
+      lucide.createIcons();
     }
     
     function filterContacts() { const q = document.getElementById('search-contact').value.toLowerCase(); renderContactTable(globalContacts.filter(c => c.name.toLowerCase().includes(q) || c.phone.includes(q) || c.address.toLowerCase().includes(q))); }
+
+    async function syncPhoneContacts() {
+        const planLower = currentPlan.toLowerCase();
+        if (planLower === 'gratis') return showToast("Paket Gratis tidak mendukung Sync Kontak. Silakan Upgrade!", "error");
+
+        if ('contacts' in navigator && 'ContactsManager' in window) {
+            try {
+                const props = ['name', 'tel'];
+                const opts = { multiple: true };
+                showToast("Membuka pembaca kontak HP Anda...", "info");
+                const contacts = await navigator.contacts.select(props, opts);
+                
+                if (contacts.length > 0) {
+                    showToast(`Memproses sinkronisasi ${contacts.length} kontak...`, "info");
+                    // Implementasi Simulasi Simpan ke Backend (karena perlu update Code.gs utk batch processing)
+                    // Disini kita memanggil addContact satu per satu untuk demonstrasi. Idealnya backend punya API batchAddContacts.
+                    let successCount = 0;
+                    for (let c of contacts) {
+                        let cName = c.name && c.name[0] ? c.name[0] : "Tanpa Nama";
+                        let cPhone = c.tel && c.tel[0] ? c.tel[0].replace(/[^0-9]/g, '') : "";
+                        if (cPhone) {
+                            if (cPhone.startsWith("0")) cPhone = "62" + cPhone.substring(1);
+                            await fetchGAS("addContact", [currentUser.email, currentUser.token, cName, cPhone, "SyncHP", "-", "-"]);
+                            successCount++;
+                        }
+                    }
+                    showToast(`Berhasil menyinkronkan ${successCount} kontak.`, "success");
+                    loadContactsData();
+                }
+            } catch (ex) {
+                console.error(ex);
+                showToast("Sinkronisasi dibatalkan atau izin ditolak.", "error");
+            }
+        } else {
+            showModal("Sync Tidak Didukung", "Browser atau perangkat Anda saat ini tidak mendukung pembacaan kontak otomatis (Web Contact Picker API). Harap gunakan Google Chrome di Android.", "info");
+        }
+    }
 
     function promptAddContact() {
        const planLower = currentPlan.toLowerCase();
@@ -1552,6 +1679,34 @@
            if(res.status) loadContactsData(); 
        });
     }
+    
+    function promptEditContact(id, name, phone, label, address, group) {
+       const h = `<div class="space-y-4 mt-5 text-left">
+            <input type="text" id="e-m-n" value="${name}" class="w-full px-4 py-3 bg-slate-50 rounded-xl border border-slate-200 text-sm outline-none font-bold focus:bg-white" placeholder="Nama Lengkap">
+            <input type="number" id="e-m-p" value="${phone}" class="w-full px-4 py-3 bg-slate-50 rounded-xl border border-slate-200 text-sm outline-none font-bold focus:bg-white" placeholder="No WhatsApp (Cth: 628...)">
+            <input type="text" id="e-m-a" value="${address!=='-'?address:''}" class="w-full px-4 py-3 bg-slate-50 rounded-xl border border-slate-200 text-sm outline-none font-bold focus:bg-white" placeholder="Alamat / Kota">
+            <div class="flex gap-3">
+                <input type="text" id="e-m-g" value="${group!=='-'?group:''}" class="w-1/2 px-4 py-3 bg-slate-50 rounded-xl border border-slate-200 text-sm outline-none font-bold focus:bg-white" placeholder="Nama Grup">
+                <input type="text" id="e-m-l" value="${label!=='-'?label:''}" class="w-1/2 px-4 py-3 bg-slate-50 rounded-xl border border-slate-200 text-sm outline-none font-bold focus:bg-white" placeholder="Label">
+            </div>
+            <p class="text-[10px] text-slate-400 mt-2"><i data-lucide="info" class="w-3 h-3 inline"></i> Fitur Edit ini memerlukan penambahan fungsi 'editContact' di Code.gs backend Anda.</p>
+        </div>`;
+       showModal('Edit Data Kontak', h, 'info', async () => { 
+           const n = document.getElementById('e-m-n').value, p = document.getElementById('e-m-p').value; 
+           if(!n || !p) return showToast("Nama & No WA wajib!", "error"); 
+           setBtnLoading('modal-confirm-btn', true); 
+           
+           // Panggilan ini akan error jika fungsi editContact belum dibuat di GAS. 
+           // Untuk sekarang kita asumsikan sukses atau pengguna perlu menambahkannya.
+           const res = await fetchGAS("editContact", [currentUser.email, currentUser.token, id, n, p, document.getElementById('e-m-l').value||'-', document.getElementById('e-m-a').value||'-', document.getElementById('e-m-g').value||'-']); 
+           
+           closeModal(); 
+           showToast(res.message || "Fungsi editContact perlu ditambahkan di backend GAS.", res.status ? "success" : "info"); 
+           if(res.status) loadContactsData(); 
+       });
+       lucide.createIcons();
+    }
+
     async function promptDeleteContact(id, name) { showModal('Hapus Permanen', `Anda yakin ingin menghapus kontak ${name}?`, 'danger', async () => { setBtnLoading('modal-confirm-btn', true); const res = await fetchGAS("deleteContact", [currentUser.email, currentUser.token, id]); closeModal(); showToast(res.message, res.status ? 'success':'error'); if(res.status) loadContactsData(); }); }
 
     // ==========================================
@@ -1752,7 +1907,37 @@
       } 
     }
     
-    function renderDeviceTable() { const tbody = document.getElementById('device-table-body'); if(globalDevices.length === 0) { tbody.innerHTML = `<tr><td colspan="3" class="py-10 text-center text-slate-400 text-sm font-medium">Belum ada Device yang ditambahkan.</td></tr>`; return; } tbody.innerHTML = globalDevices.map(d => `<tr class="hover:bg-slate-50 border-b border-slate-50 last:border-0"><td class="px-6 py-4 font-black text-slate-800 text-sm">${d.deviceName}</td><td class="px-6 py-4 text-center"><span class="px-3 py-1.5 rounded-lg text-[10px] uppercase font-black tracking-wider ${d.status==='CONNECTED'?'bg-green-100 border border-green-200 text-green-700':'bg-yellow-100 border border-yellow-200 text-yellow-700'}">${d.status||'PENDING'}</span></td><td class="px-6 py-4 text-right"><div class="flex justify-end gap-2"><button onclick="requestQR('${d.sessionId}', '${d.deviceName}')" class="text-xs bg-slate-900 hover:bg-slate-800 text-white px-4 py-2.5 rounded-xl font-bold flex items-center gap-1.5 shrink-0 shadow-sm"><i data-lucide="qr-code" class="w-3.5 h-3.5 shrink-0"></i> Konek</button><button onclick="promptDeleteDevice('${d.deviceId}', '${d.deviceName}')" class="text-red-500 hover:text-red-700 p-2.5 bg-red-50 rounded-xl shrink-0"><i data-lucide="trash-2" class="w-4 h-4 shrink-0"></i></button></div></td></tr>`).join(''); lucide.createIcons(); }
+    function renderDeviceTable() { 
+        const tbody = document.getElementById('device-table-body'); 
+        if(globalDevices.length === 0) { 
+            tbody.innerHTML = `<tr><td colspan="3" class="py-10 text-center text-slate-400 text-sm font-medium">Belum ada Device yang ditambahkan.</td></tr>`; 
+            return; 
+        } 
+        tbody.innerHTML = globalDevices.map(d => {
+            const isPaused = d.status === 'PAUSED';
+            const statusClass = d.status === 'CONNECTED' ? 'bg-green-100 border border-green-200 text-green-700' : (isPaused ? 'bg-slate-100 border border-slate-200 text-slate-600' : 'bg-yellow-100 border border-yellow-200 text-yellow-700');
+            const statusText = d.status || 'PENDING';
+            
+            return `<tr class="hover:bg-slate-50 border-b border-slate-50 last:border-0">
+                <td class="px-6 py-4 font-black text-slate-800 text-sm">${d.deviceName}</td>
+                <td class="px-6 py-4 text-center"><span class="px-3 py-1.5 rounded-lg text-[10px] uppercase font-black tracking-wider ${statusClass}">${statusText}</span></td>
+                <td class="px-6 py-4 text-right">
+                    <div class="flex justify-end gap-2">
+                        <button onclick="toggleDeviceState('${d.sessionId}', '${isPaused ? 'CONNECTED' : 'PAUSED'}')" class="text-xs bg-slate-100 hover:bg-slate-200 text-slate-700 px-3 py-2.5 rounded-xl font-bold flex items-center gap-1.5 shrink-0 shadow-sm transition-colors" title="${isPaused ? 'Lanjutkan Pengiriman' : 'Jeda/Matikan Pengiriman'}">
+                            <i data-lucide="${isPaused ? 'play' : 'pause'}" class="w-3.5 h-3.5 shrink-0"></i>
+                        </button>
+                        <button onclick="requestQR('${d.sessionId}', '${d.deviceName}')" class="text-xs bg-slate-900 hover:bg-slate-800 text-white px-4 py-2.5 rounded-xl font-bold flex items-center gap-1.5 shrink-0 shadow-sm transition-colors">
+                            <i data-lucide="qr-code" class="w-3.5 h-3.5 shrink-0"></i> Konek
+                        </button>
+                        <button onclick="promptDeleteDevice('${d.deviceId}', '${d.deviceName}')" class="text-red-500 hover:text-red-700 p-2.5 bg-red-50 hover:bg-red-100 rounded-xl shrink-0 transition-colors">
+                            <i data-lucide="trash-2" class="w-4 h-4 shrink-0"></i>
+                        </button>
+                    </div>
+                </td>
+            </tr>`;
+        }).join(''); 
+        lucide.createIcons(); 
+    }
     
     function promptAddDevice() { 
       const planLower = currentPlan.toLowerCase();
@@ -1767,6 +1952,13 @@
           showToast(res.message); 
           if(res.status) { loadDevicesData(); requestQR(res.data.sessionId, res.data.deviceName); } 
       }); 
+    }
+
+    async function toggleDeviceState(sessionId, newStatus) {
+        showToast("Memperbarui status device...", "info");
+        const res = await fetchGAS("updateDeviceStatus", [currentUser.email, currentUser.token, sessionId, newStatus]);
+        showToast(res.message, res.status ? 'success' : 'error');
+        if(res.status) loadDevicesData();
     }
 
     function promptDeleteDevice(id, name) { showModal('Hapus Device', `Anda yakin ingin menghapus device ${name}? Scanner harus diulang jika ditambahkan lagi.`, 'danger', async () => { setBtnLoading('modal-confirm-btn', true); const res = await fetchGAS("deleteDevice", [currentUser.email, currentUser.token, id]); closeModal(); showToast(res.message, res.status?'success':'error'); if(res.status) loadDevicesData(); }); }
@@ -1961,22 +2153,198 @@
     // --- BILLING & PLAN LOGIC ---
     function updatePlanUI() { 
       document.getElementById('dash-plan').innerText = currentPlan; 
-      const sp = document.getElementById('set-plan'); if(sp) sp.innerText = currentPlan;
+      const sp = document.getElementById('set-plan'); 
+      if(sp) {
+          if (currentPlan !== "Gratis" && currentPlan !== "VIP" && currentUser.expiry) {
+              const expDate = new Date(currentUser.expiry).toLocaleDateString('id-ID');
+              sp.innerHTML = `${currentPlan} <span class="text-[9px] text-slate-500 block lowercase tracking-wider mt-1">S.D ${expDate}</span>`;
+          } else {
+              sp.innerText = currentPlan;
+          }
+      }
     }
     
-    async function applyPromo() { const c = document.getElementById('promo-input')?.value.toUpperCase(); if(!c) return showToast("Masukkan kode promo!", "error"); setBtnLoading('btn-promo', true); const res = await fetchGAS("validatePromoCode", [c]); setBtnLoading('btn-promo', false); if(res.status) { activePromo = c; showToast("Kode Promo Berhasil Diterapkan!"); document.getElementById('price-pro').innerHTML = `${((249000-((249000*res.discount)/100))/1000).toFixed(0)}k`; } else { showToast(res.message, "error"); } }
+    let pendingPromoDiscount = 0;
     
-    function promptUpgradePlan(planName, price) { 
-      showModal(`Minta Upgrade ke ${planName}`, `Sistem akan mengirimkan e-Invoice tagihan paket ${planName} (Rp ${price}) ke email terdaftar Anda. Lanjutkan proses?`, 'info', async () => { 
-        setBtnLoading('modal-confirm-btn', true); 
-        const res = await fetchGAS("sendPurchaseNotification", [currentUser.email, "Paket " + planName, "Rp " + price, activePromo]); 
-        closeModal(); 
-        if(res.status) { showToast("Invoice berhasil dikirim. Silakan cek Email Anda!"); } 
-      }); 
+    async function applyPromo() { 
+        const promoInput = document.getElementById('promo-input');
+        const c = promoInput ? promoInput.value.toUpperCase() : null; 
+        
+        if(!c) return showToast("Masukkan kode promo!", "error"); 
+        
+        setBtnLoading('btn-promo', true); 
+        const res = await fetchGAS("validatePromoCode", [c]); 
+        setBtnLoading('btn-promo', false); 
+        
+        if(res.status) { 
+            activePromo = c; 
+            pendingPromoDiscount = res.discount;
+            showToast(`Kode Promo ${c} Diterapkan (${res.discount}%)!`, "success"); 
+            
+            // Re-render UI modal tagihan jika ada yang terbuka (walaupun tombol apply promo ada di dalam modal)
+            const dInput = document.getElementById('modal-promo-code');
+            if(dInput) dInput.value = c;
+            
+        } else { 
+            activePromo = "None";
+            pendingPromoDiscount = 0;
+            showToast(res.message, "error"); 
+        } 
+    }
+
+    // Harga Dasar
+    const planPrices = {
+        'Lite': { month: 49000, year: 500000 },
+        'Pro': { month: 249000, year: 1500000 },
+        'VIP': { month: 499000, year: 3450000 }
+    };
+    
+    function promptUpgradePlan(planName, elementIdForPrice) { 
+      // Reset promo state upon opening modal
+      activePromo = "None";
+      pendingPromoDiscount = 0;
+
+      const rawPrice = isPricingYearly ? planPrices[planName].year : planPrices[planName].month;
+      const periodText = isPricingYearly ? "Tahunan" : "Bulanan";
+      const noWaKonfirmasi = "6285763169783";
+      
+      const renderModalContent = () => {
+          let finalPrice = rawPrice;
+          if (pendingPromoDiscount > 0) {
+              finalPrice = rawPrice - (rawPrice * pendingPromoDiscount / 100);
+          }
+          const priceStr = `Rp ${finalPrice.toLocaleString('id-ID')}`;
+          
+          const textWa = encodeURIComponent(`Halo Admin KirimAja,\nSaya ingin konfirmasi pembayaran langganan.\n\nEmail: ${currentUser.email}\nPaket: ${planName} (${periodText})\nTotal: ${priceStr}\nPromo: ${activePromo}\nMetode: ... (Dana/OVO/GoPay/ShopeePay/LinkAja)\n\n*Bukti transfer dilampirkan.*`);
+
+          return `
+              <div class="text-left space-y-4 text-sm text-slate-600 mt-2">
+                  <div class="bg-blue-50 text-blue-700 p-5 rounded-2xl border border-blue-100 mb-4 shadow-inner relative overflow-hidden">
+                      <div class="absolute top-0 right-0 bg-blue-500 text-white px-3 py-1 rounded-bl-xl font-bold text-[10px] uppercase">${periodText}</div>
+                      <p class="text-xs font-bold uppercase tracking-wider mb-1">Total Tagihan:</p>
+                      <p class="text-3xl font-black">${priceStr}</p>
+                      ${pendingPromoDiscount > 0 ? `<p class="text-[10px] text-green-600 font-bold mt-1 bg-green-100 w-fit px-2 py-0.5 rounded uppercase">Diskon ${pendingPromoDiscount}% Aktif</p>` : ''}
+                  </div>
+                  
+                  <div class="flex gap-2 mb-2">
+                      <input type="text" id="modal-promo-code" value="${activePromo !== 'None' ? activePromo : ''}" placeholder="Punya Kode Promo?" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 text-xs font-bold rounded-xl outline-none uppercase placeholder:text-slate-400 focus:bg-white transition-colors">
+                      <button type="button" onclick="applyPromoInModal()" id="btn-promo-modal" class="bg-slate-900 text-white px-5 rounded-xl font-bold text-[10px] uppercase tracking-wider hover:bg-slate-800 transition-colors shrink-0 shadow-md">Terapkan</button>
+                  </div>
+
+                  <p class="font-medium text-xs mt-4">Silakan transfer via E-Wallet <b class="text-slate-800">(Dana, OVO, GoPay, ShopeePay, LinkAja)</b> ke nomor resmi kami:</p>
+                  
+                  <div class="bg-slate-50 p-6 rounded-2xl border border-slate-200 text-center relative shadow-sm group">
+                      <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">A.N Fakhrurrazi</p>
+                      <div class="font-black text-2xl sm:text-3xl text-slate-800 tracking-[0.15em]">0852-7747-9990</div>
+                      <button type="button" onclick="navigator.clipboard.writeText('085277479990').then(()=>showToast('Nomor Rekening Disalin!'))" class="absolute right-4 top-1/2 -translate-y-1/2 bg-white p-2.5 rounded-xl border border-slate-200 hover:bg-slate-50 text-slate-500 shadow-sm transition-colors opacity-100 sm:opacity-0 group-hover:opacity-100">
+                          <i data-lucide="copy" class="w-4 h-4"></i>
+                      </button>
+                  </div>
+                  
+                  <div class="pt-5 mt-5 border-t border-slate-200">
+                      <p class="mb-3 font-bold text-slate-800 text-center text-xs uppercase tracking-wider">Sudah Transfer? WAJIB Konfirmasi Disini:</p>
+                      <a href="https://wa.me/${noWaKonfirmasi}?text=${textWa}" target="_blank" onclick="closeModalAndSendEmail('${planName}', '${priceStr}')" class="w-full py-4 bg-green-500 text-white font-black rounded-xl flex items-center justify-center gap-2 hover:bg-green-600 transition-colors shadow-lg shadow-green-500/30 text-sm">
+                          <i data-lucide="message-circle" class="w-5 h-5"></i> Konfirmasi via WhatsApp
+                      </a>
+                  </div>
+              </div>
+          `;
+      };
+
+      // Define a global function for the modal promo button to work
+      window.applyPromoInModal = async () => {
+          const promoCode = document.getElementById('modal-promo-code').value.toUpperCase();
+          if(!promoCode) return showToast("Masukkan kode promo!", "error");
+          setBtnLoading('btn-promo-modal', true, '');
+          const res = await fetchGAS("validatePromoCode", [promoCode]);
+          setBtnLoading('btn-promo-modal', false);
+          if(res.status) {
+              activePromo = promoCode;
+              pendingPromoDiscount = res.discount;
+              showToast(`Promo ${res.discount}% Diterapkan!`, "success");
+              // Re-render modal content
+              document.querySelector('.modal-content .p-6').querySelector('#modal-desc').innerHTML = renderModalContent();
+              lucide.createIcons();
+          } else {
+              activePromo = "None";
+              pendingPromoDiscount = 0;
+              showToast(res.message, "error");
+          }
+      };
+
+      window.closeModalAndSendEmail = (plan, price) => {
+          // Call backend to send the invoice silently while user opens WA
+          fetchGAS("sendPurchaseNotification", [currentUser.email, "Paket " + plan, price, activePromo]);
+          closeModal();
+      };
+      
+      showModal(`Tagihan Pembayaran ${planName}`, renderModalContent(), 'payment');
     }
 
     // --- ADMIN ---
-    async function fetchAdminUsers() { document.getElementById('admin-table-body').innerHTML = `<tr><td colspan="3" class="py-10 text-center"><i data-lucide="loader-2" class="w-5 h-5 animate-spin mx-auto text-slate-400 shrink-0"></i></td></tr>`; lucide.createIcons(); const u = await fetchGAS("getAllUsers", []); const b = document.getElementById('admin-table-body'); if(!u || !u.length || u.status === false) { b.innerHTML = '<tr><td colspan="3" class="text-center py-8 font-medium">Belum ada Klien terdaftar.</td></tr>'; return; } b.innerHTML = u.map(i => `<tr class="border-b border-slate-50"><td class="px-6 py-4 font-bold text-slate-800">${i.email}</td><td class="px-6 py-4 text-center"><span class="px-2.5 py-1.5 rounded-lg text-[10px] uppercase font-black tracking-wider bg-slate-100">${i.status}</span></td><td class="px-6 py-4 text-center uppercase text-[10px] font-black tracking-wider text-accent-600">${i.role}</td></tr>`).join(''); }
+    async function fetchAdminUsers() { 
+      document.getElementById('admin-table-body').innerHTML = `<tr><td colspan="6" class="py-10 text-center"><i data-lucide="loader-2" class="w-5 h-5 animate-spin mx-auto text-slate-400 shrink-0"></i></td></tr>`; 
+      lucide.createIcons(); 
+      const res = await fetchGAS("getAllUsers", [currentUser.email, currentUser.token]); 
+      const b = document.getElementById('admin-table-body'); 
+      if(!res.status || !res.data || !res.data.length) { b.innerHTML = '<tr><td colspan="6" class="text-center py-8 font-medium">Belum ada Klien terdaftar.</td></tr>'; return; } 
+      b.innerHTML = res.data.map(i => {
+        let expText = i.expiry ? new Date(i.expiry).toLocaleDateString('id-ID') : '-';
+        return `<tr class="border-b border-slate-50 hover:bg-slate-50">
+          <td class="px-6 py-4 font-bold text-slate-800">${i.email}</td>
+          <td class="px-6 py-4 text-center"><span class="px-2.5 py-1.5 rounded-lg text-[10px] uppercase font-black tracking-wider ${i.status==='Active'?'bg-green-100 text-green-700':'bg-slate-100'}">${i.status}</span></td>
+          <td class="px-6 py-4 text-center uppercase text-[10px] font-black tracking-wider text-slate-500">${i.role}</td>
+          <td class="px-6 py-4 text-center"><span class="px-2.5 py-1.5 rounded-lg text-[10px] uppercase font-black tracking-wider bg-accent-100 text-accent-700">${i.plan||'Gratis'}</span></td>
+          <td class="px-6 py-4 text-center text-xs font-medium text-slate-500">${expText}</td>
+          <td class="px-6 py-4 text-center">
+            <button onclick="promptEditUserPlan('${i.email}', '${i.plan||'Gratis'}', '${i.expiry||''}')" class="text-blue-500 hover:text-blue-700 p-2 bg-blue-50 hover:bg-blue-100 rounded-lg transition-colors"><i data-lucide="edit" class="w-4 h-4 shrink-0"></i></button>
+          </td>
+        </tr>`;
+      }).join(''); 
+      lucide.createIcons();
+    }
+
+    function promptEditUserPlan(targetEmail, currentPlan, currentExpiry) {
+        let expDateValue = "";
+        if (currentExpiry && currentExpiry !== 'undefined') {
+            const d = new Date(currentExpiry);
+            expDateValue = d.toISOString().substring(0, 10);
+        }
+
+        const html = `
+            <div class="space-y-4 text-left mt-2">
+                <div class="p-3 bg-yellow-50 text-yellow-800 border border-yellow-200 rounded-xl text-xs font-medium">
+                    <i data-lucide="alert-triangle" class="w-4 h-4 inline mr-1"></i> Gunakan form ini untuk memvalidasi pembayaran manual. Sistem akan otomatis men-downgrade paket ke Gratis jika lewat tanggal kedaluwarsa.
+                </div>
+                <p class="text-xs text-slate-500 mb-4 font-medium">Modifikasi akses layanan untuk: <br><b class="text-slate-900">${targetEmail}</b></p>
+                <div>
+                    <label class="block text-xs font-bold text-slate-600 mb-1.5">Ubah Paket</label>
+                    <select id="edit-plan-select" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm font-bold outline-none focus:bg-white">
+                        <option value="Gratis" ${currentPlan==='Gratis'?'selected':''}>Gratis</option>
+                        <option value="Lite" ${currentPlan==='Lite'?'selected':''}>Lite</option>
+                        <option value="Pro" ${currentPlan==='Pro'?'selected':''}>Pro</option>
+                        <option value="VIP" ${currentPlan==='VIP'?'selected':''}>VIP / Enterprise</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-600 mb-1.5">Berlaku Hingga</label>
+                    <input type="date" id="edit-plan-expiry" value="${expDateValue}" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm font-bold outline-none focus:bg-white">
+                    <p class="text-[10px] text-slate-400 mt-1">Kosongkan kolom tanggal ini jika akses bersifat selamanya (Lifetime).</p>
+                </div>
+            </div>
+        `;
+
+        showModal('Kelola Langganan Klien', html, 'info', async () => {
+            const newPlan = document.getElementById('edit-plan-select').value;
+            const newExpiry = document.getElementById('edit-plan-expiry').value;
+            setBtnLoading('modal-confirm-btn', true);
+            const res = await fetchGAS("adminUpdateUserPlan", [currentUser.email, currentUser.token, targetEmail, newPlan, newExpiry]);
+            closeModal();
+            showToast(res.message, res.status ? 'success' : 'error');
+            if (res.status) fetchAdminUsers();
+        });
+    }
+
     function handleEmailBlast(e) { e.preventDefault(); showModal('PERINGATAN: Blast Email', 'Ini akan mengirim email promosi massal ke SEMUA pengguna yang terdaftar di database. Anda yakin?', 'danger', async () => { setBtnLoading('modal-confirm-btn', true); const res = await fetchGAS("adminEmailBlast", [currentUser.email, currentUser.token, document.getElementById('blast-subject').value, document.getElementById('blast-content').value]); closeModal(); showToast(res.message, res.status?"success":"error"); if(res.status) e.target.reset(); }); }
 
     // --- CHART ---
