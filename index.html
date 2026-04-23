@@ -2423,12 +2423,10 @@
       const apikey = document.getElementById('set-api-key').value;
       const safeKey = apikey === 'NO_API_KEY' ? 'API_KEY_ANDA_DISINI' : apikey;
       
-      // Ambil daftar device yang sedang terhubung
       const deviceOpts = globalDevices.length > 0 
           ? `<option value="">Otomatis (Pilih Device Pertama yang Aktif)</option>` + globalDevices.map(d => `<option value="${d.deviceId}">${d.deviceName} (${d.status || 'Offline'})</option>`).join('')
           : `<option value="">-- Belum ada device terhubung --</option>`;
 
-      // Fungsi cerdas untuk merubah kode secara langsung (Live Update)
       window.updateApiSnippet = function() {
           const selectedDev = document.getElementById('api-device-select').value;
           const devParamJson = selectedDev ? `,\n  "device_id": "${selectedDev}"` : '';
@@ -2460,36 +2458,67 @@ echo $response;`;
       };
 
       const html = `
-        <div class="text-left space-y-4 text-sm text-slate-600 mt-2">
-          <p>Kirim pesan otomatis dari aplikasi/website Anda dengan endpoint ini.</p>
+        <div class="text-left space-y-6 mt-2">
+          <p class="text-sm text-slate-500 font-medium">Kirim pesan otomatis dari aplikasi/website Anda dengan endpoint ini.</p>
           
           <div>
-             <label class="block text-xs font-bold text-slate-600 mb-1.5 uppercase tracking-wider">Kirim Menggunakan Device (Opsional)</label>
-             <select id="api-device-select" onchange="window.updateApiSnippet()" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm font-bold text-accent-700 outline-none focus:bg-white shadow-sm">
-                ${deviceOpts}
-             </select>
-             <p class="text-[10px] text-slate-400 mt-1">Jika dipilih 'Otomatis', sistem memakai device mana pun yang sedang online.</p>
+             <label class="block text-[10px] font-black text-slate-400 mb-2 uppercase tracking-widest">URL Endpoint (POST)</label>
+             <div class="flex relative w-full shadow-sm rounded-xl overflow-hidden">
+                <div class="bg-slate-100 border border-r-0 border-slate-200 px-4 py-3.5 flex items-center justify-center shrink-0">
+                   <i data-lucide="link" class="w-4 h-4 text-slate-500"></i>
+                </div>
+                <input type="text" readonly value="${CONFIG.GAS_WEB_APP_URL}" class="w-full px-3 py-3.5 bg-slate-50 border-y border-slate-200 text-xs font-mono font-medium text-slate-700 outline-none truncate" id="api-url-endpoint">
+                <button type="button" onclick="navigator.clipboard.writeText('${CONFIG.GAS_WEB_APP_URL}').then(()=>showToast('URL Tersalin!'))" class="bg-slate-900 text-white px-5 py-3.5 border border-slate-900 hover:bg-slate-800 transition-colors flex items-center justify-center shrink-0" title="Salin URL">
+                   <i data-lucide="copy" class="w-4 h-4"></i>
+                </button>
+             </div>
           </div>
 
-          <div class="bg-slate-900 text-green-400 p-4 rounded-xl font-mono text-xs overflow-x-auto whitespace-pre relative mt-4">
-             <div class="absolute top-0 right-0 bg-slate-800 text-slate-400 px-2 py-1 rounded-bl-lg text-[9px] font-bold tracking-widest">JSON PAYLOAD</div>
-             <b>POST URL:</b><br>${CONFIG.GAS_WEB_APP_URL}<br><br><span id="api-json-preview"></span>
+          <div>
+             <label class="block text-[10px] font-black text-slate-400 mb-2 uppercase tracking-widest">Kirim Menggunakan Device (Opsional)</label>
+             <div class="relative">
+                 <i data-lucide="smartphone" class="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none"></i>
+                 <select id="api-device-select" onchange="window.updateApiSnippet()" class="w-full pl-11 pr-10 py-3.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-bold text-slate-800 outline-none focus:bg-white shadow-sm appearance-none cursor-pointer transition-colors">
+                    ${deviceOpts}
+                 </select>
+                 <i data-lucide="chevron-down" class="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none"></i>
+             </div>
+             <p class="text-[10px] text-slate-400 mt-2 font-medium flex items-center gap-1.5"><i data-lucide="info" class="w-3.5 h-3.5 shrink-0"></i> Jika 'Otomatis', sistem memakai device mana pun yang online.</p>
+          </div>
+
+          <div class="relative group">
+             <label class="block text-[10px] font-black text-slate-400 mb-2 uppercase tracking-widest flex items-center justify-between">
+                <span>JSON Payload (Body)</span>
+                <button type="button" onclick="const t=document.getElementById('api-json-preview').innerText; navigator.clipboard.writeText(t).then(()=>showToast('JSON Tersalin!'))" class="text-accent-600 hover:text-accent-700 flex items-center gap-1 transition-colors bg-accent-50 px-2.5 py-1 rounded-md"><i data-lucide="copy" class="w-3 h-3"></i> Salin JSON</button>
+             </label>
+             <div class="bg-slate-900 p-5 rounded-2xl overflow-hidden relative shadow-inner">
+                <pre class="font-mono text-[11.5px] text-green-400 overflow-x-auto hide-scrollbar whitespace-pre-wrap break-all leading-relaxed"><code id="api-json-preview"></code></pre>
+             </div>
           </div>
           
-          <h4 class="font-bold text-slate-800 mt-4 border-b pb-2">Contoh Kode PHP (cURL)</h4>
-          <div class="bg-slate-100 p-4 rounded-xl font-mono text-[10px] overflow-x-auto whitespace-pre text-slate-800 border border-slate-200 relative">
-             <div class="absolute top-0 right-0 bg-slate-200 text-slate-500 px-2 py-1 rounded-bl-lg text-[9px] font-bold tracking-widest">PHP NATIVE</div>
-             <span id="api-php-preview"></span>
+          <div class="relative group border-t border-slate-100 pt-6 mt-2">
+             <label class="block text-[10px] font-black text-slate-400 mb-2 uppercase tracking-widest flex items-center justify-between">
+                <span>Contoh Kode PHP (cURL)</span>
+                <button type="button" onclick="const t=document.getElementById('api-php-preview').innerText; navigator.clipboard.writeText(t).then(()=>showToast('PHP Tersalin!'))" class="text-accent-600 hover:text-accent-700 flex items-center gap-1 transition-colors bg-accent-50 px-2.5 py-1 rounded-md"><i data-lucide="copy" class="w-3 h-3"></i> Salin PHP</button>
+             </label>
+             <div class="bg-slate-50 p-5 rounded-2xl border border-slate-200 overflow-hidden relative">
+                <pre class="font-mono text-[11px] text-slate-700 overflow-x-auto hide-scrollbar whitespace-pre-wrap break-all leading-relaxed"><code id="api-php-preview"></code></pre>
+             </div>
           </div>
         </div>
       `;
       
+      showModal('Integrasi Webhook API', html, 'info', () => { closeModal(); });
+      document.getElementById('modal-confirm-btn').style.display = 'none';
+      
+      // Trigger untuk merender teks dan icon pertama kali muncul
+      setTimeout(() => { window.updateApiSnippet(); lucide.createIcons(); }, 50);
+    }
       showModal('Dokumentasi Webhook API', html, 'info', () => { closeModal(); });
       document.getElementById('modal-confirm-btn').style.display = 'none';
       
       // Trigger untuk merender teks pertama kali muncul
-      setTimeout(() => window.updateApiSnippet(), 50);
-    }
+      
 
     // --- CHART ---
     let dashboardChart = null;
