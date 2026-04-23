@@ -705,11 +705,18 @@
               <h2 class="text-2xl font-black text-slate-900 tracking-tight">Buku Kontak</h2>
               <p class="text-sm text-slate-500 font-medium">Database terpusat untuk pelanggan Anda.</p>
             </div>
-            <div class="flex flex-wrap gap-3">
-               <button onclick="syncPhoneContacts()" class="bg-blue-50 text-blue-700 hover:bg-blue-100 border border-blue-200 px-5 py-3 rounded-xl font-bold transition-colors flex items-center gap-2 text-sm shadow-sm">
-                 <i data-lucide="smartphone" class="w-4 h-4 shrink-0"></i> Sync Kontak HP
+            <div class="flex flex-wrap gap-2 sm:gap-3">
+               <button onclick="downloadContactTemplate()" class="bg-slate-100 text-slate-700 hover:bg-slate-200 border border-slate-200 px-4 py-2.5 rounded-xl font-bold transition-colors flex items-center gap-2 text-xs sm:text-sm shadow-sm">
+                 <i data-lucide="download" class="w-4 h-4 shrink-0"></i> Template Excel/CSV
                </button>
-               <button onclick="promptAddContact()" class="bg-slate-900 text-white px-5 py-3 rounded-xl font-bold transition-colors hover:bg-slate-800 flex items-center gap-2 text-sm shadow-md">
+               <input type="file" id="csv-upload-input" accept=".csv" class="hidden" onchange="handleCsvUpload(event)">
+               <button onclick="triggerCsvUpload()" class="bg-green-50 text-green-700 hover:bg-green-100 border border-green-200 px-4 py-2.5 rounded-xl font-bold transition-colors flex items-center gap-2 text-xs sm:text-sm shadow-sm">
+                 <i data-lucide="upload-cloud" class="w-4 h-4 shrink-0"></i> Upload Data
+               </button>
+               <button onclick="syncPhoneContacts()" class="bg-blue-50 text-blue-700 hover:bg-blue-100 border border-blue-200 px-4 py-2.5 rounded-xl font-bold transition-colors flex items-center gap-2 text-xs sm:text-sm shadow-sm">
+                 <i data-lucide="smartphone" class="w-4 h-4 shrink-0"></i> Sync HP
+               </button>
+               <button onclick="promptAddContact()" class="bg-slate-900 text-white px-4 py-2.5 rounded-xl font-bold transition-colors hover:bg-slate-800 flex items-center gap-2 text-xs sm:text-sm shadow-md">
                  <i data-lucide="user-plus" class="w-4 h-4 shrink-0"></i> Tambah Manual
                </button>
             </div>
@@ -1001,16 +1008,42 @@
                   </label>
                 </div>
 
-                <div>
-                  <label class="block text-xs font-bold text-slate-600 mb-2 uppercase tracking-wider">Gemini API Key (Dapatkan di Google AI Studio)</label>
-                  <div class="relative w-full">
-                    <input type="password" id="ai-api-key" class="w-full pl-5 pr-11 py-3.5 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-900 outline-none focus:bg-white font-mono font-bold" placeholder="AIzaSy...">
-                    <button type="button" onclick="toggleVisibility('ai-api-key')" class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 p-1 outline-none">
-                      <i data-lucide="eye" id="eye-ai-api-key" class="w-4 h-4 shrink-0 block"></i>
-                      <i data-lucide="eye-off" id="eye-off-ai-api-key" class="w-4 h-4 shrink-0 hidden"></i>
-                    </button>
+                <div class="grid sm:grid-cols-2 gap-5">
+                  <div>
+                    <label class="block text-xs font-bold text-slate-600 mb-2 uppercase tracking-wider">Pilih Provider AI Engine</label>
+                    <select id="ai-provider" onchange="switchAiProvider()" class="w-full px-4 py-3.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-bold text-accent-700 outline-none transition-all">
+                      <option value="gemini">1. Google Gemini (Natural & Cerdas)</option>
+                      <option value="groq">2. Groq Llama3 (Super Cepat / Kilat)</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label class="block text-xs font-bold text-slate-600 mb-2 uppercase tracking-wider">Masukkan API Key Sesuai Pilihan</label>
+                    <div class="relative w-full">
+                      <input type="password" id="ai-api-key" class="w-full pl-5 pr-11 py-3.5 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-900 outline-none focus:bg-white font-mono font-bold" placeholder="Paste Kunci API di sini...">
+                      <button type="button" onclick="toggleVisibility('ai-api-key')" class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 p-1 outline-none">
+                        <i data-lucide="eye" id="eye-ai-api-key" class="w-4 h-4 shrink-0 block"></i>
+                        <i data-lucide="eye-off" id="eye-off-ai-api-key" class="w-4 h-4 shrink-0 hidden"></i>
+                      </button>
+                    </div>
                   </div>
                 </div>
+                
+                <p id="ai-provider-info" class="text-[11px] text-slate-500 font-medium mt-1 bg-blue-50 p-3 rounded-lg border border-blue-100">
+                   Dapatkan <b>Gemini API Key</b> gratis di <a href="https://aistudio.google.com/app/apikey" target="_blank" class="text-accent-600 underline">Google AI Studio</a>. (Cth: AIza...)
+                </p>
+
+                <div class="mt-4">
+                  <label class="block text-xs font-bold text-slate-600 mb-2 uppercase tracking-wider">System Prompt (Konteks & Karakter AI)</label>
+                  <textarea id="ai-prompt" required rows="7" class="w-full px-5 py-4 bg-slate-50 border border-slate-200 rounded-xl text-sm font-medium text-slate-900 resize-y outline-none focus:bg-white leading-relaxed" placeholder="Contoh: Nama Anda adalah Sarah. Anda adalah Customer Service dari Toko Sepatu XYZ. Toko buka Senin-Jumat jam 08:00 - 17:00. Jika orang bertanya harga sepatu Sneaker, jawab Rp 250.000..."></textarea>
+                </div>
+
+                <div class="pt-4 text-right">
+                  <button type="submit" id="btn-ai" class="px-10 py-4 bg-slate-900 text-white font-black rounded-xl transition-colors hover:bg-slate-800 text-sm shadow-xl shadow-slate-900/20">
+                    Simpan Mesin AI
+                  </button>
+                </div>
+              </form>
+            </div>
 
                 <div>
                   <label class="block text-xs font-bold text-slate-600 mb-2 uppercase tracking-wider">System Prompt (Pengetahuan Otak AI)</label>
@@ -1177,7 +1210,7 @@
                    <span class="bg-slate-100 text-slate-700 border border-slate-200 px-3 py-1 rounded-md text-[10px] font-black uppercase tracking-wider">Advanced</span>
                 </div>
                 <p class="text-sm text-slate-500 mb-6 font-medium leading-relaxed">Gunakan kredensial API Key ini untuk mengintegrasikan pengiriman pesan WA (OTP, Notif Pesanan) ke dalam website atau aplikasi sistem Anda sendiri.</p>
-                <div class="flex flex-col sm:flex-row gap-4 items-start sm:items-center">
+                <div class="flex flex-col sm:flex-row gap-4 items-start sm:items-center mb-6">
                   <div class="relative w-full">
                      <i data-lucide="key" class="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 shrink-0"></i>
                      <input type="password" id="set-api-key" readonly class="w-full pl-11 pr-4 py-4 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-900 font-mono font-bold outline-none cursor-not-allowed tracking-widest" value="LOADING...">
@@ -1191,6 +1224,9 @@
                        <i data-lucide="copy" class="w-4 h-4 shrink-0"></i> Salin Key
                      </button>
                   </div>
+                </div>
+                <div class="border-t border-slate-100 pt-5 mt-2">
+                   <button type="button" onclick="showApiDocs()" class="text-accent-600 font-bold text-sm flex items-center gap-2 hover:text-accent-700 transition-colors"><i data-lucide="book-open" class="w-4 h-4"></i> Lihat Dokumentasi & Contoh Kode Webhook API</button>
                 </div>
               </div>
             </div>
@@ -2347,13 +2383,98 @@
 
     function handleEmailBlast(e) { e.preventDefault(); showModal('PERINGATAN: Blast Email', 'Ini akan mengirim email promosi massal ke SEMUA pengguna yang terdaftar di database. Anda yakin?', 'danger', async () => { setBtnLoading('modal-confirm-btn', true); const res = await fetchGAS("adminEmailBlast", [currentUser.email, currentUser.token, document.getElementById('blast-subject').value, document.getElementById('blast-content').value]); closeModal(); showToast(res.message, res.status?"success":"error"); if(res.status) e.target.reset(); }); }
 
+    // --- FITUR BARU: IMPORT CSV & API DOCS & AI PROVIDER ---
+    function downloadContactTemplate() {
+      const csvContent = "data:text/csv;charset=utf-8,Nama Lengkap,No WhatsApp,Label,Alamat,Nama Grup\nBudi Santoso,62812345678,Pelanggan,Jakarta,VIP\nSiti Aminah,62898765432,Prospek,Bandung,Reguler";
+      const link = document.createElement("a");
+      link.setAttribute("href", encodeURI(csvContent));
+      link.setAttribute("download", "Template_Kontak_KirimAja.csv");
+      document.body.appendChild(link);
+      link.click(); document.body.removeChild(link);
+    }
+    
+    function triggerCsvUpload() { document.getElementById('csv-upload-input').click(); }
+    
+    function handleCsvUpload(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = async function(e) {
+        const rows = e.target.result.split('\n').map(row => row.split(','));
+        const contacts = [];
+        for(let i=1; i<rows.length; i++) {
+          if(rows[i].length >= 2 && rows[i][1].trim() !== '') {
+            let phone = rows[i][1].replace(/[^0-9]/g, '');
+            if (phone.startsWith("0")) phone = "62" + phone.substring(1);
+            contacts.push({ name: rows[i][0].trim() || "Tanpa Nama", phone: phone, label: rows[i][2] ? rows[i][2].trim() : "-", address: rows[i][3] ? rows[i][3].trim() : "-", group: rows[i][4] ? rows[i][4].trim() : "-" });
+          }
+        }
+        if(contacts.length === 0) return showToast("Tidak ada data valid di file Anda.", "error");
+        showModal('Import Data Kontak', `Ditemukan ${contacts.length} baris kontak valid. Mulai import ke database?`, 'info', async () => {
+          setBtnLoading('modal-confirm-btn', true);
+          const res = await fetchGAS("bulkAddContacts", [currentUser.email, currentUser.token, JSON.stringify(contacts)]);
+          closeModal();
+          showToast(res.message, res.status ? "success" : "error");
+          if(res.status) loadContactsData();
+        });
+      };
+      reader.readAsText(file);
+      event.target.value = '';
+    }
+
+    function switchAiProvider() {
+      const prov = document.getElementById('ai-provider').value;
+      const info = document.getElementById('ai-provider-info');
+      if(prov === 'gemini') {
+          info.innerHTML = 'Dapatkan <b>Gemini API Key</b> gratis di <a href="https://aistudio.google.com/app/apikey" target="_blank" class="text-accent-600 underline">Google AI Studio</a>. (Cth: AIza...)';
+      } else {
+          info.innerHTML = 'Dapatkan <b>Groq API Key</b> gratis super cepat di <a href="https://console.groq.com/keys" target="_blank" class="text-accent-600 underline">Groq Cloud</a>. (Cth: gsk_...)';
+      }
+    }
+
+    function showApiDocs() {
+      const apikey = document.getElementById('set-api-key').value;
+      const html = `
+        <div class="text-left space-y-4 text-sm text-slate-600 mt-2">
+          <p>Gunakan endpoint ini untuk mengirim pesan otomatis dari website Anda (misal: Notif WordPress, PHP Native, Node.js).</p>
+          <div class="bg-slate-900 text-green-400 p-4 rounded-xl font-mono text-xs overflow-x-auto whitespace-pre"><b>POST URL:</b>
+${CONFIG.GAS_WEB_APP_URL}
+
+<b>JSON PAYLOAD:</b>
+{
+  "action": "send_message",
+  "api_key": "${apikey === 'NO_API_KEY' ? 'API_KEY_ANDA_DISINI' : apikey}",
+  "target": "628123456789",
+  "message": "Halo, ini notifikasi otomatis dari website!"
+}</div>
+          <h4 class="font-bold text-slate-800 mt-4 border-b pb-2">Contoh Kode PHP (cURL)</h4>
+          <div class="bg-slate-100 p-4 rounded-xl font-mono text-[10px] overflow-x-auto whitespace-pre text-slate-800 border border-slate-200">$curl = curl_init();
+curl_setopt_array($curl, [
+  CURLOPT_URL => '${CONFIG.GAS_WEB_APP_URL}',
+  CURLOPT_RETURNTRANSFER => true,
+  CURLOPT_POST => true,
+  CURLOPT_POSTFIELDS => json_encode([
+    'action' => 'send_message',
+    'api_key' => '${apikey === 'NO_API_KEY' ? 'API_KEY_ANDA_DISINI' : apikey}',
+    'target' => '628123456789',
+    'message' => 'Pesanan baru masuk!'
+  ]),
+  CURLOPT_HTTPHEADER => ['Content-Type: text/plain']
+]);
+$response = curl_exec($curl);
+curl_close($curl);
+echo $response;</div>
+        </div>
+      `;
+      showModal('Dokumentasi Webhook API', html, 'info', () => { closeModal(); });
+      document.getElementById('modal-confirm-btn').style.display = 'none';
+    }
+
     // --- CHART ---
     let dashboardChart = null;
     function renderOverviewChart() {
       const c = document.getElementById('broadcastChart'); if(!c) return; if(dashboardChart) dashboardChart.destroy();
-      
       const sentData = [0, 0, 0, 0, 0, 0, globalBroadcasts.length > 0 ? globalBroadcasts.length : 0];
-      
       dashboardChart = new Chart(c, {
         type: 'line', data: { labels: ['Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab', 'Hari Ini'], datasets: [{ label: 'Antrean Masuk', data: sentData, borderColor: '#2563eb', backgroundColor: 'rgba(37, 99, 235, 0.1)', borderWidth: 3, tension: 0.4, pointBackgroundColor: '#fff', pointBorderColor: '#2563eb', pointRadius: 5, fill: true }] },
         options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, grid: { color: '#f1f5f9' }, border: {display: false} }, x: { grid: { display: false }, border: {display: false} } } }
