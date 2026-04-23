@@ -2419,42 +2419,76 @@
       }
     }
 
-    function showApiDocs() {
+ function showApiDocs() {
       const apikey = document.getElementById('set-api-key').value;
-      const html = `
-        <div class="text-left space-y-4 text-sm text-slate-600 mt-2">
-          <p>Gunakan endpoint ini untuk mengirim pesan otomatis dari website Anda (misal: Notif WordPress, PHP Native, Node.js).</p>
-          <div class="bg-slate-900 text-green-400 p-4 rounded-xl font-mono text-xs overflow-x-auto whitespace-pre"><b>POST URL:</b>
-${CONFIG.GAS_WEB_APP_URL}
+      const safeKey = apikey === 'NO_API_KEY' ? 'API_KEY_ANDA_DISINI' : apikey;
+      
+      // Ambil daftar device yang sedang terhubung
+      const deviceOpts = globalDevices.length > 0 
+          ? `<option value="">Otomatis (Pilih Device Pertama yang Aktif)</option>` + globalDevices.map(d => `<option value="${d.deviceId}">${d.deviceName} (${d.status || 'Offline'})</option>`).join('')
+          : `<option value="">-- Belum ada device terhubung --</option>`;
 
-<b>JSON PAYLOAD:</b>
-{
+      // Fungsi cerdas untuk merubah kode secara langsung (Live Update)
+      window.updateApiSnippet = function() {
+          const selectedDev = document.getElementById('api-device-select').value;
+          const devParamJson = selectedDev ? `,\n  "device_id": "${selectedDev}"` : '';
+          const devParamPhp = selectedDev ? `,\n    'device_id' => '${selectedDev}'` : '';
+          
+          document.getElementById('api-json-preview').innerText = `{
   "action": "send_message",
-  "api_key": "${apikey === 'NO_API_KEY' ? 'API_KEY_ANDA_DISINI' : apikey}",
+  "api_key": "${safeKey}",
   "target": "628123456789",
-  "message": "Halo, ini notifikasi otomatis dari website!"
-}</div>
-          <h4 class="font-bold text-slate-800 mt-4 border-b pb-2">Contoh Kode PHP (cURL)</h4>
-          <div class="bg-slate-100 p-4 rounded-xl font-mono text-[10px] overflow-x-auto whitespace-pre text-slate-800 border border-slate-200">$curl = curl_init();
+  "message": "Halo, ini notifikasi otomatis dari website!"${devParamJson}
+}`;
+          
+          document.getElementById('api-php-preview').innerText = `$curl = curl_init();
 curl_setopt_array($curl, [
   CURLOPT_URL => '${CONFIG.GAS_WEB_APP_URL}',
   CURLOPT_RETURNTRANSFER => true,
   CURLOPT_POST => true,
   CURLOPT_POSTFIELDS => json_encode([
     'action' => 'send_message',
-    'api_key' => '${apikey === 'NO_API_KEY' ? 'API_KEY_ANDA_DISINI' : apikey}',
+    'api_key' => '${safeKey}',
     'target' => '628123456789',
-    'message' => 'Pesanan baru masuk!'
+    'message' => 'Pesanan baru masuk!'${devParamPhp}
   ]),
-  CURLOPT_HTTPHEADER => ['Content-Type: text/plain']
+  CURLOPT_HTTPHEADER => ['Content-Type: application/json']
 ]);
 $response = curl_exec($curl);
 curl_close($curl);
-echo $response;</div>
+echo $response;`;
+      };
+
+      const html = `
+        <div class="text-left space-y-4 text-sm text-slate-600 mt-2">
+          <p>Kirim pesan otomatis dari aplikasi/website Anda dengan endpoint ini.</p>
+          
+          <div>
+             <label class="block text-xs font-bold text-slate-600 mb-1.5 uppercase tracking-wider">Kirim Menggunakan Device (Opsional)</label>
+             <select id="api-device-select" onchange="window.updateApiSnippet()" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm font-bold text-accent-700 outline-none focus:bg-white shadow-sm">
+                ${deviceOpts}
+             </select>
+             <p class="text-[10px] text-slate-400 mt-1">Jika dipilih 'Otomatis', sistem memakai device mana pun yang sedang online.</p>
+          </div>
+
+          <div class="bg-slate-900 text-green-400 p-4 rounded-xl font-mono text-xs overflow-x-auto whitespace-pre relative mt-4">
+             <div class="absolute top-0 right-0 bg-slate-800 text-slate-400 px-2 py-1 rounded-bl-lg text-[9px] font-bold tracking-widest">JSON PAYLOAD</div>
+             <b>POST URL:</b><br>${CONFIG.GAS_WEB_APP_URL}<br><br><span id="api-json-preview"></span>
+          </div>
+          
+          <h4 class="font-bold text-slate-800 mt-4 border-b pb-2">Contoh Kode PHP (cURL)</h4>
+          <div class="bg-slate-100 p-4 rounded-xl font-mono text-[10px] overflow-x-auto whitespace-pre text-slate-800 border border-slate-200 relative">
+             <div class="absolute top-0 right-0 bg-slate-200 text-slate-500 px-2 py-1 rounded-bl-lg text-[9px] font-bold tracking-widest">PHP NATIVE</div>
+             <span id="api-php-preview"></span>
+          </div>
         </div>
       `;
+      
       showModal('Dokumentasi Webhook API', html, 'info', () => { closeModal(); });
       document.getElementById('modal-confirm-btn').style.display = 'none';
+      
+      // Trigger untuk merender teks pertama kali muncul
+      setTimeout(() => window.updateApiSnippet(), 50);
     }
 
     // --- CHART ---
