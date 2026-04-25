@@ -863,8 +863,9 @@
                     <select id="bc-target-type" onchange="updateTargetFilters()" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm font-bold text-accent-700 outline-none transition-all">
                       <option value="manual">1. Input Angka Manual (Pisahkan koma)</option>
                       <option value="all">2. Semua Kontak di Buku</option>
-                      <option value="group">3. Berdasarkan Nama Grup</option>
+                      <option value="group">3. Berdasarkan Nama Grup (Manual)</option>
                       <option value="label">4. Berdasarkan Nama Label</option>
+                      <option value="wagroup" class="font-bold text-green-700">5. WA Group Asli (@g.us)</option>
                     </select>
                   </div>
 
@@ -931,8 +932,9 @@
               <h3 class="text-sm font-bold text-slate-900 mb-5 uppercase tracking-wider">Buat Jadwal Baru</h3>
               <form onsubmit="handleRecurringSubmit(event)" class="space-y-5">
                 <div>
-                  <label class="block text-xs font-bold text-slate-600 mb-1.5">Target (No WA / Label)</label>
-                  <input type="text" id="rec-target" required list="contact-datalist" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm font-bold outline-none focus:bg-white" placeholder="Contoh: 62812... atau nama Label">
+                  <label class="block text-xs font-bold text-slate-600 mb-1.5">Target (No WA / Label / Grup WA Asli)</label>
+                  <input type="text" id="rec-target" required list="contact-datalist" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm font-bold outline-none focus:bg-white" placeholder="Cari nama Kontak atau Grup WA...">
+                  <p class="text-[10px] text-slate-400 mt-1.5 font-medium"><i data-lucide="info" class="w-3 h-3 inline"></i> Ketik persis nama Label, atau pilih Grup WA dari daftar *dropdown*.</p>
                 </div>
                 
                 <div>
@@ -990,8 +992,15 @@
                 </div>
 
                 <div>
+                  <div class="flex flex-wrap gap-2 mb-3 items-center border-b border-slate-100 pb-3 mt-4">
+                     <span class="text-xs font-bold text-slate-500 mr-2">Suntik Variabel:</span>
+                     <button type="button" onclick="const t=document.getElementById('rec-message'); t.value+='{name}'; t.focus();" class="px-3 py-1.5 text-[10px] bg-slate-100 border border-slate-200 text-slate-700 rounded-lg hover:bg-slate-200 font-bold">+ {Nama}</button>
+                     <button type="button" onclick="const t=document.getElementById('rec-message'); t.value+='{phone}'; t.focus();" class="px-3 py-1.5 text-[10px] bg-slate-100 border border-slate-200 text-slate-700 rounded-lg hover:bg-slate-200 font-bold">+ {No WA}</button>
+                     <button type="button" onclick="const t=document.getElementById('rec-message'); t.value+='{address}'; t.focus();" class="px-3 py-1.5 text-[10px] bg-slate-100 border border-slate-200 text-slate-700 rounded-lg hover:bg-slate-200 font-bold">+ {Alamat}</button>
+                     <span class="text-[10px] text-slate-400 ml-auto font-mono font-bold" title="Spintax Anti-Banned">Format: {Halo|Hai}</span>
+                  </div>
                   <label class="block text-xs font-bold text-slate-600 mb-1.5">Isi Pesan</label>
-                  <textarea id="rec-message" required rows="4" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm font-medium resize-none outline-none focus:bg-white leading-relaxed" placeholder="Halo, ini pengingat rutin Anda..."></textarea>
+                  <textarea id="rec-message" required rows="4" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm font-medium resize-none outline-none focus:bg-white leading-relaxed" placeholder="Halo {name}, ini pengingat rutin Anda..."></textarea>
                 </div>
 
                 <button type="submit" id="btn-rec" class="w-full py-3.5 bg-slate-900 text-white font-bold rounded-xl text-sm hover:bg-slate-800 transition-colors mt-2 shadow-md flex items-center justify-center gap-2">
@@ -1209,7 +1218,7 @@
                 <div class="text-3xl font-black text-white" id="dash-price-pro">99k</div><div class="text-sm text-slate-400 mb-1 dash-price-period">/bln</div>
               </div>
               <p class="text-[11px] font-bold text-slate-400 mb-6 block" id="dash-desc-pro">Pembayaran per bulan</p>
-              <ul class="space-y-4 mb-8 text-sm text-slate-200 font-semibold flex-1">
+              <ul class="space-y-4 mb-8 text-sm text-white font-semibold flex-1">
                 <li class="flex items-start gap-3"><i data-lucide="check-circle-2" class="text-accent-400 w-5 h-5 shrink-0"></i> 20 Device WA</li>
                 <li class="flex items-start gap-3"><i data-lucide="check-circle-2" class="text-accent-400 w-5 h-5 shrink-0"></i> 2.000 Buku Kontak</li>
                 <li class="flex items-start gap-3"><i data-lucide="check-circle-2" class="text-accent-400 w-5 h-5 shrink-0"></i> 5.000 Broadcast / Hari</li>
@@ -1417,7 +1426,7 @@
     // ==========================================
     // FRONTEND UI LOGIC & CONTROLLER
     // ==========================================
-    let currentUser = null, globalDevices = [], globalContacts = [], globalAutoReplies = [], globalBroadcasts = [];
+    let currentUser = null, globalDevices = [], globalContacts = [], globalAutoReplies = [], globalBroadcasts = [], globalWAGroups = [];
     let currentPlan = "Gratis", statTotals = { sent: 0, success: 0, failed: 0 }, statInterval, qrInterval;
     let isPricingYearly = false; // State for Monthly/Yearly Pricing
 
@@ -1491,7 +1500,12 @@
         document.getElementById('modal-confirm-btn').style.display = 'flex'; // Reset visibility
     }
 
-    function switchView(viewId, mode = null) {
+    function switchView(viewId, mode = null, skipHistory = false) {
+      // 🚀 FITUR ROUTING: Ubah URL Browser
+      if (!skipHistory && typeof google !== 'undefined' && google.script && google.script.history) {
+          google.script.history.push(null, null, 'view-' + viewId);
+      }
+
       window.scrollTo(0,0);
       document.querySelectorAll('.view-section').forEach(v => { v.classList.remove('view-active'); v.style.display = 'none'; });
       const target = document.getElementById('view-' + viewId);
@@ -1651,12 +1665,18 @@
       // Load all data from GAS
       loadDevicesData(); 
       loadContactsData(); 
+      loadWAGroupsData(); // Menarik data grup WA Asli
       loadAutoRepliesData(); 
       loadBroadcastHistory();
       calculateStats();
     }
 
-    function showPanel(id) {
+    function showPanel(id, skipHistory = false) {
+      // 🚀 FITUR ROUTING: Ubah URL Browser ke Menu Spesifik
+      if (!skipHistory && typeof google !== 'undefined' && google.script && google.script.history) {
+          google.script.history.push(null, null, id);
+      }
+
       // Hide all panels
       ['panel-home', 'panel-devices', 'panel-contacts', 'panel-chat', 'panel-broadcast', 'panel-recurring', 'panel-autoreply', 'panel-billing', 'panel-admin', 'panel-settings'].forEach(p => document.getElementById(p).classList.add('hidden')); 
       document.getElementById(id).classList.remove('hidden');
@@ -1723,7 +1743,29 @@
         document.getElementById('stat-failed-bc').innerHTML = `${failed.toLocaleString('id-ID')}`; 
     }
 
-    // --- CONTACTS ---
+    // --- CONTACTS & GROUPS ---
+    function updateDatalist() {
+      let datalist = document.getElementById('contact-datalist');
+      if(!datalist) {
+          datalist = document.createElement('datalist');
+          datalist.id = 'contact-datalist';
+          document.body.appendChild(datalist);
+      }
+      let opts = globalContacts.map(c => `<option value="${c.phone}">${c.name}</option>`).join('');
+      // Tambahkan WA Groups ke Datalist agar gampang dicari saat membuat pesan rutin
+      opts += globalWAGroups.map(g => `<option value="${g.id}">${g.name} (Grup WA)</option>`).join('');
+      datalist.innerHTML = opts;
+    }
+
+    async function loadWAGroupsData() {
+      if(!currentUser) return;
+      const res = await fetchGAS("getWAGroups", [currentUser.email, currentUser.token]);
+      if(res.status && res.data) {
+          globalWAGroups = res.data;
+          updateDatalist(); 
+      }
+    }
+
     async function loadContactsData() {
       if(!currentUser) return; document.getElementById('contact-table-body').innerHTML = `<tr><td colspan="5" class="py-10 text-center"><i data-lucide="loader-2" class="w-5 h-5 animate-spin mx-auto text-slate-400 shrink-0"></i></td></tr>`; lucide.createIcons();
       const res = await fetchGAS("getContacts", [currentUser.email, currentUser.token]);
@@ -1731,14 +1773,7 @@
           globalContacts = res.data.map(c => ({ id: c.id, name: c.name, phone: c.phone, label: c.label || '', address: c.address || c.label?.split('-')[1] || '-', group: c.group || c.label?.split('-')[0] || '-' })); 
           renderContactTable(globalContacts); 
           updateTargetFilters(); 
-          
-          let datalist = document.getElementById('contact-datalist');
-          if(!datalist) {
-              datalist = document.createElement('datalist');
-              datalist.id = 'contact-datalist';
-              document.body.appendChild(datalist);
-          }
-          datalist.innerHTML = globalContacts.map(c => `<option value="${c.phone}">${c.name}</option>`).join('');
+          updateDatalist(); // Perbarui datalist dengan data terbaru
       } else {
           document.getElementById('contact-table-body').innerHTML = `<tr><td colspan="5" class="py-10 text-center text-red-400 text-sm">Gagal memuat data kontak.</td></tr>`;
       }
@@ -2032,7 +2067,7 @@
     function insertVar(v) { const t = document.getElementById('bc-message'), s = t.selectionStart, e = t.selectionEnd, tx = t.value; t.value = tx.substring(0, s) + v + tx.substring(e); t.focus(); t.selectionEnd = s + v.length; updateCharCount(); }
     function populateBroadcastDropdown() { const opts = globalDevices.length ? globalDevices.map(d => `<option value="${d.deviceId}">${d.deviceName} (${d.status||'Off'})</option>`).join('') : '<option value="">-- Device Anda Kosong --</option>'; document.getElementById('bc-device').innerHTML = opts; const qs = document.getElementById('qs-device'); if(qs) qs.innerHTML = opts; }
     
-    // Logic Pemilihan Target (Grup, Label, Manual)
+    // Logic Pemilihan Target (Grup, Label, Manual, WA Group)
     function updateTargetFilters() {
       const typeEl = document.getElementById('bc-target-type');
       if(!typeEl) return;
@@ -2062,6 +2097,11 @@
           const labels = [...new Set(globalContacts.map(c => c.label))].filter(l => l && l !== '-');
           filterSel.innerHTML = labels.length ? labels.map(l => `<option value="${l}">${l}</option>`).join('') : '<option value="">-- Belum ada Label yang tersimpan di kontak --</option>';
           infoText.innerHTML = '<i data-lucide="tag" class="w-3.5 h-3.5 shrink-0"></i> Pilih label target dari buku kontak.';
+      } else if(type === 'wagroup') {
+          manualDiv.classList.add('hidden');
+          selectDiv.classList.remove('hidden');
+          filterSel.innerHTML = globalWAGroups.length ? globalWAGroups.map(g => `<option value="${g.id}">${g.name}</option>`).join('') : '<option value="">-- Belum ada Grup WA yang tersinkron --</option>';
+          infoText.innerHTML = '<i data-lucide="users" class="w-3.5 h-3.5 shrink-0 text-green-600"></i> Pilih Grup WA asli yang otomatis ditarik dari HP Anda.';
       }
       lucide.createIcons();
     }
@@ -2091,16 +2131,22 @@
       } else if(type === 'label') {
           if(!filterVal) return showToast("Pilih Label terlebih dahulu!", "error");
           targetList = globalContacts.filter(c => c.label === filterVal);
+      } else if(type === 'wagroup') {
+          if(!filterVal) return showToast("Pilih Grup WA terlebih dahulu!", "error");
+          const selectedGroup = globalWAGroups.find(g => g.id === filterVal);
+          if (selectedGroup) {
+              targetList = [{ phone: selectedGroup.id, name: selectedGroup.name, address: '' }];
+          }
       }
 
-      if(targetList.length === 0) return showToast("Tidak ada kontak target yang ditemukan di grup/label tersebut!", "error");
+      if(targetList.length === 0) return showToast("Tidak ada kontak/grup target yang ditemukan!", "error");
       
-      showModal('Konfirmasi Kampanye', `Sistem akan menjadwalkan pengiriman ke <span class="font-bold text-accent-600">${targetList.length} nomor</span>. Lanjutkan?`, 'info', async () => { 
+      showModal('Konfirmasi Kampanye', `Sistem akan menjadwalkan pengiriman ke <span class="font-bold text-accent-600">${targetList.length} target</span>. Lanjutkan?`, 'info', async () => { 
         setBtnLoading('modal-confirm-btn', true); 
         
         const hasVars = /{name}|{address}|{phone}/i.test(template);
         
-        if(hasVars && type !== 'manual') {
+        if(hasVars && type !== 'manual' && type !== 'wagroup') {
             let successCount = 0;
             showToast(`Membangun ${targetList.length} antrean personalisasi...`, 'info');
             for(let c of targetList) {
@@ -2723,13 +2769,42 @@ echo $response;`;
       });
     }
 
+    // 🚀 ROUTER KONTROL: Pendeteksi Perubahan URL / Tombol Back Browser
+    function handleURLRouting(e) {
+       if (e && e.hash) {
+           // Jika URL mengarah ke menu dalam dashboard, dan user sudah login
+           if (e.hash.startsWith('panel-') && currentUser) {
+               showPanel(e.hash, true); // true = cegah push history berulang
+           } 
+           // Jika URL mengarah ke halaman luar (marketing/login)
+           else if (e.hash.startsWith('view-')) {
+               switchView(e.hash.replace('view-', ''), null, true);
+           }
+       }
+    }
+
     // --- INIT ---
     window.onload = async () => { 
+      // Pasang pelacak tombol Back / Forward di Browser
+      if (typeof google !== 'undefined' && google.script && google.script.history) {
+          google.script.history.setChangeHandler(handleURLRouting);
+      }
+
       const t = localStorage.getItem('wag_token'); 
       if(t) { 
           const res = await fetchGAS("autoLogin", [t]); 
           if(res.status) { 
               initDashboard(res.data); 
+
+              // 🚀 BACA URL SAAT PERTAMA KALI HALAMAN DIBUKA (DIRECT LINK)
+              if (typeof google !== 'undefined' && google.script && google.script.url) {
+                  google.script.url.getLocation(function(loc) {
+                      if(loc.hash && loc.hash.startsWith('panel-')) {
+                          showPanel(loc.hash, true); // Buka panel sesuai link
+                      }
+                  });
+              }
+
           } else {
               localStorage.removeItem('wag_token');
           }
