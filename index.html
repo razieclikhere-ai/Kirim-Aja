@@ -695,21 +695,21 @@
         </div>
 
         <!-- ============================================== -->
-        <!-- PANEL 3: CONTACTS                              -->
+        <!-- PANEL 3: CONTACTS & WA GROUPS                  -->
         <!-- ============================================== -->
         <div id="panel-contacts" class="hidden space-y-6 animate-slide-up">
-          <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
+          <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-2">
             <div>
-              <h2 class="text-2xl font-black text-slate-900 tracking-tight">Buku Kontak</h2>
-              <p class="text-sm text-slate-500 font-medium">Database terpusat untuk pelanggan Anda.</p>
+              <h2 class="text-2xl font-black text-slate-900 tracking-tight">Buku Kontak & Grup</h2>
+              <p class="text-sm text-slate-500 font-medium">Database terpusat untuk pelanggan dan komunitas Anda.</p>
             </div>
-            <div class="flex flex-wrap gap-2 sm:gap-3">
+            <div class="flex flex-wrap gap-2 sm:gap-3" id="contact-action-btns">
                <button onclick="downloadContactTemplate()" class="bg-slate-100 text-slate-700 hover:bg-slate-200 border border-slate-200 px-4 py-2.5 rounded-xl font-bold transition-colors flex items-center gap-2 text-xs sm:text-sm shadow-sm">
                  <i data-lucide="download" class="w-4 h-4 shrink-0"></i> Template Excel/CSV
                </button>
                <input type="file" id="csv-upload-input" accept=".csv" class="hidden" onchange="handleCsvUpload(event)">
                <button onclick="triggerCsvUpload()" class="bg-green-50 text-green-700 hover:bg-green-100 border border-green-200 px-4 py-2.5 rounded-xl font-bold transition-colors flex items-center gap-2 text-xs sm:text-sm shadow-sm">
-                 <i data-lucide="upload-cloud" class="w-4 h-4 shrink-0"></i> Upload Data
+                 <i data-lucide="upload-cloud" class="w-4 h-4 shrink-0"></i> Upload
                </button>
                <button onclick="syncPhoneContacts()" class="bg-blue-50 text-blue-700 hover:bg-blue-100 border border-blue-200 px-4 py-2.5 rounded-xl font-bold transition-colors flex items-center gap-2 text-xs sm:text-sm shadow-sm">
                  <i data-lucide="smartphone" class="w-4 h-4 shrink-0"></i> Sync HP
@@ -720,7 +720,18 @@
             </div>
           </div>
 
-          <div class="clean-card rounded-2xl flex flex-col h-[600px] overflow-hidden shadow-sm">
+          <!-- TABS -->
+          <div class="flex gap-2 mb-4 border-b border-slate-200 pb-px overflow-x-auto hide-scrollbar">
+            <button onclick="switchContactTab('personal')" id="tab-contact-personal" class="px-6 py-3 border-b-2 border-slate-900 text-slate-900 font-bold text-sm transition-colors shrink-0">
+              Kontak Personal
+            </button>
+            <button onclick="switchContactTab('group')" id="tab-contact-group" class="px-6 py-3 border-b-2 border-transparent text-slate-500 hover:text-slate-800 font-bold text-sm transition-colors shrink-0">
+              Grup WA Tersinkron
+            </button>
+          </div>
+
+          <!-- SECTION PERSONAL -->
+          <div id="section-contact-personal" class="clean-card rounded-2xl flex flex-col h-[600px] overflow-hidden shadow-sm animate-slide-up">
             <div class="p-5 border-b border-slate-200 flex flex-col md:flex-row justify-between items-center gap-4 bg-white">
               <div class="relative w-full md:w-[350px]">
                 <i data-lucide="search" class="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 shrink-0"></i>
@@ -731,7 +742,7 @@
                 <span>Total: <span id="contact-count" class="text-slate-900 font-black ml-1 text-sm">0</span></span>
               </div>
             </div>
-            <div class="overflow-x-auto flex-1 hide-scrollbar">
+            <div class="overflow-x-auto flex-1 hide-scrollbar bg-white">
               <table class="w-full text-left whitespace-nowrap min-w-[700px]">
                 <thead class="sticky top-0 bg-slate-50 z-10 border-b border-slate-200">
                   <tr>
@@ -743,6 +754,33 @@
                   </tr>
                 </thead>
                 <tbody id="contact-table-body" class="divide-y divide-slate-100 text-sm font-medium text-slate-700 bg-white">
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- SECTION GROUPS -->
+          <div id="section-contact-group" class="hidden clean-card rounded-2xl flex flex-col h-[600px] overflow-hidden shadow-sm animate-slide-up">
+            <div class="p-5 border-b border-slate-200 flex flex-col md:flex-row justify-between items-center gap-4 bg-white">
+              <div class="relative w-full md:w-[350px]">
+                <i data-lucide="search" class="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 shrink-0"></i>
+                <input type="text" id="search-wagroup" onkeyup="filterWAGroups()" placeholder="Cari nama grup atau ID..." class="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm font-semibold focus:bg-white outline-none">
+              </div>
+              <div class="text-xs font-bold text-slate-500 bg-slate-50 px-4 py-3 rounded-xl border border-slate-200 flex items-center gap-3">
+                <button onclick="loadWAGroupsData()" class="text-slate-400 hover:text-slate-900" title="Tarik Ulang dari Database"><i data-lucide="refresh-cw" class="w-4 h-4"></i></button>
+                <span>Total Grup: <span id="wagroup-count" class="text-slate-900 font-black ml-1 text-sm">0</span></span>
+              </div>
+            </div>
+            <div class="overflow-x-auto flex-1 hide-scrollbar bg-white">
+              <table class="w-full text-left whitespace-nowrap min-w-[700px]">
+                <thead class="sticky top-0 bg-slate-50 z-10 border-b border-slate-200">
+                  <tr>
+                    <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">ID Grup Asli (@g.us)</th>
+                    <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Nama Grup</th>
+                    <th class="px-6 py-4 text-right text-xs font-bold text-slate-500 uppercase tracking-wider">Aksi</th>
+                  </tr>
+                </thead>
+                <tbody id="wagroup-table-body" class="divide-y divide-slate-100 text-sm font-medium text-slate-700 bg-white">
                 </tbody>
               </table>
             </div>
@@ -774,7 +812,7 @@
                   <input type="text" id="search-chat-input" onkeyup="filterChats()" class="w-full pl-9 pr-3 py-2.5 bg-slate-50 border border-slate-200 rounded-lg text-sm font-medium outline-none focus:bg-white transition-colors" placeholder="Cari riwayat chat...">
                 </div>
                 <div class="flex gap-2">
-                   <input type="text" id="new-chat-target" list="contact-datalist" class="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-lg text-sm font-medium outline-none focus:bg-white" placeholder="Nomor / Kontak baru...">
+                   <input type="text" id="new-chat-target" list="contact-datalist" class="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-lg text-sm font-medium outline-none focus:bg-white" placeholder="Nomor / Kontak / Grup baru...">
                    <button onclick="startNewLiveChat()" class="bg-slate-900 text-white px-3.5 py-2.5 rounded-lg text-sm font-bold hover:bg-slate-800"><i data-lucide="message-square-plus" class="w-4 h-4"></i></button>
                 </div>
               </div>
@@ -1222,6 +1260,7 @@
                 <li class="flex items-start gap-3"><i data-lucide="check-circle-2" class="text-accent-400 w-5 h-5 shrink-0"></i> 20 Device WA</li>
                 <li class="flex items-start gap-3"><i data-lucide="check-circle-2" class="text-accent-400 w-5 h-5 shrink-0"></i> 2.000 Buku Kontak</li>
                 <li class="flex items-start gap-3"><i data-lucide="check-circle-2" class="text-accent-400 w-5 h-5 shrink-0"></i> 5.000 Broadcast / Hari</li>
+                <li class="flex items-start gap-3"><i data-lucide="check-circle-2" class="text-accent-400 w-5 h-5 shrink-0"></i> Full Fitur Live Chat</li>
                 <li class="flex items-start gap-3"><i data-lucide="sparkles" class="text-yellow-400 w-5 h-5 shrink-0"></i> Gemini AI Agent Full</li>
               </ul>
               <button onclick="promptUpgradePlan('Pro', 'dash-price-pro')" class="w-full py-3.5 rounded-xl bg-accent-600 text-white font-black hover:bg-accent-500 transition-colors text-sm shadow-lg shadow-accent-600/30">Upgrade ke Pro</button>
@@ -1500,8 +1539,19 @@
         document.getElementById('modal-confirm-btn').style.display = 'flex'; // Reset visibility
     }
 
+    // 🚀 ROUTER KONTROL: Pendeteksi Perubahan URL / Tombol Back Browser
+    function handleURLRouting(e) {
+       if (e && e.hash) {
+           if (e.hash.startsWith('panel-') && currentUser) {
+               showPanel(e.hash, true); 
+           } 
+           else if (e.hash.startsWith('view-')) {
+               switchView(e.hash.replace('view-', ''), null, true);
+           }
+       }
+    }
+
     function switchView(viewId, mode = null, skipHistory = false) {
-      // 🚀 FITUR ROUTING: Ubah URL Browser
       if (!skipHistory && typeof google !== 'undefined' && google.script && google.script.history) {
           google.script.history.push(null, null, 'view-' + viewId);
       }
@@ -1672,7 +1722,6 @@
     }
 
     function showPanel(id, skipHistory = false) {
-      // 🚀 FITUR ROUTING: Ubah URL Browser ke Menu Spesifik
       if (!skipHistory && typeof google !== 'undefined' && google.script && google.script.history) {
           google.script.history.push(null, null, id);
       }
@@ -1702,7 +1751,10 @@
       
       // Initialize Data Loaders based on active panel
       if(id === 'panel-devices') loadDevicesData(); 
-      if(id === 'panel-contacts') loadContactsData(); 
+      if(id === 'panel-contacts') {
+          loadContactsData();
+          loadWAGroupsData();
+      }
       if(id === 'panel-chat') {
           populateChatDeviceDropdown();
           loadChatListUI();
@@ -1752,7 +1804,7 @@
           document.body.appendChild(datalist);
       }
       let opts = globalContacts.map(c => `<option value="${c.phone}">${c.name}</option>`).join('');
-      // Tambahkan WA Groups ke Datalist agar gampang dicari saat membuat pesan rutin
+      // Tambahkan WA Groups ke Datalist agar gampang dicari saat membuat pesan rutin/chat
       opts += globalWAGroups.map(g => `<option value="${g.id}">${g.name} (Grup WA)</option>`).join('');
       datalist.innerHTML = opts;
     }
@@ -1763,6 +1815,7 @@
       if(res.status && res.data) {
           globalWAGroups = res.data;
           updateDatalist(); 
+          renderWAGroupsTable();
       }
     }
 
@@ -1777,6 +1830,23 @@
       } else {
           document.getElementById('contact-table-body').innerHTML = `<tr><td colspan="5" class="py-10 text-center text-red-400 text-sm">Gagal memuat data kontak.</td></tr>`;
       }
+    }
+
+    // Fungsi Sistem Tabulasi Kontak
+    function switchContactTab(tab) {
+        document.getElementById('tab-contact-personal').className = "px-6 py-3 border-b-2 border-transparent text-slate-500 hover:text-slate-800 font-bold text-sm transition-colors shrink-0";
+        document.getElementById('tab-contact-group').className = "px-6 py-3 border-b-2 border-transparent text-slate-500 hover:text-slate-800 font-bold text-sm transition-colors shrink-0";
+        document.getElementById('section-contact-personal').classList.add('hidden');
+        document.getElementById('section-contact-group').classList.add('hidden');
+
+        if (tab === 'personal') {
+            document.getElementById('tab-contact-personal').className = "px-6 py-3 border-b-2 border-slate-900 text-slate-900 font-bold text-sm transition-colors shrink-0";
+            document.getElementById('section-contact-personal').classList.remove('hidden');
+        } else {
+            document.getElementById('tab-contact-group').className = "px-6 py-3 border-b-2 border-slate-900 text-slate-900 font-bold text-sm transition-colors shrink-0";
+            document.getElementById('section-contact-group').classList.remove('hidden');
+            renderWAGroupsTable();
+        }
     }
 
     function renderContactTable(data) {
@@ -1796,6 +1866,33 @@
     }
     
     function filterContacts() { const q = document.getElementById('search-contact').value.toLowerCase(); renderContactTable(globalContacts.filter(c => c.name.toLowerCase().includes(q) || c.phone.includes(q) || c.address.toLowerCase().includes(q))); }
+
+    function renderWAGroupsTable(data = globalWAGroups) {
+        const tbody = document.getElementById('wagroup-table-body');
+        document.getElementById('wagroup-count').innerText = globalWAGroups.length;
+        
+        if(data.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="3" class="py-10 text-center text-slate-400 text-sm font-medium">Belum ada Grup WA yang tersinkron dari Device. Coba pastikan devicemu Online.</td></tr>`;
+            return;
+        }
+        
+        tbody.innerHTML = data.map(g => `<tr class="hover:bg-slate-50 border-b border-slate-50 last:border-0">
+            <td class="px-6 py-4 font-mono text-sm font-bold text-slate-700">${g.id}</td>
+            <td class="px-6 py-4 font-bold text-slate-800">${g.name}</td>
+            <td class="px-6 py-4 text-right flex justify-end gap-2">
+                <button onclick="chatWithGroup('${g.id}')" class="text-blue-500 hover:text-blue-700 px-3 py-2 bg-blue-50 hover:bg-blue-100 transition-colors rounded-lg flex items-center gap-1.5 text-xs font-bold"><i data-lucide="message-square" class="w-4 h-4"></i> Buka Chat</button>
+            </td>
+        </tr>`).join('');
+        lucide.createIcons();
+    }
+
+    function filterWAGroups() { const q = document.getElementById('search-wagroup').value.toLowerCase(); renderWAGroupsTable(globalWAGroups.filter(g => g.name.toLowerCase().includes(q) || g.id.toLowerCase().includes(q))); }
+
+    function chatWithGroup(groupId) {
+        showPanel('panel-chat');
+        document.getElementById('new-chat-target').value = groupId;
+        startNewLiveChat();
+    }
 
     async function syncPhoneContacts() {
         const planLower = currentPlan.toLowerCase();
@@ -1929,7 +2026,44 @@
       
       const res = await fetchGAS("getLiveChats", [currentUser.email, currentUser.token, deviceId]);
       if(res.status) {
-          liveChatsData = res.data;
+          // 🚀 ALGORITMA PENGGABUNGAN UTAS (THREAD MERGER)
+          // Menyatukan chat yang terpisah antara Node.js (angka saja) dan Frontend/GAS (@g.us)
+          let groupsMap = {};
+          res.data.forEach(thread => {
+              // Bersihkan phone dari embel-embel @g.us jika ada
+              let basePhone = thread.phone.replace('@g.us', '');
+              
+              // Cek apakah ini ID Grup (ada tanda strip '-' atau terdaftar di globalWAGroups)
+              let isGroup = basePhone.includes('-') || globalWAGroups.some(g => g.id.includes(basePhone));
+              
+              // Pastikan format akhirnya selalu menggunakan @g.us jika ia adalah grup
+              let displayPhone = isGroup ? basePhone + '@g.us' : basePhone;
+
+              if(!groupsMap[displayPhone]) {
+                  groupsMap[displayPhone] = { ...thread, phone: displayPhone, id: 'C-' + displayPhone };
+                  
+                  // Menyesuaikan Nama Kontak/Grup yang rapi
+                  if (isGroup) {
+                      const g = globalWAGroups.find(x => x.id === displayPhone);
+                      if (g) groupsMap[displayPhone].name = g.name;
+                      else if (thread.name === 'Target' || thread.name === 'Unknown') groupsMap[displayPhone].name = displayPhone;
+                  } else {
+                      const c = globalContacts.find(x => x.phone === basePhone);
+                      if (c) groupsMap[displayPhone].name = c.name;
+                      else if (thread.name === 'Target' || thread.name === 'Unknown') groupsMap[displayPhone].name = basePhone;
+                  }
+              } else {
+                  // Satukan pesan jika terpisah
+                  groupsMap[displayPhone].messages.push(...thread.messages);
+                  groupsMap[displayPhone].unread += thread.unread;
+                  if(new Date(thread.lastUpdate) > new Date(groupsMap[displayPhone].lastUpdate)) {
+                      groupsMap[displayPhone].lastUpdate = thread.lastUpdate;
+                      groupsMap[displayPhone].lastTime = thread.lastTime;
+                  }
+              }
+          });
+          
+          liveChatsData = Object.values(groupsMap).sort((a,b) => new Date(b.lastUpdate) - new Date(a.lastUpdate));
           filterChats(); // Render ulang list
           if(activeChatId) viewChat(activeChatId, true); // Refresh bubble chat jika sedang buka chat
       }
@@ -1944,15 +2078,18 @@
        listContainer.innerHTML = chatArray.map(c => `
          <div onclick="viewChat('${c.id}')" class="p-4 border-b border-slate-100 hover:bg-slate-50 cursor-pointer transition-colors flex gap-3 items-center group ${activeChatId === c.id ? 'bg-accent-50/50' : ''}">
              <div class="w-12 h-12 rounded-full bg-slate-900 text-white flex items-center justify-center font-bold shrink-0 text-sm shadow-sm relative">
-                <i data-lucide="user" class="w-6 h-6"></i>
+                <i data-lucide="${c.phone.includes('@g.us') ? 'users' : 'user'}" class="w-6 h-6"></i>
                 ${c.unread > 0 ? `<span class="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-[10px] font-black text-white shadow-sm border-2 border-white">${c.unread}</span>` : ''}
              </div>
              <div class="flex-1 overflow-hidden">
                  <div class="flex justify-between items-center mb-1">
-                   <h4 class="font-black text-slate-900 text-sm truncate group-hover:text-accent-600 transition-colors">${c.phone}</h4>
+                   <h4 class="font-black text-slate-900 text-sm truncate group-hover:text-accent-600 transition-colors">${c.name}</h4>
                    <span class="text-[10px] text-slate-400 shrink-0 font-bold">${c.lastTime}</span>
                  </div>
-                 <p class="text-xs text-slate-500 truncate font-medium ${c.unread > 0 ? 'text-slate-800 font-bold' : ''}">${c.messages[c.messages.length - 1].text}</p>
+                 <p class="text-xs text-slate-500 truncate font-medium ${c.unread > 0 ? 'text-slate-800 font-bold' : ''}">
+                    ${c.messages[c.messages.length - 1].fromMe ? '<i data-lucide="check-check" class="w-3 h-3 inline mr-0.5 text-blue-500"></i>' : ''}
+                    ${c.messages[c.messages.length - 1].text}
+                 </p>
              </div>
          </div>
       `).join('');
@@ -1961,7 +2098,7 @@
 
     function filterChats() {
        const q = document.getElementById('search-chat-input').value.toLowerCase();
-       renderChatListHTML(liveChatsData.filter(c => c.phone.includes(q)));
+       renderChatListHTML(liveChatsData.filter(c => c.name.toLowerCase().includes(q) || c.phone.includes(q)));
     }
 
     function viewChat(id, isRefresh = false) {
@@ -1972,15 +2109,21 @@
        chat.unread = 0; 
        if(!isRefresh) filterChats(); 
 
-       document.getElementById('chat-active-name').innerText = chat.phone;
-       document.getElementById('chat-active-number').innerText = "+"+chat.phone;
-       document.getElementById('chat-target-number').value = chat.phone;
+       document.getElementById('chat-active-name').innerText = chat.name;
+       document.getElementById('chat-active-number').innerText = chat.phone.includes('@g.us') ? "Grup WhatsApp Asli" : "+" + chat.phone;
+       document.getElementById('chat-target-number').value = chat.phone; // Pastikan @g.us ikut masuk untuk balas
        
        document.getElementById('chat-header-actions').classList.remove('hidden');
        document.getElementById('chat-reply-form').classList.remove('hidden');
 
        const bubbles = document.getElementById('chat-bubbles-container');
        const isScrolledToBottom = bubbles.scrollHeight - bubbles.clientHeight <= bubbles.scrollTop + 50;
+
+       // 🚀 URUTKAN PESAN BERDASARKAN WAKTU SEBELUM RENDER (Penting Untuk Merger)
+       chat.messages.sort((a,b) => {
+           // Asumsi time format HH:mm, jika dalam satu hari yang sama, ini sudah cukup.
+           return a.time.localeCompare(b.time); 
+       });
 
        bubbles.innerHTML = chat.messages.map(m => {
            if(m.fromMe) {
@@ -2013,16 +2156,38 @@
        const targetInput = document.getElementById('new-chat-target').value;
        if(!targetInput) return showToast("Masukkan nomor WA atau pilih kontak!", "error");
        
-       const phone = targetInput.replace(/[^0-9]/g, ''); 
+       let phone = targetInput.trim();
+       // Jika bukan grup, buang karakter selain angka
+       if (!phone.includes('@g.us')) {
+           phone = phone.replace(/[^0-9]/g, ''); 
+       }
+       
        activeChatId = 'C-' + phone;
        
-       document.getElementById('chat-active-name').innerText = "Percakapan Baru";
-       document.getElementById('chat-active-number').innerText = "+"+phone;
+       // Deteksi Nama
+       let chatName = "Percakapan Baru";
+       if (phone.includes('@g.us')) {
+           const g = globalWAGroups.find(x => x.id === phone);
+           if (g) chatName = g.name;
+       } else {
+           const c = globalContacts.find(x => x.phone === phone);
+           if (c) chatName = c.name;
+       }
+
+       document.getElementById('chat-active-name').innerText = chatName;
+       document.getElementById('chat-active-number').innerText = phone.includes('@g.us') ? "Grup WhatsApp Asli" : "+" + phone;
        document.getElementById('chat-target-number').value = phone;
        document.getElementById('chat-header-actions').classList.remove('hidden');
        document.getElementById('chat-reply-form').classList.remove('hidden');
-       document.getElementById('chat-bubbles-container').innerHTML = `<div class="flex items-center justify-center flex-1 text-slate-400 text-sm font-medium flex-col gap-3"><div class="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mb-2"><i data-lucide="message-square" class="w-8 h-8 text-slate-400"></i></div>Ketik pesan pertama Anda di kotak bawah ini.</div>`;
-       lucide.createIcons();
+       
+       // Cek apakah sudah pernah ada obrolannya
+       const existing = liveChatsData.find(c => c.phone === phone);
+       if (existing) {
+           viewChat(existing.id, true);
+       } else {
+           document.getElementById('chat-bubbles-container').innerHTML = `<div class="flex items-center justify-center flex-1 text-slate-400 text-sm font-medium flex-col gap-3"><div class="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mb-2"><i data-lucide="message-square" class="w-8 h-8 text-slate-400"></i></div>Ketik pesan pertama Anda di kotak bawah ini.</div>`;
+           lucide.createIcons();
+       }
        document.getElementById('new-chat-target').value = '';
     }
 
@@ -2767,20 +2932,6 @@ echo $response;`;
         type: 'line', data: { labels: ['Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab', 'Hari Ini'], datasets: [{ label: 'Antrean Masuk', data: sentData, borderColor: '#2563eb', backgroundColor: 'rgba(37, 99, 235, 0.1)', borderWidth: 3, tension: 0.4, pointBackgroundColor: '#fff', pointBorderColor: '#2563eb', pointRadius: 5, fill: true }] },
         options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, grid: { color: '#f1f5f9' }, border: {display: false} }, x: { grid: { display: false }, border: {display: false} } } }
       });
-    }
-
-    // 🚀 ROUTER KONTROL: Pendeteksi Perubahan URL / Tombol Back Browser
-    function handleURLRouting(e) {
-       if (e && e.hash) {
-           // Jika URL mengarah ke menu dalam dashboard, dan user sudah login
-           if (e.hash.startsWith('panel-') && currentUser) {
-               showPanel(e.hash, true); // true = cegah push history berulang
-           } 
-           // Jika URL mengarah ke halaman luar (marketing/login)
-           else if (e.hash.startsWith('view-')) {
-               switchView(e.hash.replace('view-', ''), null, true);
-           }
-       }
     }
 
     // --- INIT ---
