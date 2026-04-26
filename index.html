@@ -5,12 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <title>KirimAja | WA Gateway SaaS Professional</title>
   
-  <!-- Fonts: Plus Jakarta Sans -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
   
-  <!-- CDN Tailwind CSS & Lucide Icons & Chart.js -->
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/lucide@latest"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -83,13 +81,11 @@
 </head>
 <body class="bg-[#fafafa] text-slate-800 antialiased selection:bg-slate-200 overflow-x-hidden min-h-screen flex flex-col relative font-sans">
 
-  <!-- TOAST NOTIFICATION -->
   <div id="toast" class="fixed top-6 left-1/2 -translate-x-1/2 z-[200] transition-all duration-300 opacity-0 -translate-y-10 px-5 py-3 rounded-xl font-semibold text-sm shadow-xl flex items-center gap-3 text-white border">
     <div id="toast-icon" class="flex-shrink-0"></div>
     <span id="toast-msg" class="tracking-wide"></span>
   </div>
 
-  <!-- GLOBAL MODAL -->
   <div id="global-modal" class="hide fixed inset-0 z-[150] flex items-center justify-center p-4">
     <div class="absolute inset-0 bg-slate-900/40 backdrop-blur-sm" onclick="closeModal()"></div>
     <div class="modal-content relative w-full max-w-md bg-white rounded-2xl shadow-2xl overflow-hidden flex flex-col border border-slate-200 max-h-[90vh] overflow-y-auto hide-scrollbar">
@@ -112,12 +108,8 @@
     </div>
   </div>
 
-  <!-- ======================================================== -->
-  <!-- VIEW 1: MARKETING LANDING PAGE                           -->
-  <!-- ======================================================== -->
   <section id="view-marketing" class="view-section view-active flex-col flex-1 relative w-full overflow-y-auto">
     
-    <!-- Navbar Marketing -->
     <nav class="bg-white/80 backdrop-blur-lg fixed w-full top-0 left-0 right-0 z-50 border-b border-slate-200 px-6 sm:px-10 py-4 flex justify-between items-center transition-all duration-300 shadow-sm">
       <div class="text-2xl font-black flex items-center gap-2 text-slate-900 tracking-tight">
         <div class="w-8 h-8 rounded-lg bg-slate-900 flex items-center justify-center text-white shrink-0"><i data-lucide="zap" class="w-5 h-5"></i></div>
@@ -134,7 +126,6 @@
       </div>
     </nav>
 
-    <!-- HERO SECTION -->
     <div id="hero" class="pt-32 pb-20 px-6 md:pt-40 md:pb-28 max-w-7xl mx-auto w-full flex flex-col lg:flex-row items-center gap-12 lg:gap-20">
       <div class="flex-1 text-center lg:text-left animate-slide-up z-10">
         <div class="inline-flex items-center gap-2 px-3 py-1.5 bg-green-50 text-green-700 rounded-full text-xs font-bold uppercase tracking-wider mb-6 border border-green-200">
@@ -165,7 +156,6 @@
       </div>
 
       <div class="flex-1 w-full relative animate-float">
-        <!-- Mockup Visual -->
         <div class="relative bg-white p-2 rounded-3xl shadow-2xl border border-slate-200 z-10 w-full max-w-lg mx-auto">
           <div class="bg-slate-50 rounded-2xl border border-slate-100 overflow-hidden">
             <div class="bg-slate-900 h-12 w-full flex items-center px-4 gap-2">
@@ -194,13 +184,11 @@
             </div>
           </div>
         </div>
-        <!-- Ornaments -->
         <div class="absolute -top-10 -right-10 w-32 h-32 bg-accent-500/10 rounded-full blur-3xl z-0"></div>
         <div class="absolute -bottom-10 -left-10 w-40 h-40 bg-green-500/10 rounded-full blur-3xl z-0"></div>
       </div>
     </div>
 
-    <!-- LOGO BANNER -->
     <div class="w-full bg-slate-50 border-y border-slate-200 py-10">
       <div class="max-w-7xl mx-auto px-6 text-center">
         <p class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-6">Integrasi Seamless Dengan Ekosistem Anda</p>
@@ -213,7 +201,6 @@
       </div>
     </div>
 
-    <!-- FITUR SECTION -->
     <div id="fitur" class="py-24 bg-white relative">
       <div class="max-w-7xl mx-auto px-6">
         <div class="text-center max-w-3xl mx-auto mb-16">
@@ -257,7 +244,6 @@
       </div>
     </div>
 
-    <!-- PRICING SECTION -->
     <div id="harga" class="py-24 bg-slate-900 relative border-t border-slate-800">
       <div class="max-w-7xl mx-auto px-6">
         <div class="text-center max-w-3xl mx-auto mb-12">
@@ -276,7 +262,6 @@
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          <!-- Gratis -->
           <div class="bg-slate-800 rounded-3xl p-8 border border-slate-700 flex flex-col hover:border-slate-500 transition-colors">
             <h3 class="text-xl font-bold text-white mb-2">Gratis</h3>
             <p class="text-sm text-slate-400 mb-6 font-medium">Bagi yang ingin mencoba</p>
@@ -291,7 +276,6 @@
             <button onclick="switchView('auth', 'register')" class="w-full py-3.5 rounded-xl bg-slate-700 text-white font-bold hover:bg-slate-600 transition-colors">Daftar Gratis</button>
           </div>
 
-          <!-- Lite -->
           <div class="bg-slate-800 rounded-3xl p-8 border border-slate-700 flex flex-col hover:border-slate-500 transition-colors">
             <h3 class="text-xl font-bold text-white mb-2">Lite</h3>
             <p class="text-sm text-slate-400 mb-6 font-medium">Untuk bisnis skala kecil</p>
@@ -308,7 +292,6 @@
             <button onclick="handleMarketingBuy('Lite')" class="w-full py-3.5 rounded-xl bg-white text-slate-900 font-bold hover:bg-slate-100 transition-colors">Pilih Lite</button>
           </div>
 
-          <!-- PRO (Highlight) -->
           <div class="bg-gradient-to-b from-accent-600 to-accent-800 rounded-3xl p-8 border border-accent-500 shadow-2xl relative flex flex-col transform md:-translate-y-4">
             <div class="absolute -top-4 left-1/2 -translate-x-1/2 bg-yellow-400 text-yellow-900 px-4 py-1.5 rounded-full text-[11px] font-black uppercase tracking-widest shadow-sm">Paling Populer</div>
             <h3 class="text-xl font-bold text-white mb-2">Pro</h3>
@@ -326,7 +309,6 @@
             <button onclick="handleMarketingBuy('Pro')" class="w-full py-3.5 rounded-xl bg-yellow-400 text-yellow-900 font-black hover:bg-yellow-300 transition-colors shadow-lg shadow-yellow-500/20">Ambil Pro</button>
           </div>
 
-          <!-- VIP -->
           <div class="bg-slate-800 rounded-3xl p-8 border border-slate-700 flex flex-col hover:border-slate-500 transition-colors">
             <h3 class="text-xl font-bold text-white mb-2">VIP / Enterprise</h3>
             <p class="text-sm text-slate-400 mb-6 font-medium">Solusi korporasi tanpa batas</p>
@@ -346,7 +328,6 @@
       </div>
     </div>
 
-    <!-- CTA & FOOTER -->
     <footer class="bg-white border-t border-slate-200">
       <div class="py-20 px-6 text-center max-w-4xl mx-auto">
         <h2 class="text-3xl font-black text-slate-900 mb-6">Siap Mengotomatiskan CS Anda?</h2>
@@ -362,9 +343,6 @@
     </footer>
   </section>
 
-  <!-- ======================================================== -->
-  <!-- VIEW 2: AUTHENTICATION                                   -->
-  <!-- ======================================================== -->
   <section id="view-auth" class="view-section items-center justify-center min-h-screen p-4 bg-slate-50 relative w-full">
     <button onclick="switchView('marketing')" class="absolute top-6 left-6 text-slate-400 hover:text-slate-900 transition p-2 bg-white rounded-lg border border-slate-200 shadow-sm"><i data-lucide="arrow-left" class="w-5 h-5 shrink-0"></i></button>
     
@@ -424,12 +402,8 @@
     </div>
   </section>
 
-  <!-- ======================================================== -->
-  <!-- VIEW 3: DASHBOARD (Aplikasi Utama)                       -->
-  <!-- ======================================================== -->
   <section id="view-dashboard" class="view-section min-h-screen flex-col md:flex-row relative w-full bg-[#f8fafc]">
     
-    <!-- Mobile Header -->
     <div class="md:hidden flex justify-between items-center bg-white/90 backdrop-blur-md p-4 sticky top-0 z-40 border-b border-slate-200 shadow-sm">
       <div class="text-lg font-black text-slate-900 flex items-center gap-2">
         <i data-lucide="zap" class="w-5 h-5 text-slate-900 shrink-0"></i> KirimAja
@@ -437,7 +411,6 @@
       <div class="w-8 h-8 rounded-full bg-slate-900 text-white flex items-center justify-center font-bold text-xs cursor-pointer shadow-md" id="mobile-avatar" onclick="showPanel('panel-settings')">U</div>
     </div>
 
-    <!-- Mobile Bottom Navigation Bar -->
     <nav class="md:hidden fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-md border-t border-slate-200 z-50 flex justify-around items-center px-2 pb-safe shadow-[0_-10px_20px_-10px_rgba(0,0,0,0.05)]">
       <button id="bot-nav-home" onclick="showPanel('panel-home')" class="bottom-nav-btn active">
         <i data-lucide="layout-dashboard" class="w-5 h-5"></i><span class="text-[10px] font-bold mt-1">Home</span>
@@ -456,26 +429,21 @@
       </button>
     </nav>
 
-    <!-- Sidebar Overlay for Mobile -->
     <div id="sidebar-overlay" onclick="toggleMobileSidebar()" class="fixed inset-0 bg-slate-900/40 z-[60] md:hidden backdrop-blur-sm hidden active:block"></div>
 
-    <!-- SIDEBAR NAVIGATION -->
     <aside id="sidebar" class="fixed inset-y-0 left-0 transform -translate-x-full md:relative md:translate-x-0 w-[270px] bg-white border-r border-slate-200 flex flex-col h-screen z-[70] transition-transform duration-300 ease-in-out shrink-0">
-      <!-- Brand Logo -->
       <div class="h-16 hidden md:flex items-center px-7 border-b border-slate-100 shrink-0">
         <div class="text-xl font-black flex items-center gap-2.5 text-slate-900">
           <div class="w-6 h-6 rounded bg-slate-900 flex items-center justify-center text-white"><i data-lucide="zap" class="w-4 h-4 shrink-0"></i></div> KirimAja
         </div>
       </div>
       
-      <!-- Mobile Close Btn -->
       <div class="md:hidden flex justify-between items-center p-5 border-b border-slate-100 shrink-0">
          <span class="font-bold text-slate-900 uppercase tracking-wider text-xs">Semua Menu</span>
          <button onclick="toggleMobileSidebar()" class="text-slate-500 p-1 bg-slate-50 rounded hover:bg-slate-100 transition-colors"><i data-lucide="x" class="w-5 h-5 shrink-0"></i></button>
       </div>
 
       <div class="p-5 flex-1 overflow-y-auto hide-scrollbar flex flex-col gap-8 pb-24 md:pb-5">
-        <!-- User Profile Card -->
         <div class="flex items-center justify-start gap-3.5 p-3.5 bg-slate-50 rounded-2xl border border-slate-100 hover:border-slate-300 transition-colors cursor-pointer group" onclick="showPanel('panel-settings')">
            <div class="w-10 h-10 rounded-full bg-slate-900 text-white flex items-center justify-center font-bold text-sm shrink-0 shadow-sm" id="dash-avatar">U</div>
            <div class="overflow-hidden flex-1 flex flex-col justify-center text-left">
@@ -488,7 +456,6 @@
            </div>
         </div>
 
-        <!-- Main Menus -->
         <div class="w-full flex flex-col">
           <p class="text-[10px] font-black text-slate-400 uppercase tracking-[0.15em] mb-4 px-4 text-left">Menu Utama</p>
           <nav class="space-y-1.5 px-2 flex flex-col w-full" id="nav-menu">
@@ -505,7 +472,6 @@
                <span class="truncate mt-0.5">Buku Kontak</span>
             </button>
 
-            <!-- LIVE CHAT MENU (Hidden for Gratis) -->
             <button id="btn-nav-chat" onclick="showPanel('panel-chat')" class="nav-btn text-left" style="display:none;">
                <div class="w-6 h-6 flex items-center justify-center shrink-0"><i data-lucide="message-circle" class="w-[18px] h-[18px]"></i></div> 
                <span class="truncate mt-0.5">Live Chat</span>
@@ -539,7 +505,6 @@
           </nav>
         </div>
 
-        <!-- Admin Only Menu -->
         <div id="nav-admin" class="hidden mt-2 border-t border-slate-200 pt-6">
            <p class="text-[10px] font-black text-slate-400 uppercase tracking-[0.15em] mb-4 px-4 text-left">Admin Panel</p>
            <nav class="px-2 w-full">
@@ -551,7 +516,6 @@
         </div>
       </div>
       
-      <!-- Footer Action -->
       <div class="p-5 border-t border-slate-100 mt-auto bg-slate-50/50 shrink-0 pb-safe md:pb-5">
         <button onclick="promptLogout()" class="w-full py-3.5 text-slate-600 font-bold rounded-xl hover:bg-slate-200 transition-colors flex items-center justify-center gap-2 text-sm border border-transparent hover:text-slate-900">
           <i data-lucide="log-out" class="w-4 h-4 shrink-0"></i> Sign Out
@@ -559,13 +523,9 @@
       </div>
     </aside>
 
-    <!-- MAIN CONTENT PANELS -->
     <main class="flex-1 h-screen overflow-y-auto overflow-x-hidden relative hide-scrollbar pb-28 md:pb-0">
       <div class="p-5 sm:p-10 max-w-7xl mx-auto pb-10">
         
-        <!-- ============================================== -->
-        <!-- PANEL 1: OVERVIEW & ANALYTICS                  -->
-        <!-- ============================================== -->
         <div id="panel-home" class="space-y-6 animate-slide-up">
           <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
             <div>
@@ -645,9 +605,6 @@
           </div>
         </div>
 
-        <!-- ============================================== -->
-        <!-- PANEL 2: DEVICE MANAGEMENT                     -->
-        <!-- ============================================== -->
         <div id="panel-devices" class="hidden space-y-6 animate-slide-up">
           <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
             <div>
@@ -676,7 +633,6 @@
             </div>
           </div>
 
-          <!-- QR Scanner -->
           <div id="qr-section" class="hidden clean-card p-8 rounded-3xl flex flex-col items-center text-center max-w-sm mx-auto mt-8 shadow-xl border-slate-300">
             <div class="w-12 h-12 bg-slate-100 rounded-full flex items-center justify-center mb-3"><i data-lucide="qr-code" class="w-6 h-6 text-slate-800"></i></div>
             <h3 class="text-lg font-black text-slate-900 mb-1">Pindai QR Code</h3>
@@ -694,9 +650,6 @@
           </div>
         </div>
 
-        <!-- ============================================== -->
-        <!-- PANEL 3: CONTACTS & WA GROUPS                  -->
-        <!-- ============================================== -->
         <div id="panel-contacts" class="hidden space-y-6 animate-slide-up">
           <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-2">
             <div>
@@ -720,7 +673,6 @@
             </div>
           </div>
 
-          <!-- TABS -->
           <div class="flex gap-2 mb-4 border-b border-slate-200 pb-px overflow-x-auto hide-scrollbar">
             <button onclick="switchContactTab('personal')" id="tab-contact-personal" class="px-6 py-3 border-b-2 border-slate-900 text-slate-900 font-bold text-sm transition-colors shrink-0">
               Kontak Personal
@@ -730,7 +682,6 @@
             </button>
           </div>
 
-          <!-- SECTION PERSONAL -->
           <div id="section-contact-personal" class="clean-card rounded-2xl flex flex-col h-[600px] overflow-hidden shadow-sm animate-slide-up">
             <div class="p-5 border-b border-slate-200 flex flex-col md:flex-row justify-between items-center gap-4 bg-white">
               <div class="relative w-full md:w-[350px]">
@@ -759,7 +710,6 @@
             </div>
           </div>
 
-          <!-- SECTION GROUPS -->
           <div id="section-contact-group" class="hidden clean-card rounded-2xl flex flex-col h-[600px] overflow-hidden shadow-sm animate-slide-up">
             <div class="p-5 border-b border-slate-200 flex flex-col md:flex-row justify-between items-center gap-4 bg-white">
               <div class="relative w-full md:w-[350px]">
@@ -787,9 +737,6 @@
           </div>
         </div>
 
-        <!-- ============================================== -->
-        <!-- PANEL: LIVE CHAT (RIWAYAT CHAT TERSENDIRI)     -->
-        <!-- ============================================== -->
         <div id="panel-chat" class="hidden space-y-6 animate-slide-up">
           <div class="mb-6">
             <h2 class="text-2xl font-black text-slate-900 tracking-tight">Live Chat</h2>
@@ -797,7 +744,6 @@
           </div>
           
           <div class="clean-card rounded-3xl flex flex-col md:flex-row h-[650px] overflow-hidden shadow-sm border-slate-200">
-            <!-- Sidebar Chat List -->
             <div class="w-full md:w-1/3 border-b md:border-b-0 md:border-r border-slate-200 flex flex-col bg-white overflow-hidden shrink-0">
               <div class="p-4 border-b border-slate-100 bg-slate-50 shrink-0 flex justify-between items-center">
                  <h3 class="font-bold text-slate-900 text-sm">Pesan Masuk</h3>
@@ -805,7 +751,6 @@
                    <i data-lucide="refresh-cw" class="w-4 h-4"></i>
                  </button>
               </div>
-              <!-- Search Chat -->
               <div class="p-4 border-b border-slate-100 flex flex-col gap-3">
                 <div class="relative">
                   <i data-lucide="search" class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400"></i>
@@ -817,13 +762,10 @@
                 </div>
               </div>
               <div class="flex-1 overflow-y-auto hide-scrollbar bg-white" id="chat-list-container">
-                <!-- Daftar Chat Akan Dirender Disini -->
-              </div>
+                </div>
             </div>
             
-            <!-- Chat Window Area -->
             <div class="w-full md:w-2/3 flex flex-col bg-[#f8fafc] h-full relative" id="chat-window">
-              <!-- Chat Header -->
               <div class="p-4 border-b border-slate-200 bg-white flex items-center justify-between shrink-0 h-[73px]">
                 <div class="flex items-center gap-3 w-full">
                    <div class="w-10 h-10 rounded-full bg-slate-100 border border-slate-200 flex items-center justify-center text-slate-500 font-bold shrink-0">
@@ -836,12 +778,10 @@
                 </div>
                 <div class="shrink-0 hidden" id="chat-header-actions">
                    <select id="chat-device-select" class="text-xs font-bold text-slate-600 bg-slate-50 border border-slate-200 rounded-lg px-2 py-2 outline-none w-32 truncate">
-                     <!-- Loaded via JS -->
-                   </select>
+                     </select>
                 </div>
               </div>
               
-              <!-- Chat Bubbles -->
               <div class="flex-1 overflow-y-auto p-5 space-y-4 hide-scrollbar flex flex-col" id="chat-bubbles-container">
                 <div class="flex items-center justify-center flex-1 text-slate-400 text-sm font-medium flex-col gap-3">
                    <div class="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mb-2"><i data-lucide="inbox" class="w-8 h-8 text-slate-400"></i></div>
@@ -849,7 +789,6 @@
                 </div>
               </div>
               
-              <!-- Chat Input Form -->
               <form id="chat-reply-form" onsubmit="sendChatReply(event)" class="p-4 bg-white border-t border-slate-200 flex flex-col gap-2 hidden shrink-0">
                  <input type="hidden" id="chat-target-number">
                  <div class="flex gap-2 w-full">
@@ -866,13 +805,16 @@
           </div>
         </div>
 
-        <!-- ============================================== -->
-        <!-- PANEL 4: BROADCAST / MASS SENDER               -->
-        <!-- ============================================== -->
         <div id="panel-broadcast" class="hidden space-y-6 animate-slide-up">
-          <div class="mb-8">
-            <h2 class="text-2xl font-black text-slate-900 tracking-tight">Broadcast Masal</h2>
-            <p class="text-sm text-slate-500 font-medium mt-1">Kirim promo atau informasi ke ribuan kontak sekaligus.</p>
+          <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
+            <div>
+              <h2 class="text-2xl font-black text-slate-900 tracking-tight">Broadcast Masal</h2>
+              <p class="text-sm text-slate-500 font-medium mt-1">Kirim promo atau informasi ke ribuan kontak sekaligus.</p>
+            </div>
+            <div class="flex items-center gap-3 bg-white p-2 px-4 rounded-2xl border border-slate-200 shadow-sm">
+              <span class="text-xs font-black text-slate-600 uppercase tracking-widest">Status Fitur:</span>
+              <button id="toggle-bc-master" onclick="toggleFeatureMaster('BC')" class="px-4 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-tighter transition-all bg-green-500 text-white shadow-md shadow-green-200">Aktif</button>
+            </div>
           </div>
           
           <div class="grid lg:grid-cols-12 gap-8">
@@ -913,8 +855,7 @@
 
                   <div id="bc-target-select" class="hidden animate-slide-up">
                     <select id="bc-target-filter" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm font-medium text-slate-900 outline-none">
-                      <!-- Loaded via JS -->
-                    </select>
+                      </select>
                   </div>
 
                   <p id="bc-target-info" class="text-[11px] text-slate-500 font-medium mt-3 flex items-center gap-1.5"><i data-lucide="info" class="w-3.5 h-3.5 shrink-0"></i> Target manual tidak mendukung variabel dinamis.</p>
@@ -955,17 +896,19 @@
           </div>
         </div>
 
-        <!-- ============================================== -->
-        <!-- PANEL: PESAN RUTIN / RECURRING                 -->
-        <!-- ============================================== -->
         <div id="panel-recurring" class="hidden space-y-6 animate-slide-up">
-          <div class="mb-8">
-            <h2 class="text-2xl font-black text-slate-900 tracking-tight">Pesan Rutin (Auto Reminder)</h2>
-            <p class="text-sm text-slate-500 font-medium mt-1">Jadwalkan pesan otomatis harian, mingguan, bulanan, atau tahunan.</p>
+          <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
+            <div>
+              <h2 class="text-2xl font-black text-slate-900 tracking-tight">Pesan Rutin (Auto Reminder)</h2>
+              <p class="text-sm text-slate-500 font-medium mt-1">Jadwalkan pesan otomatis harian, mingguan, bulanan, atau tahunan.</p>
+            </div>
+            <div class="flex items-center gap-3 bg-white p-2 px-4 rounded-2xl border border-slate-200 shadow-sm">
+              <span class="text-xs font-black text-slate-600 uppercase tracking-widest">Status Fitur:</span>
+              <button id="toggle-rec-master" onclick="toggleFeatureMaster('REC')" class="px-4 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-tighter transition-all bg-green-500 text-white shadow-md shadow-green-200">Aktif</button>
+            </div>
           </div>
 
           <div class="grid lg:grid-cols-12 gap-8">
-            <!-- Form Tambah Pesan Rutin -->
             <div class="clean-card rounded-3xl p-7 lg:col-span-5 h-fit shadow-sm">
               <h3 class="text-sm font-bold text-slate-900 mb-5 uppercase tracking-wider">Buat Jadwal Baru</h3>
               <form onsubmit="handleRecurringSubmit(event)" class="space-y-5">
@@ -990,15 +933,12 @@
                   </select>
                 </div>
 
-                <!-- Opsi Dinamis -->
                 <div class="p-4 bg-slate-50 border border-slate-200 rounded-xl">
-                  <!-- Waktu Eksekusi (Selalu Muncul) -->
                   <div class="mb-4">
                     <label class="block text-xs font-bold text-slate-600 mb-1.5">Jam Kirim (WIB)</label>
                     <input type="time" id="rec-time" required class="w-full px-4 py-2.5 bg-white border border-slate-200 rounded-lg text-sm font-bold outline-none">
                   </div>
 
-                  <!-- Opsi Mingguan -->
                   <div id="rec-opt-weekly" class="hidden mb-4 animate-slide-up">
                     <label class="block text-xs font-bold text-slate-600 mb-2">Pilih Hari</label>
                     <div class="flex flex-wrap gap-2">
@@ -1012,7 +952,6 @@
                     </div>
                   </div>
 
-                  <!-- Opsi Bulanan/Tahunan -->
                   <div id="rec-opt-date" class="hidden animate-slide-up">
                     <label class="block text-xs font-bold text-slate-600 mb-1.5" id="rec-date-label">Tanggal Pengulangan</label>
                     <input type="number" id="rec-date-day" min="1" max="31" class="w-full px-4 py-2.5 bg-white border border-slate-200 rounded-lg text-sm font-bold outline-none" placeholder="Tgl (1-31)">
@@ -1059,7 +998,6 @@
               </form>
             </div>
 
-            <!-- Tabel Daftar Pesan Rutin -->
             <div class="clean-card rounded-3xl lg:col-span-7 flex flex-col h-[650px] overflow-hidden shadow-sm">
               <div class="p-5 border-b border-slate-200 bg-slate-50 flex justify-between items-center">
                 <h3 class="font-bold text-slate-900 text-sm">Daftar Pengingat Aktif</h3>
@@ -1083,9 +1021,6 @@
           </div>
         </div>
 
-        <!-- ============================================== -->
-        <!-- PANEL 5: AUTO-REPLY & AI                       -->
-        <!-- ============================================== -->
         <div id="panel-autoreply" class="hidden space-y-6 animate-slide-up">
           <div class="mb-8">
             <h2 class="text-2xl font-black text-slate-900 tracking-tight">Auto Reply & Mesin AI</h2>
@@ -1101,7 +1036,6 @@
             </button>
           </div>
 
-          <!-- TAB 1: KEYWORD DASAR -->
           <div id="ar-section-keyword" class="grid lg:grid-cols-12 gap-8">
             <div class="clean-card rounded-3xl p-7 lg:col-span-4 h-fit shadow-sm">
               <h3 class="text-sm font-bold text-slate-900 mb-5 uppercase tracking-wider">Aturan Balas Otomatis Baru</h3>
@@ -1144,7 +1078,6 @@
             </div>
           </div>
 
-          <!-- TAB 2: AI ASSISTANT -->
           <div id="ar-section-ai" class="hidden max-w-4xl animate-slide-up">
             <div class="clean-card rounded-3xl p-6 sm:p-10 border-l-4 border-l-accent-500 shadow-lg">
               
@@ -1212,9 +1145,6 @@
           </div>
         </div>
 
-        <!-- ============================================== -->
-        <!-- PANEL 6: BILLING & UPGRADE                     -->
-        <!-- ============================================== -->
         <div id="panel-billing" class="hidden space-y-6 animate-slide-up">
           <div class="mb-8">
             <h2 class="text-2xl font-black text-slate-900 tracking-tight">Langganan & Upgrade</h2>
@@ -1231,7 +1161,6 @@
           </div>
 
           <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
-            <!-- Gratis -->
             <div class="clean-card rounded-3xl p-8 border-slate-200 relative flex flex-col">
               <h3 class="text-xl font-bold text-slate-900 mb-1">Gratis</h3>
               <div class="text-3xl font-black mb-6 text-slate-900 mt-2">Rp 0</div>
@@ -1244,7 +1173,6 @@
               <button disabled class="w-full py-3 rounded-xl bg-slate-100 text-slate-500 font-bold text-sm cursor-not-allowed border border-slate-200">Paket Dasar</button>
             </div>
 
-            <!-- Lite -->
             <div class="clean-card rounded-3xl p-8 border-slate-200 relative flex flex-col hover:border-slate-400 transition-colors">
               <h3 class="text-xl font-bold text-slate-900 mb-1">Lite</h3>
               <div class="flex items-end gap-1 mb-2 mt-2">
@@ -1260,7 +1188,6 @@
               <button onclick="promptUpgradePlan('Lite', 'dash-price-lite')" class="w-full py-3 rounded-xl bg-white border border-slate-900 text-slate-900 font-bold hover:bg-slate-50 transition-colors text-sm">Pilih Lite</button>
             </div>
 
-            <!-- Pro -->
             <div class="bg-gradient-to-b from-slate-900 to-slate-800 rounded-3xl p-8 border border-slate-700 shadow-2xl relative flex flex-col transform md:-translate-y-4">
               <div class="absolute -top-4 left-1/2 -translate-x-1/2 bg-accent-500 text-white px-4 py-1.5 rounded-full text-[11px] font-black uppercase tracking-widest shadow-sm">Pilihan Terbaik</div>
               <h3 class="text-xl font-bold text-white mb-1">Pro</h3>
@@ -1278,7 +1205,6 @@
               <button onclick="promptUpgradePlan('Pro', 'dash-price-pro')" class="w-full py-3.5 rounded-xl bg-accent-600 text-white font-black hover:bg-accent-500 transition-colors text-sm shadow-lg shadow-accent-600/30">Upgrade ke Pro</button>
             </div>
 
-            <!-- VIP -->
             <div class="clean-card rounded-3xl p-8 border-slate-200 relative flex flex-col hover:border-slate-400 transition-colors">
               <h3 class="text-xl font-bold text-slate-900 mb-1">VIP Enterprise</h3>
               <div class="flex items-end gap-1 mb-2 mt-2">
@@ -1296,9 +1222,6 @@
           </div>
         </div>
 
-        <!-- ============================================== -->
-        <!-- PANEL 8: PENGATURAN AKUN                       -->
-        <!-- ============================================== -->
         <div id="panel-settings" class="hidden space-y-6 animate-slide-up">
           <div class="mb-8">
             <h2 class="text-2xl font-black text-slate-900 tracking-tight">Pengaturan Akun</h2>
@@ -1382,9 +1305,6 @@
           </div>
         </div>
 
-        <!-- ============================================== -->
-        <!-- PANEL 7: SUPER ADMIN                           -->
-        <!-- ============================================== -->
         <div id="panel-admin" class="hidden space-y-6 animate-slide-up">
            <div class="mb-8">
              <h2 class="text-2xl font-black text-slate-900 tracking-tight">Admin Control Center</h2>
@@ -1392,7 +1312,6 @@
            </div>
            
            <div class="grid lg:grid-cols-2 gap-8">
-              <!-- Broadcast Email -->
               <div class="clean-card rounded-3xl p-8 shadow-sm border-t-4 border-t-accent-600 h-fit">
                 <h3 class="text-sm font-bold text-slate-900 mb-6 uppercase tracking-wider border-b border-slate-100 pb-3">Email Newsletter Blast</h3>
                 <form onsubmit="handleEmailBlast(event)" class="space-y-5">
@@ -1401,7 +1320,6 @@
                   <button type="submit" id="btn-blast" class="w-full py-4 bg-slate-900 text-white font-black rounded-xl text-sm hover:bg-slate-800 shadow-lg shadow-slate-900/20">Eksekusi Mass Email</button>
                 </form>
               </div>
-              <!-- Users Table -->
               <div class="clean-card rounded-3xl flex flex-col h-[600px] overflow-hidden shadow-sm">
                  <div class="p-6 border-b border-slate-200 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 bg-slate-50">
                     <div>
@@ -1432,15 +1350,11 @@
       </div>
     </main>
   </section>
-
-  <!-- ======================================================== -->
-  <!-- JAVASCRIPT LOGIC (REAL-TIME INTEGRATION WITH GAS & NODE.JS) -->
-  <!-- ======================================================== -->
   <script>
     // ⚠️ M A S U K K A N   U R L   A S L I   M I L I K M U   D I   S I N I ⚠️
     const CONFIG = {
       // 1. Masukkan URL Ngrok atau URL Vercel/VPS dari Node.js kamu di sini:
-      ENGINE_BASE_URL: "https://wronged-liking-scalping.ngrok-free.dev", 
+      ENGINE_BASE_URL: " https://wronged-liking-scalping.ngrok-free.dev", 
       
       // 2. Masukkan URL Web App Google Apps Script kamu di sini (yang berakhiran /exec):
       GAS_WEB_APP_URL: "https://script.google.com/macros/s/AKfycbyihEcmZC3AC6Z06MojlMdkWfP4rG3aFWQnTAwQulAmWyzFEQTVJPocj1LO-mE0gmiIBw/exec" 
@@ -2413,96 +2327,95 @@
     }
 
     async function loadRecurringData() {
-  const tbody = document.getElementById('recurring-table-body');
-  tbody.innerHTML = `<tr><td colspan="3" class="py-10 text-center"><i data-lucide="loader-2" class="w-5 h-5 animate-spin mx-auto text-slate-400"></i></td></tr>`;
-  lucide.createIcons();
-  
-  const res = await fetchGAS("getRecurringMessages", [currentUser.email, currentUser.token]);
-  if (res.status && res.data && res.data.length > 0) {
-    tbody.innerHTML = res.data.map(r => {
-      // Membersihkan format waktu agar hanya muncul Jam:Menit (contoh: 07:30)
-      let cleanTime = r.time;
-      if (String(cleanTime).includes('T')) {
-        cleanTime = String(cleanTime).split('T')[1].substring(0, 5);
-      } else if (String(cleanTime).includes(' ')) {
-      cleanTime = String(cleanTime).split(' ')[1].substring(0, 5);
+      const tbody = document.getElementById('recurring-table-body');
+      tbody.innerHTML = `<tr><td colspan="3" class="py-10 text-center"><i data-lucide="loader-2" class="w-5 h-5 animate-spin mx-auto text-slate-400"></i></td></tr>`;
+      lucide.createIcons();
+      
+      const res = await fetchGAS("getRecurringMessages", [currentUser.email, currentUser.token]);
+      if (res.status && res.data && res.data.length > 0) {
+        tbody.innerHTML = res.data.map(r => {
+          // Membersihkan format waktu agar hanya muncul Jam:Menit (contoh: 07:30)
+          let cleanTime = r.time;
+          if (String(cleanTime).includes('T')) {
+            cleanTime = String(cleanTime).split('T')[1].substring(0, 5);
+          } else if (String(cleanTime).includes(' ')) {
+            cleanTime = String(cleanTime).split(' ')[1].substring(0, 5);
+          }
+
+          // Mengecek apakah pesan ini ditenagai AI
+          const isAi = String(r.message).startsWith("[AI_VARIATION]");
+          const displayMsg = isAi ? String(r.message).replace("[AI_VARIATION]", "") : r.message;
+
+          return `
+            <tr class="hover:bg-slate-50 border-b border-slate-50 last:border-0">
+              <td class="px-6 py-4">
+                <span class="font-black text-slate-800 block">${r.target}</span>
+                <span class="text-[10px] text-slate-400 font-bold uppercase tracking-tighter">Device: ${r.deviceId.substring(0,8)}...</span>
+              </td>
+              <td class="px-6 py-4">
+                <div class="flex items-center gap-2">
+                   <span class="px-2 py-1 bg-accent-50 text-accent-700 rounded-lg font-black text-[10px] uppercase tracking-wider border border-accent-100">${r.type}</span>
+                   <span class="font-black text-slate-900 text-sm">@ ${cleanTime} WIB</span>
+                </div>
+                <p class="text-[11px] text-slate-500 font-bold mt-1">${r.scheduleDetail || ''}</p>
+                <div class="text-[13px] text-slate-600 italic mt-2 line-clamp-1 border-l-2 border-slate-200 pl-2 bg-slate-50/50 py-1" title="${displayMsg}">
+                  ${isAi ? '<i data-lucide="sparkles" class="w-3 h-3 inline text-yellow-500 mr-1"></i><span class="text-[10px] font-bold text-yellow-600 uppercase tracking-wider mr-1">AI:</span>' : ''}"${displayMsg}"
+                </div>
+              </td>
+              <td class="px-6 py-4 text-right">
+                 <div class="flex justify-end gap-2">
+                    <button onclick="promptEditRecurring('${r.id}', '${r.target}', '${cleanTime}', '${displayMsg.replace(/'/g, "\\'")}')" class="text-blue-500 hover:text-blue-700 p-2 bg-blue-50 rounded-lg transition-colors" title="Edit Jadwal">
+                       <i data-lucide="edit-3" class="w-4 h-4 shrink-0"></i>
+                    </button>
+                    <button onclick="deleteRecurring('${r.id}')" class="text-red-500 hover:text-red-700 p-2 bg-red-50 rounded-lg transition-colors" title="Hapus Jadwal">
+                       <i data-lucide="trash-2" class="w-4 h-4 shrink-0"></i>
+                    </button>
+                 </div>
+              </td>
+            </tr>
+          `;
+        }).join('');
+      } else {
+        tbody.innerHTML = `<tr><td colspan="3" class="py-10 text-center text-slate-400 text-sm font-medium">Belum ada jadwal aktif.</td></tr>`;
       }
+      lucide.createIcons();
+    }
 
-      // Mengecek apakah pesan ini ditenagai AI
-      const isAi = String(r.message).startsWith("[AI_VARIATION]");
-      const displayMsg = isAi ? String(r.message).replace("[AI_VARIATION]", "") : r.message;
-
-      return `
-        <tr class="hover:bg-slate-50 border-b border-slate-50 last:border-0">
-          <td class="px-6 py-4">
-            <span class="font-black text-slate-800 block">${r.target}</span>
-            <span class="text-[10px] text-slate-400 font-bold uppercase tracking-tighter">Device: ${r.deviceId.substring(0,8)}...</span>
-          </td>
-          <td class="px-6 py-4">
-            <div class="flex items-center gap-2">
-               <span class="px-2 py-1 bg-accent-50 text-accent-700 rounded-lg font-black text-[10px] uppercase tracking-wider border border-accent-100">${r.type}</span>
-               <span class="font-black text-slate-900 text-sm">@ ${cleanTime} WIB</span>
-            </div>
-            <p class="text-[11px] text-slate-500 font-bold mt-1">${r.scheduleDetail || ''}</p>
-            <div class="text-[13px] text-slate-600 italic mt-2 line-clamp-1 border-l-2 border-slate-200 pl-2 bg-slate-50/50 py-1" title="${displayMsg}">
-              ${isAi ? '<i data-lucide="sparkles" class="w-3 h-3 inline text-yellow-500 mr-1"></i><span class="text-[10px] font-bold text-yellow-600 uppercase tracking-wider mr-1">AI:</span>' : ''}"${displayMsg}"
-            </div>
-          </td>
-          <td class="px-6 py-4 text-right">
-             <div class="flex justify-end gap-2">
-                <button onclick="promptEditRecurring('${r.id}', '${r.target}', '${cleanTime}', '${r.message.replace(/'/g, "\\'")}')" class="text-blue-500 hover:text-blue-700 p-2 bg-blue-50 rounded-lg transition-colors" title="Edit Jadwal">
-                   <i data-lucide="edit-3" class="w-4 h-4 shrink-0"></i>
-                </button>
-                <button onclick="deleteRecurring('${r.id}')" class="text-red-500 hover:text-red-700 p-2 bg-red-50 rounded-lg transition-colors" title="Hapus Jadwal">
-                   <i data-lucide="trash-2" class="w-4 h-4 shrink-0"></i>
-                </button>
-             </div>
-          </td>
-        </tr>
+    function promptEditRecurring(id, target, time, message) {
+      const html = `
+        <div class="space-y-4 text-left mt-2">
+          <div>
+            <label class="block text-xs font-bold text-slate-600 mb-1.5 uppercase">Nomor / Target</label>
+            <input type="text" id="edit-rec-target" value="${target}" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm font-bold outline-none focus:bg-white">
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-600 mb-1.5 uppercase">Jam Kirim</label>
+            <input type="time" id="edit-rec-time" value="${time}" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm font-bold outline-none focus:bg-white">
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-600 mb-1.5 uppercase">Isi Pesan</label>
+            <textarea id="edit-rec-msg" rows="4" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm font-medium outline-none focus:bg-white">${message}</textarea>
+          </div>
+          <p class="text-[10px] text-orange-500 font-bold italic">*Catatan: Karena pembatasan sistem GAS saat ini, pengeditan akan mengatur ulang tipe jadwal ke 'Harian' (Daily).</p>
+        </div>
       `;
-    }).join('');
-  } else {
-    tbody.innerHTML = `<tr><td colspan="3" class="py-10 text-center text-slate-400 text-sm font-medium">Belum ada jadwal aktif.</td></tr>`;
-  }
-  lucide.createIcons();
-}
 
-// Fungsi Baru untuk memunculkan kotak Edit Pengingat
-function promptEditRecurring(id, target, time, message) {
-  const html = `
-    <div class="space-y-4 text-left mt-2">
-      <div>
-        <label class="block text-xs font-bold text-slate-600 mb-1.5 uppercase">Nomor / Target</label>
-        <input type="text" id="edit-rec-target" value="${target}" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm font-bold outline-none focus:bg-white">
-      </div>
-      <div>
-        <label class="block text-xs font-bold text-slate-600 mb-1.5 uppercase">Jam Kirim</label>
-        <input type="time" id="edit-rec-time" value="${time}" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm font-bold outline-none focus:bg-white">
-      </div>
-      <div>
-        <label class="block text-xs font-bold text-slate-600 mb-1.5 uppercase">Isi Pesan</label>
-        <textarea id="edit-rec-msg" rows="4" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm font-medium outline-none focus:bg-white">${message}</textarea>
-      </div>
-      <p class="text-[10px] text-orange-500 font-bold italic">*Catatan: Fitur simpan perubahan memerlukan fungsi 'updateRecurring' di backend GAS Anda.</p>
-    </div>
-  `;
+      showModal('Edit Pengingat Rutin', html, 'info', async () => {
+        const newTarget = document.getElementById('edit-rec-target').value;
+        const newTime = document.getElementById('edit-rec-time').value;
+        const newMsg = document.getElementById('edit-rec-msg').value;
 
-  showModal('Edit Pengingat Rutin', html, 'info', async () => {
-    const newTarget = document.getElementById('edit-rec-target').value;
-    const newTime = document.getElementById('edit-rec-time').value;
-    const newMsg = document.getElementById('edit-rec-msg').value;
-
-    setBtnLoading('modal-confirm-btn', true);
-    // Kita panggil fungsi delete lalu add ulang sebagai cara termudah "Edit" bagi sistem script sederhana
-    await fetchGAS("deleteRecurringMessage", [currentUser.email, currentUser.token, id]);
-    const res = await fetchGAS("addRecurringMessage", [currentUser.email, currentUser.token, newTarget, globalDevices[0].deviceId, "daily", newTime, "Edited", newMsg]);
-    
-    closeModal();
-    showToast(res.status ? "Perubahan Disimpan!" : "Gagal menyimpan perubahan", res.status ? "success" : "error");
-    loadRecurringData();
-  });
-  lucide.createIcons();
-}
+        setBtnLoading('modal-confirm-btn', true);
+        // Panggil fungsi delete lalu add ulang sebagai cara termudah "Edit"
+        await fetchGAS("deleteRecurringMessage", [currentUser.email, currentUser.token, id]);
+        const res = await fetchGAS("addRecurringMessage", [currentUser.email, currentUser.token, newTarget, globalDevices[0].deviceId, "daily", newTime, "Edited", newMsg]);
+        
+        closeModal();
+        showToast(res.status ? "Perubahan Disimpan!" : "Gagal menyimpan perubahan", res.status ? "success" : "error");
+        loadRecurringData();
+      });
+      lucide.createIcons();
+    }
 
     async function handleRecurringSubmit(e) {
       e.preventDefault();
@@ -2541,7 +2454,6 @@ function promptEditRecurring(id, target, time, message) {
       }
 
       setBtnLoading('btn-rec', true);
-      // CATATAN: Membutuhkan fungsi 'addRecurringMessage' di GAS Backend
       const res = await fetchGAS("addRecurringMessage", [currentUser.email, currentUser.token, target, device, type, time, scheduleDetail, message]);
       setBtnLoading('btn-rec', false);
       
@@ -2556,7 +2468,6 @@ function promptEditRecurring(id, target, time, message) {
     function deleteRecurring(id) {
       showModal('Hapus Jadwal', 'Yakin ingin menghentikan pengiriman rutin ini?', 'danger', async () => {
         setBtnLoading('modal-confirm-btn', true);
-        // CATATAN: Membutuhkan fungsi 'deleteRecurringMessage' di GAS Backend
         const res = await fetchGAS("deleteRecurringMessage", [currentUser.email, currentUser.token, id]);
         closeModal();
         showToast(res.message, res.status ? 'success' : 'error');
@@ -2887,7 +2798,6 @@ echo $response;`;
         <div class="text-left space-y-6 mt-2">
           <p class="text-sm text-slate-500 font-medium">Kirim pesan otomatis dari aplikasi/website Anda dengan endpoint ini.</p>
           
-          <!-- URL Endpoint -->
           <div>
              <label class="block text-[10px] font-black text-slate-400 mb-2 uppercase tracking-widest">URL Endpoint (POST)</label>
              <div class="flex relative w-full shadow-sm rounded-xl overflow-hidden">
@@ -2901,7 +2811,6 @@ echo $response;`;
              </div>
           </div>
 
-          <!-- Pilihan Device -->
           <div>
              <label class="block text-[10px] font-black text-slate-400 mb-2 uppercase tracking-widest">Kirim Menggunakan Device (Opsional)</label>
              <div class="relative">
@@ -2914,7 +2823,6 @@ echo $response;`;
              <p class="text-[10px] text-slate-400 mt-2 font-medium flex items-center gap-1.5"><i data-lucide="info" class="w-3.5 h-3.5 shrink-0"></i> Jika 'Otomatis', sistem memakai device mana pun yang online.</p>
           </div>
 
-          <!-- JSON Payload -->
           <div class="relative group">
              <label class="block text-[10px] font-black text-slate-400 mb-2 uppercase tracking-widest flex items-center justify-between">
                 <span>JSON Payload (Body)</span>
@@ -2925,7 +2833,6 @@ echo $response;`;
              </div>
           </div>
           
-          <!-- PHP Native -->
           <div class="relative group border-t border-slate-100 pt-6 mt-2">
              <label class="block text-[10px] font-black text-slate-400 mb-2 uppercase tracking-widest flex items-center justify-between">
                 <span>Contoh Kode PHP (cURL)</span>
@@ -3018,6 +2925,39 @@ echo $response;`;
       dashboardChart = new Chart(c, {
         type: 'line', data: { labels: ['Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab', 'Hari Ini'], datasets: [{ label: 'Antrean Masuk', data: sentData, borderColor: '#2563eb', backgroundColor: 'rgba(37, 99, 235, 0.1)', borderWidth: 3, tension: 0.4, pointBackgroundColor: '#fff', pointBorderColor: '#2563eb', pointRadius: 5, fill: true }] },
         options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, grid: { color: '#f1f5f9' }, border: {display: false} }, x: { grid: { display: false }, border: {display: false} } } }
+      });
+    }
+
+    // FUNGSI BARU: Kontrol On/Off Fitur Utama (Master Switch)
+    function toggleFeatureMaster(type) {
+      const btn = document.getElementById(type === 'BC' ? 'toggle-bc-master' : 'toggle-rec-master');
+      const isCurrentlyOn = btn.innerText === 'AKTIF';
+      const newState = !isCurrentlyOn;
+      const deviceId = globalDevices[0]?.deviceId; // Default ke device pertama
+
+      if (!deviceId) return showToast("Tambahkan Device terlebih dahulu!", "error");
+
+      btn.innerText = 'MEMPROSES...';
+      btn.className = "px-4 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-tighter transition-all bg-slate-400 text-white cursor-not-allowed";
+
+      const cmd = type === 'BC' ? (newState ? ".bc on" : ".bc off") : (newState ? ".rutin on" : ".rutin off");
+      
+      // Kirim perintah ke sistem backend
+      fetchGAS("doPost", [{ 
+        postData: { 
+          contents: JSON.stringify({ 
+            action: "incoming_message", 
+            session_id: globalDevices[0].sessionId, 
+            message: cmd, 
+            is_from_me: true 
+          }) 
+        } 
+      }]).then(() => {
+        btn.innerText = newState ? 'AKTIF' : 'NON-AKTIF';
+        btn.className = newState ? 
+          "px-4 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-tighter transition-all bg-green-500 text-white shadow-md shadow-green-200" : 
+          "px-4 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-tighter transition-all bg-red-500 text-white shadow-md shadow-red-200";
+        showToast(`Fitur ${type === 'BC' ? 'Broadcast' : 'Pesan Rutin'} berhasil diubah ke ${btn.innerText}`);
       });
     }
 
