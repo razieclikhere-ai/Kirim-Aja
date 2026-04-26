@@ -1037,8 +1037,20 @@
                      <button type="button" onclick="const t=document.getElementById('rec-message'); t.value+='{address}'; t.focus();" class="px-3 py-1.5 text-[10px] bg-slate-100 border border-slate-200 text-slate-700 rounded-lg hover:bg-slate-200 font-bold">+ {Alamat}</button>
                      <span class="text-[10px] text-slate-400 ml-auto font-mono font-bold" title="Spintax Anti-Banned">Format: {Halo|Hai}</span>
                   </div>
-                  <label class="block text-xs font-bold text-slate-600 mb-1.5">Isi Pesan</label>
+                  <label class="block text-xs font-bold text-slate-600 mb-1.5">Isi Pesan / Instruksi AI</label>
                   <textarea id="rec-message" required rows="4" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm font-medium resize-none outline-none focus:bg-white leading-relaxed" placeholder="Halo {name}, ini pengingat rutin Anda..."></textarea>
+                  
+                  <div class="mt-4 p-4 bg-yellow-50/50 border border-yellow-200 rounded-xl flex items-center justify-between gap-3">
+                    <div>
+                      <h4 class="text-xs font-bold text-slate-800 flex items-center gap-1.5"><i data-lucide="sparkles" class="w-4 h-4 text-yellow-500"></i> Variasi Pesan AI <span class="bg-slate-900 text-white px-1.5 py-0.5 rounded text-[8px] uppercase tracking-wider">Pro</span></h4>
+                      <p class="text-[10px] text-slate-500 mt-1 font-medium">Biar sistem merangkai kalimat unik setiap dikirim.</p>
+                    </div>
+                    <label class="relative inline-flex items-center cursor-pointer shrink-0">
+                      <input type="checkbox" id="rec-use-ai" class="sr-only peer">
+                      <div class="w-9 h-5 bg-slate-300 peer-focus:outline-none rounded-full peer-checked:bg-yellow-400 transition-colors toggle-label"></div>
+                      <div class="absolute left-[2px] top-[2px] bg-white w-4 h-4 rounded-full transition-transform peer-checked:translate-x-4 shadow-sm"></div>
+                    </label>
+                  </div>
                 </div>
 
                 <button type="submit" id="btn-rec" class="w-full py-3.5 bg-slate-900 text-white font-bold rounded-xl text-sm hover:bg-slate-800 transition-colors mt-2 shadow-md flex items-center justify-center gap-2">
@@ -2416,8 +2428,12 @@
       if (String(cleanTime).includes('T')) {
         cleanTime = String(cleanTime).split('T')[1].substring(0, 5);
       } else if (String(cleanTime).includes(' ')) {
-        cleanTime = String(cleanTime).split(' ')[1].substring(0, 5);
+      cleanTime = String(cleanTime).split(' ')[1].substring(0, 5);
       }
+
+      // Mengecek apakah pesan ini ditenagai AI
+      const isAi = String(r.message).startsWith("[AI_VARIATION]");
+      const displayMsg = isAi ? String(r.message).replace("[AI_VARIATION]", "") : r.message;
 
       return `
         <tr class="hover:bg-slate-50 border-b border-slate-50 last:border-0">
@@ -2431,7 +2447,9 @@
                <span class="font-black text-slate-900 text-sm">@ ${cleanTime} WIB</span>
             </div>
             <p class="text-[11px] text-slate-500 font-bold mt-1">${r.scheduleDetail || ''}</p>
-            <div class="text-[13px] text-slate-600 italic mt-2 line-clamp-1 border-l-2 border-slate-200 pl-2 bg-slate-50/50 py-1" title="${r.message}">"${r.message}"</div>
+            <div class="text-[13px] text-slate-600 italic mt-2 line-clamp-1 border-l-2 border-slate-200 pl-2 bg-slate-50/50 py-1" title="${displayMsg}">
+              ${isAi ? '<i data-lucide="sparkles" class="w-3 h-3 inline text-yellow-500 mr-1"></i><span class="text-[10px] font-bold text-yellow-600 uppercase tracking-wider mr-1">AI:</span>' : ''}"${displayMsg}"
+            </div>
           </td>
           <td class="px-6 py-4 text-right">
              <div class="flex justify-end gap-2">
@@ -2495,7 +2513,19 @@ function promptEditRecurring(id, target, time, message) {
       const device = document.getElementById('rec-device').value;
       const type = document.getElementById('rec-type').value;
       const time = document.getElementById('rec-time').value;
-      const message = document.getElementById('rec-message').value;
+      let message = document.getElementById('rec-message').value;
+      
+      const useAi = document.getElementById('rec-use-ai') ? document.getElementById('rec-use-ai').checked : false;
+      const planLower = currentPlan.toLowerCase();
+
+      // Cek apakah user mengaktifkan AI dan paketnya valid
+      if (useAi) {
+        if (planLower === 'gratis' || planLower === 'lite') {
+           return showToast("Fitur Variasi Pesan AI khusus untuk paket PRO & VIP!", "error");
+        }
+        // Tambahkan penanda rahasia agar backend tahu ini harus diolah AI
+        message = "[AI_VARIATION]" + message;
+      }
       
       let scheduleDetail = "";
       if (type === 'weekly') {
