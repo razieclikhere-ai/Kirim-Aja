@@ -491,6 +491,10 @@
                <div class="w-6 h-6 flex items-center justify-center shrink-0"><i data-lucide="bot" class="w-[18px] h-[18px]"></i></div> 
                <span class="truncate mt-0.5">Auto Reply & AI</span>
             </button>
+            <button id="btn-nav-holidays" onclick="showPanel('panel-holidays')" class="nav-btn text-left">
+               <div class="w-6 h-6 flex items-center justify-center shrink-0"><i data-lucide="calendar-x" class="w-[18px] h-[18px]"></i></div> 
+               <span class="truncate mt-0.5">Hari Libur</span>
+            </button>
             
             <div class="w-full px-4 py-2.5"><div class="h-px bg-slate-200 w-full"></div></div>
             
@@ -1014,6 +1018,68 @@
                   </thead>
                   <tbody id="recurring-table-body" class="divide-y divide-slate-100 text-sm text-slate-700">
                     <tr><td colspan="3" class="py-10 text-center text-slate-400 text-sm font-medium">Belum ada jadwal.</td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div id="panel-holidays" class="hidden space-y-6 animate-slide-up">
+          <div class="mb-8">
+            <h2 class="text-2xl font-black text-slate-900 tracking-tight">Kalender Hari Libur</h2>
+            <p class="text-sm text-slate-500 font-medium mt-1">Atur jadwal libur agar sistem berhenti bekerja di hari istirahat Anda.</p>
+          </div>
+
+          <div class="grid lg:grid-cols-12 gap-8">
+            <div class="clean-card rounded-3xl p-7 lg:col-span-5 h-fit shadow-sm">
+              <h3 class="text-sm font-bold text-slate-900 mb-5 uppercase tracking-wider">Tambah Hari Libur</h3>
+              <form onsubmit="handleHolidaySubmit(event)" class="space-y-5">
+                <div>
+                  <label class="block text-xs font-bold text-slate-600 mb-1.5">Tanggal Libur</label>
+                  <input type="date" id="hol-date" required class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm font-bold outline-none focus:bg-white">
+                </div>
+                <div>
+                  <label class="block text-xs font-bold text-slate-600 mb-1.5">Keterangan / Nama Libur</label>
+                  <input type="text" id="hol-name" required class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm font-bold outline-none focus:bg-white" placeholder="Contoh: Libur Idul Fitri / Cuti Bersama">
+                </div>
+                <div class="p-4 bg-slate-50 border border-slate-200 rounded-xl space-y-3">
+                   <p class="text-xs font-bold text-slate-800 border-b border-slate-200 pb-2 mb-3">Pilih Fitur yang Dinonaktifkan:</p>
+                   <label class="flex items-center gap-3 cursor-pointer group">
+                      <input type="checkbox" id="hol-disable-bc" class="w-4 h-4 rounded border-slate-300 text-slate-900 focus:ring-slate-900 cursor-pointer">
+                      <span class="text-sm font-bold text-slate-700 group-hover:text-slate-900 transition-colors">Hentikan Broadcast</span>
+                   </label>
+                   <label class="flex items-center gap-3 cursor-pointer group">
+                      <input type="checkbox" id="hol-disable-rec" class="w-4 h-4 rounded border-slate-300 text-slate-900 focus:ring-slate-900 cursor-pointer">
+                      <span class="text-sm font-bold text-slate-700 group-hover:text-slate-900 transition-colors">Hentikan Pesan Rutin</span>
+                   </label>
+                   <label class="flex items-center gap-3 cursor-pointer group">
+                      <input type="checkbox" id="hol-disable-ar" class="w-4 h-4 rounded border-slate-300 text-slate-900 focus:ring-slate-900 cursor-pointer">
+                      <span class="text-sm font-bold text-slate-700 group-hover:text-slate-900 transition-colors">Matikan Auto-Reply & AI</span>
+                   </label>
+                </div>
+                <button type="submit" id="btn-hol" class="w-full py-3.5 bg-slate-900 text-white font-bold rounded-xl text-sm hover:bg-slate-800 transition-colors shadow-md flex items-center justify-center gap-2">
+                  <i data-lucide="calendar-plus" class="w-4 h-4 shrink-0"></i> Simpan Libur
+                </button>
+              </form>
+            </div>
+
+            <div class="clean-card rounded-3xl lg:col-span-7 flex flex-col h-[500px] overflow-hidden shadow-sm">
+              <div class="p-5 border-b border-slate-200 bg-slate-50 flex justify-between items-center">
+                 <h3 class="font-bold text-slate-900 text-sm">Daftar Hari Libur Anda</h3>
+                 <button onclick="loadHolidaysData()" class="text-slate-400 hover:text-slate-900"><i data-lucide="refresh-cw" class="w-4 h-4"></i></button>
+              </div>
+              <div class="overflow-x-auto flex-1 hide-scrollbar bg-white">
+                <table class="w-full text-left whitespace-nowrap min-w-[500px]">
+                  <thead class="sticky top-0 bg-white z-10 border-b border-slate-200">
+                    <tr>
+                      <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Tanggal & Ket</th>
+                      <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider text-center">Blokir Fitur</th>
+                      <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider text-right">Aksi</th>
+                    </tr>
+                  </thead>
+                  <tbody id="holidays-table-body" class="divide-y divide-slate-100 text-sm text-slate-700">
+                     <tr><td colspan="3" class="py-10 text-center text-slate-400 text-sm font-medium">Belum ada hari libur.</td></tr>
                   </tbody>
                 </table>
               </div>
@@ -1651,7 +1717,7 @@
       }
 
       // Hide all panels
-      ['panel-home', 'panel-devices', 'panel-contacts', 'panel-chat', 'panel-broadcast', 'panel-recurring', 'panel-autoreply', 'panel-billing', 'panel-admin', 'panel-settings'].forEach(p => document.getElementById(p).classList.add('hidden')); 
+      ['panel-home', 'panel-devices', 'panel-contacts', 'panel-chat', 'panel-broadcast', 'panel-recurring', 'panel-autoreply', 'panel-holidays', 'panel-billing', 'panel-admin', 'panel-settings'].forEach(p => document.getElementById(p).classList.add('hidden')); 
       document.getElementById(id).classList.remove('hidden');
       
       // Sync Sidebar Active State
@@ -1691,6 +1757,7 @@
          loadRecurringData();
       }
       if(id === 'panel-autoreply') loadAutoRepliesData(); 
+      if(id === 'panel-holidays') loadHolidaysData();
       if(id === 'panel-admin' && currentUser.role === 'admin') fetchAdminUsers();
       if(id === 'panel-home') {
           calculateStats();
@@ -2473,6 +2540,76 @@
         closeModal();
         showToast(res.message, res.status ? 'success' : 'error');
         if(res.status) loadRecurringData();
+      });
+    }
+
+    // --- HARI LIBUR / HOLIDAYS ---
+    let globalHolidays = [];
+    async function loadHolidaysData() {
+      if(!currentUser) return;
+      document.getElementById('holidays-table-body').innerHTML = `<tr><td colspan="3" class="py-10 text-center"><i data-lucide="loader-2" class="w-5 h-5 animate-spin mx-auto text-slate-400 shrink-0"></i></td></tr>`; 
+      lucide.createIcons();
+      const res = await fetchGAS("getHolidays", [currentUser.email, currentUser.token]); 
+      if (res.status) { 
+          globalHolidays = res.data; 
+          renderHolidaysTable();
+      }
+    }
+
+    function renderHolidaysTable() {
+      const tbody = document.getElementById('holidays-table-body');
+      if(globalHolidays.length === 0) { 
+          tbody.innerHTML = `<tr><td colspan="3" class="py-10 text-center text-slate-400 text-sm font-medium">Belum ada hari libur yang diatur.</td></tr>`; 
+          return;
+      }
+      tbody.innerHTML = globalHolidays.map(h => {
+          let blocks = [];
+          if(h.bc) blocks.push('<span class="bg-blue-100 text-blue-700 px-2 py-0.5 rounded text-[9px] font-bold uppercase mt-1">Broadcast</span>');
+          if(h.rec) blocks.push('<span class="bg-purple-100 text-purple-700 px-2 py-0.5 rounded text-[9px] font-bold uppercase mt-1">Pesan Rutin</span>');
+          if(h.ar) blocks.push('<span class="bg-yellow-100 text-yellow-700 px-2 py-0.5 rounded text-[9px] font-bold uppercase mt-1">Auto-Reply</span>');
+          if(blocks.length === 0) blocks.push('<span class="bg-slate-100 text-slate-500 px-2 py-0.5 rounded text-[9px] font-bold uppercase">Tidak Ada</span>');
+
+          return `<tr class="hover:bg-slate-50 border-b border-slate-50 last:border-0">
+            <td class="px-6 py-4">
+               <span class="font-black text-slate-900 block text-sm">${h.date}</span>
+               <span class="text-[11px] text-slate-500 font-bold">${h.name}</span>
+            </td>
+            <td class="px-6 py-4 text-center">
+               <div class="flex flex-wrap justify-center gap-1">${blocks.join('')}</div>
+            </td>
+            <td class="px-6 py-4 text-right">
+               <button onclick="promptDeleteHoliday('${h.id}', '${h.name}')" class="text-red-500 hover:text-red-700 p-2 bg-red-50 rounded-lg"><i data-lucide="trash-2" class="w-4 h-4 shrink-0"></i></button>
+            </td>
+          </tr>`;
+      }).join('');
+      lucide.createIcons();
+    }
+
+    async function handleHolidaySubmit(e) { 
+      e.preventDefault(); 
+      setBtnLoading('btn-hol', true);
+      const dateStr = document.getElementById('hol-date').value;
+      const name = document.getElementById('hol-name').value;
+      const bc = document.getElementById('hol-disable-bc').checked;
+      const rec = document.getElementById('hol-disable-rec').checked;
+      const ar = document.getElementById('hol-disable-ar').checked;
+
+      const res = await fetchGAS("addHoliday", [currentUser.email, currentUser.token, dateStr, name, bc, rec, ar]); 
+      setBtnLoading('btn-hol', false); 
+      showToast(res.message, res.status ? "success":"error");
+      if(res.status) { 
+          e.target.reset(); 
+          loadHolidaysData(); 
+      } 
+    }
+
+    function promptDeleteHoliday(id, name) { 
+      showModal('Hapus Hari Libur', `Hapus jadwal libur: ${name}?`, 'danger', async () => { 
+          setBtnLoading('modal-confirm-btn', true); 
+          const res = await fetchGAS("deleteHoliday", [currentUser.email, currentUser.token, id]); 
+          closeModal(); 
+          showToast(res.message, res.status?'success':'error'); 
+          if(res.status) loadHolidaysData(); 
       });
     }
 
