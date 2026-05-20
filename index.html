@@ -1055,18 +1055,24 @@
                   <input type="text" id="hol-name" required class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm font-bold outline-none focus:bg-white" placeholder="Contoh: Libur Idul Fitri / Cuti Bersama">
                 </div>
                 <div class="p-4 bg-slate-50 border border-slate-200 rounded-xl space-y-3">
-                   <p class="text-xs font-bold text-slate-800 border-b border-slate-200 pb-2 mb-3">Pilih Fitur yang Dinonaktifkan:</p>
+                   <div class="flex justify-between items-center border-b border-slate-200 pb-2 mb-3">
+                      <p class="text-xs font-black text-slate-800">Aktivasi Fitur Hari Libur:</p>
+                      <label class="flex items-center gap-1.5 cursor-pointer text-[11px] font-black text-accent-700 bg-white px-2 py-1 rounded border border-slate-200 shadow-sm">
+                         <input type="checkbox" id="hol-master-toggle" onchange="let c=this.checked; ['hol-disable-bc','hol-disable-rec','hol-disable-ar'].forEach(id=>document.getElementById(id).checked=c)" class="w-3.5 h-3.5 rounded"> Aktifkan Semua
+                      </label>
+                   </div>
+                   <p class="text-[10px] text-slate-400 font-bold mb-2 block leading-tight">*Centang berarti fitur TETAP AKTIF berjalan meskipun tanggal libur.</p>
                    <label class="flex items-center gap-3 cursor-pointer group">
-                      <input type="checkbox" id="hol-disable-bc" class="w-4 h-4 rounded border-slate-300 text-slate-900 focus:ring-slate-900 cursor-pointer">
-                      <span class="text-sm font-bold text-slate-700 group-hover:text-slate-900 transition-colors">Hentikan Broadcast</span>
+                      <input type="checkbox" id="hol-disable-bc" class="w-4 h-4 rounded border-slate-300 text-green-600 focus:ring-green-500 cursor-pointer">
+                      <span class="text-sm font-bold text-slate-700 group-hover:text-slate-900 transition-colors">Broadcast Tetap Aktif</span>
                    </label>
                    <label class="flex items-center gap-3 cursor-pointer group">
-                      <input type="checkbox" id="hol-disable-rec" class="w-4 h-4 rounded border-slate-300 text-slate-900 focus:ring-slate-900 cursor-pointer">
-                      <span class="text-sm font-bold text-slate-700 group-hover:text-slate-900 transition-colors">Hentikan Pesan Rutin</span>
+                      <input type="checkbox" id="hol-disable-rec" class="w-4 h-4 rounded border-slate-300 text-green-600 focus:ring-green-500 cursor-pointer">
+                      <span class="text-sm font-bold text-slate-700 group-hover:text-slate-900 transition-colors">Pesan Rutin Tetap Aktif</span>
                    </label>
                    <label class="flex items-center gap-3 cursor-pointer group">
-                      <input type="checkbox" id="hol-disable-ar" class="w-4 h-4 rounded border-slate-300 text-slate-900 focus:ring-slate-900 cursor-pointer">
-                      <span class="text-sm font-bold text-slate-700 group-hover:text-slate-900 transition-colors">Matikan Auto-Reply & AI</span>
+                      <input type="checkbox" id="hol-disable-ar" class="w-4 h-4 rounded border-slate-300 text-green-600 focus:ring-green-500 cursor-pointer">
+                      <span class="text-sm font-bold text-slate-700 group-hover:text-slate-900 transition-colors">Auto-Reply & AI Tetap Aktif</span>
                    </label>
                 </div>
                 <button type="submit" id="btn-hol" class="w-full py-3.5 bg-slate-900 text-white font-bold rounded-xl text-sm hover:bg-slate-800 transition-colors shadow-md flex items-center justify-center gap-2">
@@ -2575,10 +2581,9 @@
       }
       tbody.innerHTML = globalHolidays.map(h => {
           let blocks = [];
-          if(h.bc) blocks.push('<span class="bg-blue-100 text-blue-700 px-2 py-0.5 rounded text-[9px] font-bold uppercase mt-1">Broadcast</span>');
-          if(h.rec) blocks.push('<span class="bg-purple-100 text-purple-700 px-2 py-0.5 rounded text-[9px] font-bold uppercase mt-1">Pesan Rutin</span>');
-          if(h.ar) blocks.push('<span class="bg-yellow-100 text-yellow-700 px-2 py-0.5 rounded text-[9px] font-bold uppercase mt-1">Auto-Reply</span>');
-          if(blocks.length === 0) blocks.push('<span class="bg-slate-100 text-slate-500 px-2 py-0.5 rounded text-[9px] font-bold uppercase">Tidak Ada</span>');
+          blocks.push(h.bc ? '<span class="bg-green-100 text-green-700 px-2 py-0.5 rounded text-[9px] font-black uppercase">BC: AKTIF</span>' : '<span class="bg-red-50 text-red-500 px-2 py-0.5 rounded text-[9px] font-black uppercase">BC: OFF</span>');
+          blocks.push(h.rec ? '<span class="bg-green-100 text-green-700 px-2 py-0.5 rounded text-[9px] font-black uppercase">Rutin: AKTIF</span>' : '<span class="bg-red-50 text-red-500 px-2 py-0.5 rounded text-[9px] font-black uppercase">Rutin: OFF</span>');
+          blocks.push(h.ar ? '<span class="bg-green-100 text-green-700 px-2 py-0.5 rounded text-[9px] font-black uppercase">AI/AR: AKTIF</span>' : '<span class="bg-red-50 text-red-500 px-2 py-0.5 rounded text-[9px] font-black uppercase">AI/AR: OFF</span>');
 
           return `<tr class="hover:bg-slate-50 border-b border-slate-50 last:border-0">
             <td class="px-6 py-4">
@@ -2586,7 +2591,7 @@
                <span class="text-[11px] text-slate-500 font-bold">${h.name}</span>
             </td>
             <td class="px-6 py-4 text-center">
-               <div class="flex flex-wrap justify-center gap-1">${blocks.join('')}</div>
+               <div class="flex flex-wrap justify-center gap-1.5">${blocks.join('')}</div>
             </td>
             <td class="px-6 py-4 text-right flex justify-end gap-2">
                <button onclick="promptEditHoliday('${h.id}', '${h.date}', '${h.name.replace(/'/g, "\\'")}', ${h.bc}, ${h.rec}, ${h.ar})" class="text-blue-500 hover:text-blue-700 p-2 bg-blue-50 rounded-lg"><i data-lucide="edit" class="w-4 h-4 shrink-0"></i></button>
@@ -2637,10 +2642,15 @@
             <input type="text" id="e-hol-name" value="${oldName}" class="w-full px-4 py-3 bg-slate-50 rounded-xl border border-slate-200 text-sm outline-none font-bold focus:bg-white">
           </div>
           <div class="p-3 bg-slate-50 border border-slate-200 rounded-xl space-y-2">
-             <p class="text-xs font-bold text-slate-800 border-b border-slate-200 pb-1 mb-2">Blokir Fitur:</p>
-             <label class="flex items-center gap-2 cursor-pointer"><input type="checkbox" id="e-hol-bc" ${oldBc ? 'checked' : ''} class="w-4 h-4"> <span class="text-sm font-bold">Broadcast</span></label>
-             <label class="flex items-center gap-2 cursor-pointer"><input type="checkbox" id="e-hol-rec" ${oldRec ? 'checked' : ''} class="w-4 h-4"> <span class="text-sm font-bold">Pesan Rutin</span></label>
-             <label class="flex items-center gap-2 cursor-pointer"><input type="checkbox" id="e-hol-ar" ${oldAr ? 'checked' : ''} class="w-4 h-4"> <span class="text-sm font-bold">Auto-Reply & AI</span></label>
+             <div class="flex justify-between items-center border-b border-slate-200 pb-1.5 mb-2">
+                <p class="text-xs font-black text-slate-800">Status Fitur Berjalan:</p>
+                <label class="flex items-center gap-1 cursor-pointer text-[10px] font-black text-accent-700 bg-white px-1.5 py-0.5 rounded border shadow-sm">
+                   <input type="checkbox" onchange="let c=this.checked; ['e-hol-bc','e-hol-rec','e-hol-ar'].forEach(id=>document.getElementById(id).checked=c)"> Aktifkan Semua
+                </label>
+             </div>
+             <label class="flex items-center gap-2 cursor-pointer"><input type="checkbox" id="e-hol-bc" ${oldBc ? 'checked' : ''} class="w-4 h-4 text-green-600"> <span class="text-sm font-bold text-slate-700">Broadcast Tetap Aktif</span></label>
+             <label class="flex items-center gap-2 cursor-pointer"><input type="checkbox" id="e-hol-rec" ${oldRec ? 'checked' : ''} class="w-4 h-4 text-green-600"> <span class="text-sm font-bold text-slate-700">Pesan Rutin Tetap Aktif</span></label>
+             <label class="flex items-center gap-2 cursor-pointer"><input type="checkbox" id="e-hol-ar" ${oldAr ? 'checked' : ''} class="w-4 h-4 text-green-600"> <span class="text-sm font-bold text-slate-700">Auto-Reply & AI Tetap Aktif</span></label>
           </div>
         </div>`;
         
