@@ -381,8 +381,8 @@
         </div>
 
         <div id="group-otp" class="hidden">
-          <label class="block text-xs font-bold text-slate-600 mb-1.5 text-center uppercase tracking-wider">Masukkan 6-Digit OTP</label>
-          <input type="number" id="otp" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-center text-2xl font-black tracking-[0.3em] text-slate-900 outline-none">
+          <label class="block text-xs font-bold text-slate-600 mb-1.5 text-center uppercase tracking-wider">KODE TOKEN / OTP</label>
+          <input type="text" id="otp" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-center text-xl font-black tracking-widest text-slate-900 outline-none uppercase" placeholder="Ketik Kode di Sini...">
         </div>
 
         <div id="group-remember" class="flex items-center gap-2 py-1">
@@ -1649,11 +1649,11 @@
     function toggleAuthMode() { changeAuthState(document.getElementById('auth-mode').value === 'login' ? 'register' : 'login'); }
 
     async function handleAuthSubmit(e) {
-      e.preventDefault(); 
+      e.preventDefault();
       const mode = document.getElementById('auth-mode').value, 
-            em = document.getElementById('email').value, 
+            em = document.getElementById('email').value.trim(), 
             pw = document.getElementById('password').value, 
-            ot = document.getElementById('otp').value, 
+            ot = document.getElementById('otp').value.trim().toUpperCase(), 
             rf = document.getElementById('referral') ? document.getElementById('referral').value : "", 
             rm = document.getElementById('remember').checked;
             
