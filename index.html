@@ -2581,9 +2581,19 @@
       }
       tbody.innerHTML = globalHolidays.map(h => {
           let blocks = [];
-          blocks.push(h.bc ? '<span class="bg-green-100 text-green-700 px-2 py-0.5 rounded text-[9px] font-black uppercase">BC: AKTIF</span>' : '<span class="bg-red-50 text-red-500 px-2 py-0.5 rounded text-[9px] font-black uppercase">BC: OFF</span>');
-          blocks.push(h.rec ? '<span class="bg-green-100 text-green-700 px-2 py-0.5 rounded text-[9px] font-black uppercase">Rutin: AKTIF</span>' : '<span class="bg-red-50 text-red-500 px-2 py-0.5 rounded text-[9px] font-black uppercase">Rutin: OFF</span>');
-          blocks.push(h.ar ? '<span class="bg-green-100 text-green-700 px-2 py-0.5 rounded text-[9px] font-black uppercase">AI/AR: AKTIF</span>' : '<span class="bg-red-50 text-red-500 px-2 py-0.5 rounded text-[9px] font-black uppercase">AI/AR: OFF</span>');
+          let allActive = h.bc && h.rec && h.ar;
+
+          // Tombol Klik Kilat ALL (Semua)
+          blocks.push(`<button onclick="quickToggleHol('${h.id}', 'ALL', ${h.bc}, ${h.rec}, ${h.ar})" class="px-2.5 py-1 rounded-md text-[9px] font-black uppercase transition-all shadow-sm border ${allActive ? 'bg-slate-800 text-white border-slate-900 hover:bg-slate-700' : 'bg-slate-100 text-slate-500 border-slate-200 hover:bg-slate-200'}">ALL: ${allActive ? 'ON' : 'OFF'}</button>`);
+
+          // Tombol Klik Kilat BC
+          blocks.push(`<button onclick="quickToggleHol('${h.id}', 'BC', ${h.bc}, ${h.rec}, ${h.ar})" class="px-2.5 py-1 rounded-md text-[9px] font-black uppercase transition-all shadow-sm border ${h.bc ? 'bg-green-50 text-green-700 border-green-200 hover:bg-green-100' : 'bg-red-50 text-red-500 border-red-200 hover:bg-red-100'}">BC: ${h.bc ? 'ON' : 'OFF'}</button>`);
+
+          // Tombol Klik Kilat Rutin
+          blocks.push(`<button onclick="quickToggleHol('${h.id}', 'REC', ${h.bc}, ${h.rec}, ${h.ar})" class="px-2.5 py-1 rounded-md text-[9px] font-black uppercase transition-all shadow-sm border ${h.rec ? 'bg-green-50 text-green-700 border-green-200 hover:bg-green-100' : 'bg-red-50 text-red-500 border-red-200 hover:bg-red-100'}">RUTIN: ${h.rec ? 'ON' : 'OFF'}</button>`);
+
+          // Tombol Klik Kilat Auto-Reply / AI
+          blocks.push(`<button onclick="quickToggleHol('${h.id}', 'AR', ${h.bc}, ${h.rec}, ${h.ar})" class="px-2.5 py-1 rounded-md text-[9px] font-black uppercase transition-all shadow-sm border ${h.ar ? 'bg-green-50 text-green-700 border-green-200 hover:bg-green-100' : 'bg-red-50 text-red-500 border-red-200 hover:bg-red-100'}">AI/AR: ${h.ar ? 'ON' : 'OFF'}</button>`);
 
           return `<tr class="hover:bg-slate-50 border-b border-slate-50 last:border-0">
             <td class="px-6 py-4">
@@ -2594,8 +2604,8 @@
                <div class="flex flex-wrap justify-center gap-1.5">${blocks.join('')}</div>
             </td>
             <td class="px-6 py-4 text-right flex justify-end gap-2">
-               <button onclick="promptEditHoliday('${h.id}', '${h.date}', '${h.name.replace(/'/g, "\\'")}', ${h.bc}, ${h.rec}, ${h.ar})" class="text-blue-500 hover:text-blue-700 p-2 bg-blue-50 rounded-lg"><i data-lucide="edit" class="w-4 h-4 shrink-0"></i></button>
-               <button onclick="promptDeleteHoliday('${h.id}', '${h.name.replace(/'/g, "\\'")}')" class="text-red-500 hover:text-red-700 p-2 bg-red-50 rounded-lg"><i data-lucide="trash-2" class="w-4 h-4 shrink-0"></i></button>
+               <button onclick="promptEditHoliday('${h.id}', '${h.date}', '${h.name.replace(/'/g, "\\'")}', ${h.bc}, ${h.rec}, ${h.ar})" class="text-blue-500 hover:text-blue-700 p-2 bg-blue-50 hover:bg-blue-100 transition-colors rounded-lg"><i data-lucide="edit" class="w-4 h-4 shrink-0"></i></button>
+               <button onclick="promptDeleteHoliday('${h.id}', '${h.name.replace(/'/g, "\\'")}')" class="text-red-500 hover:text-red-700 p-2 bg-red-50 hover:bg-red-100 transition-colors rounded-lg"><i data-lucide="trash-2" class="w-4 h-4 shrink-0"></i></button>
             </td>
           </tr>`;
       }).join('');
@@ -2710,6 +2720,25 @@
       };
       reader.readAsText(file);
       event.target.value = '';
+    }
+
+    async function quickToggleHol(id, type, bc, rec, ar) {
+       let newBc = bc, newRec = rec, newAr = ar;
+       if (type === 'ALL') {
+           let turnOn = !(bc && rec && ar); // Jika ada satu saja yang mati, nyalakan semua. Jika semua nyala, matikan semua.
+           newBc = turnOn; newRec = turnOn; newAr = turnOn;
+       } 
+       else if (type === 'BC') newBc = !bc;
+       else if (type === 'REC') newRec = !rec;
+       else if (type === 'AR') newAr = !ar;
+
+       showToast("Memproses...", "info");
+       const res = await fetchGAS("toggleHolidayFeatures", [currentUser.email, currentUser.token, id, newBc, newRec, newAr]);
+       if(res.status) {
+           loadHolidaysData(); // Refresh tabel seketika jika sukses
+       } else {
+           showToast(res.message, "error");
+       }
     }
 
     // --- AUTO REPLY & AI ---
