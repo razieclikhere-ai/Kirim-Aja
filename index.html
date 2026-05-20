@@ -1026,9 +1026,20 @@
         </div>
 
         <div id="panel-holidays" class="hidden space-y-6 animate-slide-up">
-          <div class="mb-8">
-            <h2 class="text-2xl font-black text-slate-900 tracking-tight">Kalender Hari Libur</h2>
-            <p class="text-sm text-slate-500 font-medium mt-1">Atur jadwal libur agar sistem berhenti bekerja di hari istirahat Anda.</p>
+          <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
+            <div>
+              <h2 class="text-2xl font-black text-slate-900 tracking-tight">Kalender Hari Libur</h2>
+              <p class="text-sm text-slate-500 font-medium mt-1">Atur jadwal libur agar sistem berhenti bekerja di hari istirahat Anda.</p>
+            </div>
+            <div class="flex flex-wrap gap-2 sm:gap-3">
+               <button onclick="downloadHolidayTemplate()" class="bg-slate-100 text-slate-700 hover:bg-slate-200 border border-slate-200 px-4 py-2.5 rounded-xl font-bold transition-colors flex items-center gap-2 text-xs sm:text-sm shadow-sm">
+                 <i data-lucide="download" class="w-4 h-4 shrink-0"></i> Template Excel
+               </button>
+               <input type="file" id="csv-holiday-upload" accept=".csv" class="hidden" onchange="handleHolidayCsvUpload(event)">
+               <button onclick="document.getElementById('csv-holiday-upload').click()" class="bg-slate-900 text-white hover:bg-slate-800 px-4 py-2.5 rounded-xl font-bold transition-colors flex items-center gap-2 text-xs sm:text-sm shadow-md">
+                 <i data-lucide="upload-cloud" class="w-4 h-4 shrink-0"></i> Upload Masal
+               </button>
+            </div>
           </div>
 
           <div class="grid lg:grid-cols-12 gap-8">
@@ -2559,7 +2570,7 @@
     function renderHolidaysTable() {
       const tbody = document.getElementById('holidays-table-body');
       if(globalHolidays.length === 0) { 
-          tbody.innerHTML = `<tr><td colspan="3" class="py-10 text-center text-slate-400 text-sm font-medium">Belum ada hari libur yang diatur.</td></tr>`; 
+          tbody.innerHTML = `<tr><td colspan="3" class="py-10 text-center text-slate-400 text-sm font-medium">Belum ada hari libur yang diatur.</td></tr>`;
           return;
       }
       tbody.innerHTML = globalHolidays.map(h => {
@@ -2577,8 +2588,9 @@
             <td class="px-6 py-4 text-center">
                <div class="flex flex-wrap justify-center gap-1">${blocks.join('')}</div>
             </td>
-            <td class="px-6 py-4 text-right">
-               <button onclick="promptDeleteHoliday('${h.id}', '${h.name}')" class="text-red-500 hover:text-red-700 p-2 bg-red-50 rounded-lg"><i data-lucide="trash-2" class="w-4 h-4 shrink-0"></i></button>
+            <td class="px-6 py-4 text-right flex justify-end gap-2">
+               <button onclick="promptEditHoliday('${h.id}', '${h.date}', '${h.name.replace(/'/g, "\\'")}', ${h.bc}, ${h.rec}, ${h.ar})" class="text-blue-500 hover:text-blue-700 p-2 bg-blue-50 rounded-lg"><i data-lucide="edit" class="w-4 h-4 shrink-0"></i></button>
+               <button onclick="promptDeleteHoliday('${h.id}', '${h.name.replace(/'/g, "\\'")}')" class="text-red-500 hover:text-red-700 p-2 bg-red-50 rounded-lg"><i data-lucide="trash-2" class="w-4 h-4 shrink-0"></i></button>
             </td>
           </tr>`;
       }).join('');
@@ -2611,6 +2623,83 @@
           showToast(res.message, res.status?'success':'error'); 
           if(res.status) loadHolidaysData(); 
       });
+    }
+
+    function promptEditHoliday(id, oldDate, oldName, oldBc, oldRec, oldAr) {
+      const h = `
+        <div class="space-y-4 mt-5 text-left">
+          <div>
+            <label class="block text-xs font-bold text-slate-600 mb-1">Tanggal Libur</label>
+            <input type="date" id="e-hol-date" value="${oldDate}" class="w-full px-4 py-3 bg-slate-50 rounded-xl border border-slate-200 text-sm outline-none font-bold focus:bg-white">
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-600 mb-1">Nama Libur</label>
+            <input type="text" id="e-hol-name" value="${oldName}" class="w-full px-4 py-3 bg-slate-50 rounded-xl border border-slate-200 text-sm outline-none font-bold focus:bg-white">
+          </div>
+          <div class="p-3 bg-slate-50 border border-slate-200 rounded-xl space-y-2">
+             <p class="text-xs font-bold text-slate-800 border-b border-slate-200 pb-1 mb-2">Blokir Fitur:</p>
+             <label class="flex items-center gap-2 cursor-pointer"><input type="checkbox" id="e-hol-bc" ${oldBc ? 'checked' : ''} class="w-4 h-4"> <span class="text-sm font-bold">Broadcast</span></label>
+             <label class="flex items-center gap-2 cursor-pointer"><input type="checkbox" id="e-hol-rec" ${oldRec ? 'checked' : ''} class="w-4 h-4"> <span class="text-sm font-bold">Pesan Rutin</span></label>
+             <label class="flex items-center gap-2 cursor-pointer"><input type="checkbox" id="e-hol-ar" ${oldAr ? 'checked' : ''} class="w-4 h-4"> <span class="text-sm font-bold">Auto-Reply & AI</span></label>
+          </div>
+        </div>`;
+        
+      showModal('Edit Hari Libur', h, 'info', async () => {
+         const date = document.getElementById('e-hol-date').value;
+         const name = document.getElementById('e-hol-name').value;
+         const bc = document.getElementById('e-hol-bc').checked;
+         const rec = document.getElementById('e-hol-rec').checked;
+         const ar = document.getElementById('e-hol-ar').checked;
+         if(!date || !name) return showToast("Tanggal & Nama wajib diisi!", "error");
+         
+         setBtnLoading('modal-confirm-btn', true);
+         const res = await fetchGAS("editHoliday", [currentUser.email, currentUser.token, id, date, name, bc, rec, ar]);
+         closeModal();
+         showToast(res.message, res.status ? 'success' : 'error');
+         if(res.status) loadHolidaysData();
+      });
+      lucide.createIcons();
+    }
+
+    function downloadHolidayTemplate() {
+      const csvContent = "data:text/csv;charset=utf-8,Tanggal (YYYY-MM-DD),Nama Libur,Blokir Broadcast (TRUE/FALSE),Blokir Pesan Rutin (TRUE/FALSE),Blokir AutoReply (TRUE/FALSE)\n2026-12-25,Hari Raya Natal,TRUE,TRUE,FALSE\n2026-01-01,Tahun Baru,TRUE,FALSE,TRUE";
+      const link = document.createElement("a");
+      link.setAttribute("href", encodeURI(csvContent));
+      link.setAttribute("download", "Template_Hari_Libur.csv");
+      document.body.appendChild(link);
+      link.click(); document.body.removeChild(link);
+    }
+
+    function handleHolidayCsvUpload(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = async function(e) {
+        const rows = e.target.result.split('\n').map(row => row.split(','));
+        const holidays = [];
+        for(let i=1; i<rows.length; i++) {
+          if(rows[i].length >= 2 && rows[i][0].trim() !== '') {
+            holidays.push({ 
+              date: rows[i][0].trim(), 
+              name: rows[i][1].trim(), 
+              bc: String(rows[i][2]).trim().toUpperCase() === 'TRUE', 
+              rec: String(rows[i][3]).trim().toUpperCase() === 'TRUE', 
+              ar: String(rows[i][4]).trim().toUpperCase() === 'TRUE' 
+            });
+          }
+        }
+        if(holidays.length === 0) return showToast("Data CSV kosong/tidak valid.", "error");
+        
+        showModal('Import Hari Libur', `Ditemukan ${holidays.length} hari libur valid. Import sekarang?`, 'info', async () => {
+          setBtnLoading('modal-confirm-btn', true);
+          const res = await fetchGAS("bulkAddHolidays", [currentUser.email, currentUser.token, JSON.stringify(holidays)]);
+          closeModal();
+          showToast(res.message, res.status ? "success" : "error");
+          if(res.status) loadHolidaysData();
+        });
+      };
+      reader.readAsText(file);
+      event.target.value = '';
     }
 
     // --- AUTO REPLY & AI ---
