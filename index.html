@@ -1634,7 +1634,15 @@
       } else if(mode === 'verify') {
         els.m.value = 'verify'; els.t.innerText = "Verifikasi"; els.s.innerText = "Cek email Anda untuk kode OTP."; els.b.innerHTML = 'Verifikasi <i data-lucide="check-circle" class="w-5 h-5 shrink-0"></i>'; els.pass.classList.add('hidden'); els.rem.classList.add('hidden'); els.ref.classList.add('hidden');
       } else if(mode === 'forgot') {
-        els.m.value = 'forgot'; els.t.innerText = "Reset Sandi"; els.s.innerText = "Token akan dikirim ke email Anda."; els.b.innerHTML = 'Kirim Token <i data-lucide="send" class="w-5 h-5 shrink-0"></i>'; els.pass.classList.add('hidden'); els.rem.classList.add('hidden'); els.ref.classList.add('hidden'); els.otp.classList.add('hidden');
+        els.m.value = 'forgot'; els.t.innerText = "Reset Sandi";
+        els.s.innerText = "Token akan dikirim ke email Anda."; els.b.innerHTML = 'Kirim Token <i data-lucide="send" class="w-5 h-5 shrink-0"></i>'; els.pass.classList.add('hidden'); els.rem.classList.add('hidden'); els.ref.classList.add('hidden');
+        els.otp.classList.add('hidden');
+      } else if(mode === 'reset_confirm') {
+        els.m.value = 'reset_confirm'; els.t.innerText = "Konfirmasi Sandi Baru";
+        els.s.innerText = "Masukkan token dari email dan buat sandi baru."; els.b.innerHTML = 'Perbarui Sandi <i data-lucide="shield-check" class="w-5 h-5 shrink-0"></i>';
+        els.rem.classList.add('hidden'); els.ref.classList.add('hidden');
+        document.querySelector('#group-otp label').innerText = "KODE TOKEN RESET (CEK EMAIL)";
+        document.querySelector('#group-pass label').innerText = "PASSWORD BARU ANDA";
       }
       lucide.createIcons();
     }
@@ -1667,9 +1675,19 @@
         showToast(res.message, res.status ? 'success' : 'error'); 
         if(res.status) changeAuthState('verify');
       } else if(mode === 'verify') {
-        const res = await fetchGAS("verifyOTP", [em, ot]); 
+        const res = await fetchGAS("verifyOTP", [em, ot]);
         setBtnLoading('btn-auth', false); 
         showToast(res.message, res.status ? 'success' : 'error'); 
+        if(res.status) changeAuthState('login');
+      } else if(mode === 'forgot') {
+        const res = await fetchGAS("forgotPassword", [em]);
+        setBtnLoading('btn-auth', false);
+        showToast(res.message, res.status ? 'success' : 'error');
+        if(res.status) changeAuthState('reset_confirm');
+      } else if(mode === 'reset_confirm') {
+        const res = await fetchGAS("resetPassword", [em, ot, pw]);
+        setBtnLoading('btn-auth', false);
+        showToast(res.message, res.status ? 'success' : 'error');
         if(res.status) changeAuthState('login');
       }
     }
